@@ -22,79 +22,89 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ListboxModule } from 'primeng/listbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DrawerModule } from 'primeng/drawer';
+import { LoginComponent } from "./Components/login/login.component";
+import { CommonModule } from '@angular/common';
 
-
-
+import { Router, RouterModule } from '@angular/router';
+import { SidebarComponent } from "./Components/sidebar/sidebar.component";
+import { HeaderComponent } from "./Components/header/header.component";
+import { DrawerComponent } from "./Components/drawer/drawer.component";
+import { UserCreationComponent } from './Components/user-creation/user-creation.component';
+import { PaginationComponent } from "./Components/pagination/pagination.component";
+import { MergedAppComponent } from "./Components/merged-app/merged-app.component";
 
 
 @Component({
   selector: 'app-root',
-  imports: [ButtonModule, SelectButtonModule, RadioButtonModule, MultiSelect, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule,CardModule, TableModule, AvatarGroupModule, MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, NgClass, IconFieldModule, InputIconModule, DrawerModule],
+  imports: [ButtonModule, SelectButtonModule,
+    RouterModule, RadioButtonModule,  ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule,
+    MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,  IconFieldModule, InputIconModule, DrawerModule,
+    MergedAppComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
   title = 'ehr-demo';
-  items = [
-    {
-      label: 'Options',
-      items: [
-        {
-          label: 'Refresh',
-          icon: 'pi pi-refresh'
-        },
-        {
-          label: 'Export',
-          icon: 'pi pi-upload'
-        }
-      ]
-    }
-  ];
-  products = [
-    {
-      code: "f230fh0g3",
-      name: "Bamboo Watch",
-      category: "Accessories",
-      quantity: 10
-    },
-    {
-      code: "nvklal433",
-      name: "Black Watch",
-      category: "Accessories",
-      quantity: 61
-    },
-    {
-      code: "zz21cz3c1",
-      name: "Blue Band",
-      category: "Fitness",
-      quantity: 1
-    },
-    {
-      code: "244wgerg2",
-      name: "Blue T-Shirt",
-      category: "Clothing",
-      quantity: 25
-    },
-    {
-      code: "h456wer53",
-      name: "Bracelet",
-      category: "Accessories",
-      quantity: 73
-    },
-  ]
-  customers = [
-    {
-      name: "customers",
-      country: "US",
-      representative: "TEST",
-      status: true
-    }
-  ];
-  representatives = [{ label: "edvak", name: "edvak" }];
-  value = "";
-  ingredient: any = '';
-  visible = false
-  constructor(private primeng: PrimeNG) { }
+  // items = [
+  //   {
+  //     label: 'Options',
+  //     items: [
+  //       {
+  //         label: 'Refresh',
+  //         icon: 'pi pi-refresh'
+  //       },
+  //       {
+  //         label: 'Export',
+  //         icon: 'pi pi-upload'
+  //       }
+  //     ]
+  //   }
+  // ];
+  // products = [
+  //   {
+  //     code: "f230fh0g3",
+  //     name: "Bamboo Watch",
+  //     category: "Accessories",
+  //     quantity: 10
+  //   },
+  //   {
+  //     code: "nvklal433",
+  //     name: "Black Watch",
+  //     category: "Accessories",
+  //     quantity: 61
+  //   },
+  //   {
+  //     code: "zz21cz3c1",
+  //     name: "Blue Band",
+  //     category: "Fitness",
+  //     quantity: 1
+  //   },
+  //   {
+  //     code: "244wgerg2",
+  //     name: "Blue T-Shirt",
+  //     category: "Clothing",
+  //     quantity: 25
+  //   },
+  //   {
+  //     code: "h456wer53",
+  //     name: "Bracelet",
+  //     category: "Accessories",
+  //     quantity: 73
+  //   },
+  // ]
+  // customers = [
+  //   {
+  //     name: "customers",
+  //     country: "US",
+  //     representative: "TEST",
+  //     status: true
+  //   }
+  // ];
+  // representatives = [{ label: "edvak", name: "edvak" }];
+  // value = "";
+  // ingredient: any = '';
+  // visible = false
+  constructor(private primeng: PrimeNG,private router: Router) { }
 
   ngOnInit(): void {
     this.primeng.ripple.set(true);
@@ -103,5 +113,11 @@ export class AppComponent implements OnInit {
   toggleDarkMode() {
     const element = document.querySelector('html');
     element && element.classList.toggle('dark-theme');
+  }
+
+
+  goToUserCreation() {
+    this.router.navigate(['/login']);
+
   }
 }
