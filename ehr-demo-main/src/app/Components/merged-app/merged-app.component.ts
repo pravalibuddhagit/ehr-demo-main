@@ -11,10 +11,9 @@ import { RouterModule, RouterOutlet } from '@angular/router';
   selector: 'app-merged-app',
   imports: [
     SidebarComponent,
-    DrawerComponent,
+    
     HeaderComponent,
     LoginComponent,
-    UserCreationComponent,
     PaginationComponent,
     RouterModule,
     RouterOutlet

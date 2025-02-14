@@ -1,4 +1,4 @@
-
+<!-- 
 <div class="mb-base">
 
     <div class="card ">
@@ -155,11 +155,105 @@
         </ng-template>
     </p-table>
 </div>
+</div> -->
 
 
 
 
-
-     
-
-</div>
+<div class="card">
+    <p-table
+      #dt1
+      [value]="customers"
+      dataKey="id"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [loading]="loading"
+      [paginator]="true"
+      [globalFilterFields]="['firstName', 'lastName', 'dob', 'gender', 'email', 'state', 'country']">
+ 
+      <ng-template #caption>
+        <div class="flex">
+          <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
+          <p-iconfield iconPosition="left" class="ml-auto">
+            <p-inputicon>
+              <i class="pi pi-search"></i>
+            </p-inputicon>
+            <input pInputText type="text" (input)="onSearch($event)" placeholder="Search keyword" />
+          </p-iconfield>
+        </div>
+      </ng-template>
+ 
+      <ng-template #header>
+        <tr>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              First Name
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              Last Name
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              Date of Birth
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              Gender
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              Email
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              State
+              <p-columnFilter type="text" field="state" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              Country
+              <p-columnFilter type="text" field="country" display="menu" />
+            </div>
+          </th>
+          <th style="min-width:10rem">
+            <div class="flex items-center">
+              Actions
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+ 
+      <ng-template #body let-customer>
+        <tr>
+          <td>{{ customer.firstName }}</td>
+          <td>{{ customer.lastName }}</td>
+          <td>{{ customer.dob | date: 'MM/dd/yyyy' }}</td>
+          <td>{{ customer.gender }}</td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.state }}</td>
+          <td>{{ customer.country }}</td>
+          <td class="flex gap-base">
+            <!-- Edit button -->
+           
+           
+            <button  class="pi true-icon pi-pencil text-blue-700" (click)="onEdit(customer)"></button>
+            <!-- Delete button -->
+            <button  class="pi true-icon pi-trash text-red-500" (click)="onDelete(customer)"></button>
+          </td>
+        </tr>
+      </ng-template>
+ 
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="8">No customers found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>

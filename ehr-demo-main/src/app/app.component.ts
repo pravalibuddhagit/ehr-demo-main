@@ -114,8 +114,6 @@ export class AppComponent implements OnInit {
     const element = document.querySelector('html');
     element && element.classList.toggle('dark-theme');
   }
-
-
   goToUserCreation() {
     this.router.navigate(['/login']);
 
