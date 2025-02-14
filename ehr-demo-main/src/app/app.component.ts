@@ -37,9 +37,9 @@ import { MergedAppComponent } from "./Components/merged-app/merged-app.component
 @Component({
   selector: 'app-root',
   imports: [ButtonModule, SelectButtonModule,
-    RouterModule, RadioButtonModule,  ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule,
-    MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,  IconFieldModule, InputIconModule, DrawerModule,
-    MergedAppComponent],
+    RouterModule, RadioButtonModule, ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule,
+    MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule, IconFieldModule, InputIconModule, DrawerModule,
+    MergedAppComponent, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
