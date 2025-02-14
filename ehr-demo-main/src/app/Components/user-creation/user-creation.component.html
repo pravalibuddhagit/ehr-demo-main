@@ -1,0 +1,68 @@
+<div class="grid grid-rows-1 grid-flow-col gap-4">
+    <div class="card w-[50rem] mx-auto">
+        <h5 class="mb-base">Table Heading 3</h5>
+        <div class="">
+
+            <div class="flex flex-col gap-2 field " >
+                <label for="username">Username</label>
+                <input pInputText id="username" aria-describedby="username-help" [(ngModel)]="value" />
+                <!-- <small id="username-help">Enter your username to reset your password.</small> -->
+            </div>
+            <div class="flex flex-col gap-2 field ">
+                <label for="username">Select a City</label>
+                <p-select optionLabel="name" placeholder="Select a City" class="w-full " />
+
+                
+            </div>
+            <div class="flex flex-col gap-2 field ">
+                <label for="username">DatePicker</label>
+                <p-datepicker  class="w-full "/>
+
+            </div>
+
+
+
+            <div class="flex flex-col gap-2 field ">
+                <label for="username">Checkbox</label>
+                <p-checkbox  />
+                
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+                <div class="flex items-center">
+                    <p-radiobutton name="pizza" value="Cheese" [(ngModel)]="ingredient"  inputId="ingredient1" />
+                    <label for="ingredient1" class="ml-2">Cheese</label>
+                </div>
+            
+                <div class="flex items-center">
+                    <p-radiobutton name="pizza" value="Mushroom" [(ngModel)]="ingredient"  inputId="ingredient2" />
+                    <label for="ingredient2" class="ml-2">Mushroom</label>
+                </div>
+            
+                <div class="flex items-center">
+                    <p-radiobutton name="pizza" value="Pepper" [(ngModel)]="ingredient" inputId="ingredient3" />
+                    <label for="ingredient3" class="ml-2">Pepper</label>
+                </div>
+            
+                <div class="flex items-center">
+                    <p-radiobutton name="pizza" value="Onion" [(ngModel)]="ingredient"  inputId="ingredient4" />
+                    <label for="ingredient4" class="ml-2">Onion</label>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 field ">
+            <p-button label="Primary"  />
+            <p-button label="Secondary" severity="secondary" />
+            <p-button label="Success" severity="success" />
+            <p-button label="Info" severity="info" />
+            <p-button label="Warn" severity="warn" />
+            <p-button label="Help" severity="help" />
+            <p-button label="Danger" severity="danger" />
+            <p-button label="Contrast" severity="contrast" />
+</div>
+            
+        </div>
+    </div>
+
+
+
+  </div>

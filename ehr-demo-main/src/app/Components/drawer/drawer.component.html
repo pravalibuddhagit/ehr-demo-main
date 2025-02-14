@@ -1,0 +1,11 @@
+<div class="flex justify-between mb-base">
+    <h5>Table Heading main</h5>
+    <div class="flex items-center gap-sm">
+        <p-drawer [(visible)]="visible" header="Drawer">
+            <p>
+               <app-sidebar/>
+            </p>
+        </p-drawer>
+        <p-button (click)="visible = true" icon="pi pi-arrow-right" />
+    </div>
+</div>
