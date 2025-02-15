@@ -1,0 +1,59 @@
+<section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center  px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <a href="#" class="flex items-center mt-8 mb-6">
+        <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
+      </a>
+      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            Create an account
+          </h1>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4 md:space-y-6">
+            <!-- First Name -->
+            <div>
+              <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+              <input type="text" pInputText formControlName="first_name" class="w-full" placeholder="John" />
+              <small *ngIf="registerForm.get('first_name')?.errors?.['required'] && registerForm.get('first_name')?.touched" class="p-error">First Name is required.</small>
+              <small *ngIf="registerForm.get('first_name')?.errors?.['pattern']" class="p-error">First Name should contains alphabets only.</small>
+            </div>
+  
+            <!-- Last Name -->
+            <div>
+              <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+              <input type="text" pInputText formControlName="last_name" class="w-full" placeholder="Doe" />
+              <small *ngIf="registerForm.get('last_name')?.errors?.['required'] && registerForm.get('last_name')?.touched" class="p-error">Last Name is required.</small>
+              <small *ngIf="registerForm.get('last_name')?.errors?.['pattern']" class="p-error">Last Name should contains alphabets only.</small>
+            </div>
+  
+            <!-- Email -->
+            <div>
+              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+              <input type="email" pInputText formControlName="email" class="w-full" placeholder="john.doe@example.com" />
+              <small *ngIf="registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched" class="p-error">Email is required.</small>
+              <small *ngIf="registerForm.get('email')?.errors?.['email']" class="p-error">Please enter a valid email address.</small>
+            </div>
+  
+            <!-- Password -->
+            <div>
+              <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+              <input type="password" pInputText formControlName="password" class="w-full" placeholder="••••••••" />
+              <small *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched" class="p-error">Password is required.</small>
+              <small *ngIf="registerForm.get('password')?.errors?.['pattern']" class="p-error">
+                Password must have at least one uppercase letter, one special character, one number, and be at least 8 characters long.
+              </small>
+            </div>
+  
+            <!-- Submit Button -->
+            <div class="w-full">
+              <p-button label="Register" type="submit" [disabled]="registerForm.invalid" class="grid"></p-button>
+            </div>
+  
+            <!-- Login Link -->
+            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+              Already have an account? <a routerLink="/login" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign in</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>

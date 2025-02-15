@@ -28,7 +28,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SidebarComponent } from "./Components/sidebar/sidebar.component";
 import { HeaderComponent } from "./Components/header/header.component";
-import { DrawerComponent } from "./Components/drawer/drawer.component";
+
 import { UserCreationComponent } from './Components/user-creation/user-creation.component';
 import { PaginationComponent } from "./Components/pagination/pagination.component";
 import { MergedAppComponent } from "./Components/merged-app/merged-app.component";
@@ -37,9 +37,11 @@ import { MergedAppComponent } from "./Components/merged-app/merged-app.component
 @Component({
   selector: 'app-root',
   imports: [ButtonModule, SelectButtonModule,
+    
     RouterModule, RadioButtonModule,  ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule,
     MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,  IconFieldModule, InputIconModule, DrawerModule,
-    MergedAppComponent],
+   
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -114,8 +116,5 @@ export class AppComponent implements OnInit {
     const element = document.querySelector('html');
     element && element.classList.toggle('dark-theme');
   }
-  goToUserCreation() {
-    this.router.navigate(['/login']);
-
-  }
+ 
 }

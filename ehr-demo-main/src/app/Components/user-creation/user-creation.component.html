@@ -1,5 +1,3 @@
-
-
 <div class="flex flex-col">
     <!-- Navbar already exists above, so just adding space below -->
     <div class="flex flex-grow justify-center items-center mt-6">
@@ -7,13 +5,13 @@
             <h1 class="text-center text-lg font-semibold mb-4 text-gray-800">
                 User Creation Form
             </h1>
-
+ 
             <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-                
+               
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                     <div>
                         <label class="block mb-1 text-gray-700">First Name:</label>
-                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="first_name" required pattern="[A-Za-z]+" />
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="first_name" required pattern="[A-Za-z\s]+" />
                         <p class="text-red-500 text-sm" *ngIf="userForm.get('first_name')?.invalid && userForm.get('first_name')?.touched">
                             * Required (Only alphabets)
                         </p>
@@ -26,7 +24,7 @@
                         </p>
                     </div>
                 </div>
-
+ 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                     <div>
                         <label class="block mb-1 text-gray-700">Email:</label>
@@ -43,7 +41,71 @@
                         </p>
                     </div>
                 </div>
-
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                    <div>
+                        <label class="block mb-1 text-gray-700">Gender:</label>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" formControlName="gender" value="male" class="w-4 h-4" />
+                                <span>Male</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" formControlName="gender" value="female" class="w-4 h-4" />
+                                <span>Female</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" formControlName="gender" value="other" class="w-4 h-4" />
+                                <span>Other</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-gray-700">Date of Birth:</label>
+                        <input type="date" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="dob" [max]="maxDate"/>
+                    </div>
+                </div>
+               
+             
+ 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                   
+ 
+                    <div>
+                        <label class="block mb-1 text-gray-700">Country:</label>
+                        <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="country" required>
+                            <option value="">Select Country</option>
+                            <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                        </select>
+                        <p class="text-red-500 text-sm" *ngIf="userForm.get('country')?.invalid && userForm.get('country')?.touched">
+                            * Required
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-gray-700">State:</label>
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="state" required pattern="[A-Za-z\s]+" />
+                        <p class="text-red-500 text-sm" *ngIf="userForm.get('state')?.invalid && userForm.get('state')?.touched">
+                            * Required (Only alphabets)
+                        </p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                    <div>
+                        <label class="block mb-1 text-gray-700">City:</label>
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="city" required pattern="[A-Za-z\s]+" />
+                        <p class="text-red-500 text-sm" *ngIf="userForm.get('city')?.invalid && userForm.get('city')?.touched">
+                            * Required (Only alphabets)
+                        </p>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-gray-700">Zipcode:</label>
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="zipcode" required pattern="\d{6,9}" />
+                        <p class="text-red-500 text-sm" *ngIf="userForm.get('zipcode')?.invalid && userForm.get('zipcode')?.touched">
+                            * Enter a valid 6 or 9-digit zip code
+                        </p>
+                    </div>
+                   
+                </div>
+           
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                     <div>
                         <label class="block mb-1 text-gray-700">Address Line 1:</label>
@@ -57,77 +119,24 @@
                         <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="address_line_2" />
                     </div>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                    <div>
-                        <label class="block mb-1 text-gray-700">City:</label>
-                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="city" required pattern="[A-Za-z]+" />
-                        <p class="text-red-500 text-sm" *ngIf="userForm.get('city')?.invalid && userForm.get('city')?.touched">
-                            * Required (Only alphabets)
-                        </p>
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-gray-700">State:</label>
-                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="state" required pattern="[A-Za-z]+" />
-                        <p class="text-red-500 text-sm" *ngIf="userForm.get('state')?.invalid && userForm.get('state')?.touched">
-                            * Required (Only alphabets)
-                        </p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                    <div>
-                        <label class="block mb-1 text-gray-700">Zipcode:</label>
-                        <input type="text" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="zipcode" required pattern="\d{6,9}" />
-                        <p class="text-red-500 text-sm" *ngIf="userForm.get('zipcode')?.invalid && userForm.get('zipcode')?.touched">
-                            * Enter a valid 6 or 9-digit zip code
-                        </p>
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-gray-700">Country:</label>
-                        <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="country" required>
-                            <option value="">Select Country</option>
-                            <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
-                        </select>
-                        <p class="text-red-500 text-sm" *ngIf="userForm.get('country')?.invalid && userForm.get('country')?.touched">
-                            * Required
-                        </p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                    <div>
-                        <label class="block mb-1 text-gray-700">Gender:</label>
-                        <select class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="gender">
-                            <option value="">Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block mb-1 text-gray-700">Date of Birth:</label>
-                        <input type="date" class="w-full p-2 border border-gray-300 rounded focus:ring focus:ring-blue-300" formControlName="dob" [max]="maxDate"/>
-                    </div>
-                </div>
-
+               
                <!-- Notes -->
         <div class="mb-3">
             <label class="block mb-1 text-gray-700">Notes:</label>
             <textarea class="w-full p-2 border border-black rounded focus:ring focus:ring-blue-300" spellcheck="false" formControlName="notes" placeholder="Add description here"></textarea>
         </div>
-
+ 
         <div class="flex items-center justify-between mb-4">
             <label class="text-gray-700 font-medium">Notifications:</label>
             <label class="relative inline-flex items-center cursor-pointer">
                 <!-- Toggle Switch -->
                 <input type="checkbox" class="sr-only peer" ormControlName="allowNotifications">
-                <div class="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer 
-                    peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] 
-                    after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 
-                    after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
+                <div class="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer
+                    peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
+                    after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300
+                    after:border after:rounded-full after:h-5 after:w-5 after:transition-all
                     peer-checked:bg-blue-500"></div>
-        
+       
                 <!-- Text Label: Shows 'On' when toggled, 'Off' when not -->
                 <span class="ml-3 text-gray-700 peer-checked:font-semibold">
                     {{ userForm.get('notifications')?.value }}
@@ -145,9 +154,9 @@
                     <button type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
                         Submit
                     </button>
-                    
+                   
                 </div>
-
+ 
             </form>
         </div>
     </div>
