@@ -8,46 +8,67 @@
         <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
           Sign in to your account
         </h1>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 md:space-y-6">
-          <!-- Email -->
-          <div>
-            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-            <input type="email" pInputText formControlName="email" class="w-full" placeholder="name@company.com" />
-            <small *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched" class="p-error">Email is required.</small>
-            <small *ngIf="loginForm.get('email')?.errors?.['email']" class="p-error">Please enter a valid email address.</small>
-          </div>
+       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 md:space-y-6">
+  <!-- Email -->
+  <div>
+    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+    <input 
+      type="email" 
+      pInputText 
+      formControlName="email" 
+      class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2" 
+      placeholder="name@company.com" 
+      [ngClass]="{'border-red-500': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}"
+      
+    />
+    <small *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched" class="text-red-500 block mt-1">Email is required.</small>
+    <small *ngIf="loginForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1">Please enter a valid email address.</small>
+  </div>
 
-          <!-- Password -->
-          <div Class="w-full">
-            <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-            <p-password formControlName="password" [toggleMask]="true" placeholder="••••••••" class="w-full" [feedback]="false" ></p-password>
-            <small *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched" class="p-error">Password is required.</small>
-          </div>
+  <!-- Password -->
+  <div class="w-full">
+    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+    <input 
+      type="password" 
+      formControlName="password" 
+      class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2" 
+      [ngClass]="{'border-red-500': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
+      placeholder="Password"
+    />
+    <small *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched" class="text-red-500 block mt-1">Password is required.</small>
+  </div>
 
-          <!-- Remember Me & Forgot Password -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-start">
-              <div class="flex items-center h-5">
-                <input id="remember" aria-describedby="remember" type="checkbox" formControlName="rememberMe" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" />
-              </div>
-              <div class="ml-3 text-sm">
-                <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
-              </div>
-            </div>
-            <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
-          </div>
+  <!-- Remember Me & Forgot Password -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-start">
+      <div class="flex items-center h-5">
+        <input 
+          id="remember" 
+          aria-describedby="remember" 
+          type="checkbox" 
+          formControlName="rememberMe" 
+          class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" 
+        />
+      </div>
+      <div class="ml-3 text-sm">
+        <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
+      </div>
+    </div>
+    <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
+  </div>
 
-          <!-- Submit Button -->
-          <div class="w-full">
-            <p-button label="Sign In" type="submit" [disabled]="loginForm.invalid" class="grid"></p-button>
-          </div>
+  <!-- Submit Button -->
+  <div class="w-full">
+    <p-button label="Sign In" type="submit" [disabled]="loginForm.invalid" class="grid"></p-button>
+  </div>
 
-          <!-- Sign Up Link -->
-          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-            Don’t have an account yet? 
-            <a routerLink="/register" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
-          </p>
-        </form>
+  <!-- Sign Up Link -->
+  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+    Don’t have an account yet? 
+    <a routerLink="/register" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
+  </p>
+</form>
+
       </div>
     </div>
   </div>

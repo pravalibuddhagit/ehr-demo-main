@@ -39,9 +39,19 @@ export class RegistrationComponent {
          // Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8}$/),
         ],
       ],
-    });
+      confirm_password: ['', [Validators.required]],
+      agreeTerms: [false, [Validators.requiredTrue]],  // Adding the checkbox validation here
+    },
+    { validators: this.passwordMatchValidator }
+  );
   }
-
+  passwordMatchValidator(control: FormGroup): { [key: string]: boolean } | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirm_password')?.value;
+    return password && confirmPassword && password !== confirmPassword
+      ? { passwordMismatch: true }
+      : null;
+  }
   onSubmit() {
     if (this.registerForm.invalid) {
       this.messageService.add({

@@ -1,7 +1,10 @@
 
+<!-- <div class="card " style="display: flex; justify-content: center; align-items: center; min-height: 90vh;">-->
+  
+   
+  <h1 style="font-size: 2rem; margin-bottom: 20px;">Users in the Domain</h1> 
 
-
-<div class="card">
+  <div >
     <p-table
       #dt1
       [value]="customers"
@@ -11,7 +14,7 @@
       [loading]="loading"
       [paginator]="true"
       [globalFilterFields]="['firstName', 'lastName', 'dob', 'gender', 'email', 'state', 'country']">
- 
+  
       <ng-template #caption>
         <div class="flex">
           <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
@@ -23,7 +26,7 @@
           </p-iconfield>
         </div>
       </ng-template>
- 
+  
       <ng-template #header>
         <tr>
           <th style="min-width:10rem">
@@ -70,7 +73,7 @@
           </th>
         </tr>
       </ng-template>
- 
+  
       <ng-template #body let-customer>
         <tr>
           <td>{{ customer.firstName }}</td>
@@ -86,11 +89,11 @@
            
             <button  class="pi true-icon pi-pencil text-blue-700" (click)="onEdit(customer)"></button>
             <!-- Delete button -->
-            <button  class="pi true-icon pi-trash text-red-500" (click)="onDelete(customer)"></button>
+            <button  class="pi true-icon pi-trash text-red-500" (click)="confirm2($event,customer)"></button>
           </td>
         </tr>
       </ng-template>
- 
+  
       <ng-template #emptymessage>
         <tr>
           <td colspan="8">No customers found.</td>
@@ -98,3 +101,138 @@
       </ng-template>
     </p-table>
   </div>
+  
+  <div >
+    <p-dialog header="Header" [(visible)]="visible" [modal]="true" [style]="{ width: '50rem' }"  maskStyleClass="backdrop-blur-sm">
+      <ng-template #header>
+          <div class="inline-flex items-center justify-center gap-2">
+            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
+            <span class="font-bold whitespace-nowrap">{{ selectedCustomer?.firstName }} {{ selectedCustomer?.lastName }}</span>
+          </div> 
+      </ng-template>
+  <span class="text-surface-500 dark:text-surface-400 block mb-8 font-bold text-2xl">Update your information.</span>
+  
+  <div class="flex flex-col gap-4">
+    <!-- Row 1: First Name and Last Name -->
+    <div class="flex gap-4">
+      <div class="flex-1 flex items-center gap-4">
+        <label for="firstName" class="font-semibold w-32">First Name</label>
+        <input pInputText id="firstName" class="flex-auto" /> 
+        <!-- [(ngModel)]="selectedCustomer.firstName" autocomplete="off" -->
+      </div>
+      <div class="flex-1 flex items-center gap-4">
+        <label for="lastName" class="font-semibold w-32">Last Name</label>
+        <input pInputText id="lastName" class="flex-auto" />
+        <!-- [(ngModel)]="selectedCustomer.lastName" autocomplete="off"  -->
+      </div>
+    </div>
+  
+    <!-- Row 2: Email and Phone -->
+    <div class="flex gap-4">
+      <div class="flex-1 flex items-center gap-4">
+        <label for="email" class="font-semibold w-32">Email</label>
+        <input pInputText id="email" class="flex-auto" />
+         <!-- [(ngModel)]="selectedCustomer.email" autocomplete="off" -->
+      </div>
+      <div class="flex-1 flex items-center gap-4">
+        <label for="phone" class="font-semibold w-32">Phone</label>
+        <input pInputText id="phone" class="flex-auto" />
+        <!-- [(ngModel)]="selectedCustomer.phone" autocomplete="off" -->
+      </div>
+    </div>
+  
+    <!-- Row 3: Gender and Date of Birth -->
+    <div class="flex gap-4">
+      <label for="gender" class="font-semibold w-32">Gender</label>
+      <div class="flex gap-4">
+        <div class="flex items-center">
+          <input type="radio" id="male" name="gender" value="male" />
+          <label for="male" class="ml-2">Male</label>
+        </div>
+        <div class="flex items-center">
+          <input type="radio" id="female" name="gender" value="female" />
+          <label for="female" class="ml-2">Female</label>
+        </div>
+        <div class="flex items-center">
+          <input type="radio" id="other" name="gender" value="other" />
+          <label for="other" class="ml-2">Other</label>
+        </div>
+      </div>
+      <div class="flex-1 flex items-center gap-4">
+        <label for="dob" class="font-semibold w-32">Date of Birth</label>
+        <input type="date" id="dob" class="flex-auto" />
+        <!-- [(ngModel)]="selectedCustomer.dob" -->
+   
+      </div>
+    </div>
+  
+    <!-- Row 4: Address Line 1 and Address Line 2 -->
+    <div class="flex gap-4">
+      <div class="flex-1 flex items-center gap-4">
+        <label for="address1" class="font-semibold w-32">Address Line 1</label>
+        <input pInputText id="address1" class="flex-auto" />
+         <!-- [(ngModel)]="selectedCustomer.address1" autocomplete="off" -->
+      </div>
+      <div class="flex-1 flex items-center gap-4">
+        <label for="address2" class="font-semibold w-32">Address Line 2</label>
+        <input pInputText id="address2" class="flex-auto" />
+        <!-- [(ngModel)]="selectedCustomer.address2" autocomplete="off" -->
+      </div>
+    </div>
+  
+    <!-- Row 5: City and Zip Code -->
+    <div class="flex gap-4">
+      <div class="flex-1 flex items-center gap-4">
+        <label for="city" class="font-semibold w-32">City</label>
+        <input pInputText id="city" class="flex-auto" />
+        <!-- [(ngModel)]="selectedCustomer.city" autocomplete="off" -->
+      </div>
+      <div class="flex-1 flex items-center gap-4">
+        <label for="zipcode" class="font-semibold w-32">Zip Code</label>
+        <input pInputText id="zipcode" class="flex-auto" />
+        <!-- [(ngModel)]="selectedCustomer.zipcode" autocomplete="off" -->
+      </div>
+    </div>
+  
+    <!-- Row 6: State and Country -->
+    <div class="flex gap-4">
+      <div class="flex-1 flex items-center gap-4">
+        <label for="state" class="font-semibold w-32">State</label>
+        <input pInputText id="state" class="flex-auto" />
+         <!-- [(ngModel)]="selectedCustomer.state" autocomplete="off" -->
+      </div>
+      <div class="flex-1 flex items-center gap-4">
+        <label for="country" class="font-semibold w-32">Country</label>
+        <input pInputText id="country" class="flex-auto" />
+           <!-- [(ngModel)]="selectedCustomer.country" autocomplete="off" -->
+      </div>
+    </div>
+  
+    <!-- Row 7: Notes (single line) -->
+    <div class="flex gap-4">
+      <div class="flex-1 flex items-center gap-4">
+        <label for="notes" class="font-semibold w-32">Notes</label>
+        <textarea id="notes" class="flex-auto"></textarea>
+           <!-- [(ngModel)]="selectedCustomer.notes" -->
+      </div>
+    </div>
+  
+    <!-- Row 8: Notification (single line) -->
+    <div class="flex items-center gap-4">
+      <label for="textNotification" class="font-semibold w-32">Notification</label>
+      <!-- <p-toggleButton id="textNotification" [(ngModel)]="selectedCustomer.textNotification"></p-toggleButton> -->
+    </div>
+  </div>
+  
+  <ng-template #footer>
+    <p-button label="Cancel" [text]="true" severity="secondary" (click)="visible = false" />
+    <p-button label="Save" [outlined]="true" severity="secondary" (click)="confirm1($event)" /> 
+  </ng-template>
+  </p-dialog>
+  </div>
+   
+      <p-toast />
+      <p-confirmdialog />
+      <!-- <p-button (click)="confirm1($event)" label="Save" [outlined]="true" />
+      <p-button (click)="confirm2($event)" label="Delete" severity="danger" [outlined]="true" /> -->
+  

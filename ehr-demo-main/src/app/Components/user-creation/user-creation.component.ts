@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 //import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
  
 //import { ToggleSwitch } from 'primeng/toggleswitch';
@@ -10,9 +12,10 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-user-creation',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule],
   templateUrl: './user-creation.component.html',
-  styleUrls: ['./user-creation.component.scss']
+  styleUrls: ['./user-creation.component.scss'],
+  providers: [MessageService],
 })
 export class UserCreationComponent implements OnInit{
   maxDate: string = new Date().toISOString().split('T')[0];
@@ -27,8 +30,11 @@ export class UserCreationComponent implements OnInit{
   ];
  
  // constructor(private fb: FormBuilder)
- constructor(private fb: FormBuilder) {
-    this.userForm = this.fb.group({
+ constructor(private fb: FormBuilder,
+  private messageService: MessageService,
+  private router: Router) {
+// Initialize the form with validation
+this.userForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
       last_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email]],
@@ -48,15 +54,66 @@ export class UserCreationComponent implements OnInit{
  
  
   }
-  ngOnInit() {
-    this.userForm.get('notifications')?.valueChanges.subscribe(value => {
+  ngOnInit(): void {
+    // Watch for changes in notification toggle
+    this.userForm.get('allowNotifications')?.valueChanges.subscribe(value => {
       console.log('Notifications Toggled:', value);
     });
   }
-  onSubmit() {
-    if (this.userForm.valid) {
-      alert('User created');
+
+  // Form submission method
+  onSubmit(): void {
+    
+    if (this.userForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please fill out all fields correctly.',
+      });
+      return;
     }
-  }  
+
+    // Simulate email uniqueness check (replace with actual API call)
+    const isEmailUnique = this.checkEmailUniqueness(this.userForm.value.email);
+    if (!isEmailUnique) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Email is already registered.',
+      });
+      return;
+    }
+
+    const registrationSuccess = true; // Replace this with actual condition based on your API response
+
+    if (registrationSuccess) {
+      // Show success message
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'User creation successful! Redirecting to Dashboard...',
+      });
+
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        this.router.navigate(['/dashboard']);
+      }, 2000);
+    } else {
+      // Show error message
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'User creation failed. Please try again.',
+      });
+    }
+  }
+
+  // Simulate email uniqueness check (replace with actual API call)
+  checkEmailUniqueness(email: string): boolean {
+    // Replace this with an actual API call to check if the email is unique
+    const registeredEmails = ['test@example.com', 'user@example.com'];
+    return !registeredEmails.includes(email);
+  }
 }
+
  

@@ -42,7 +42,30 @@
                 Password must have at least one uppercase letter, one special character, one number, and be at least 8 characters long.
               </small>
             </div>
-  
+                   <!-- Confirm Password -->
+<div>
+  <label for="confirm_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+  <input type="password" pInputText formControlName="confirm_password" class="w-full" placeholder="Confirm password" />
+  <small *ngIf="registerForm.get('confirm_password')?.hasError('required') && registerForm.get('confirm_password')?.touched" class="text-red-500 block mt-1 p-error">Confirm Password is required.</small>
+  <small *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirm_password')?.touched" class="text-red-500 block mt-1 p-error">Passwords do not match.</small>
+</div>
+
+ <!-- Agree to Terms and Conditions -->
+ <div class="flex items-center">
+  <input 
+    id="terms" 
+    type="checkbox" 
+    formControlName="agreeTerms" 
+    class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" 
+  />
+  <label for="terms" class="ml-2 text-sm text-gray-500 dark:text-gray-300">
+    I agree to the 
+    <a href="/terms" class="text-primary-600 hover:underline dark:text-primary-500">Terms and Conditions</a>
+  </label>
+</div>
+<small *ngIf="registerForm.get('agreeTerms')?.errors?.['required'] && registerForm.get('agreeTerms')?.touched" class="text-red-500 block mt-1">You must agree to the terms and conditions.</small>
+
+
             <!-- Submit Button -->
             <div class="w-full">
               <p-button label="Register" type="submit" [disabled]="registerForm.invalid" class="grid"></p-button>
