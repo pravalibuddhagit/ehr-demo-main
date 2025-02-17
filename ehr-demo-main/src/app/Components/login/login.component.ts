@@ -8,6 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Router, RouterLink } from '@angular/router';
 
+import { AuthService } from '../../services/auth/auth.service';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, InputTextModule, PasswordModule, ToastModule,RouterLink],
@@ -19,16 +20,17 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
   // Dummy users for testing
-  private dummyUsers = [
+ /* private dummyUsers = [
     { email: 'user1@example.com', password: 'Password123!' },
     { email: 'user2@example.com', password: 'Password456!' },
     { email: 'user3@example.com', password: 'Password789!' },
-  ];
+  ];*/
 
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private AuthService: AuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -65,9 +67,30 @@ export class LoginComponent implements OnInit {
     } else {
       localStorage.removeItem('rememberedEmail');
     }
+    // Call the login method from AuthService
+    this.AuthService.login(email, password).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Login successful! Redirecting...',
+        });
 
+        // Redirect to dashboard or home page after 2 seconds
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']); // Adjust the route as needed
+        }, 2000);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message, // Display the error message from the API
+        });
+      },
+    });
     // Simulate API call for login (replace with actual API call)
-    const user = this.dummyUsers.find(
+ /*  const user = this.dummyUsers.find(
       (u) => u.email.toLowerCase() === email && u.password === password
     );
 
@@ -88,6 +111,6 @@ export class LoginComponent implements OnInit {
         summary: 'Error',
         detail: 'Incorrect email or password.',
       });
-    }
+    }*/
   }
 }

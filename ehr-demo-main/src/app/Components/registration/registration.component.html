@@ -36,7 +36,7 @@
             <!-- Password -->
             <div>
               <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-              <input type="password" pInputText formControlName="password" class="w-full" placeholder="••••••••" />
+              <input type="password" pInputText formControlName="password" class="w-full" placeholder="Entter your password" />
               <small *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched" class="p-error">Password is required.</small>
               <small *ngIf="registerForm.get('password')?.errors?.['pattern']" class="p-error">
                 Password must have at least one uppercase letter, one special character, one number, and be at least 8 characters long.
@@ -57,3 +57,4 @@
       </div>
     </div>
   </section>
+  <p-toast></p-toast>

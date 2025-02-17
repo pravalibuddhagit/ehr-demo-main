@@ -39,7 +39,7 @@ import { MergedAppComponent } from "./Components/merged-app/merged-app.component
   imports: [ButtonModule, SelectButtonModule,
     
     RouterModule, RadioButtonModule,  ListboxModule, FloatLabelModule, DatePickerModule, CheckboxModule, AvatarModule, CardModule, TableModule, AvatarGroupModule,
-    MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,  IconFieldModule, InputIconModule, DrawerModule,
+    MenuModule, ToastModule, InputTextModule, MultiSelectModule, FormsModule, SelectModule, TagModule,  IconFieldModule, InputIconModule, DrawerModule
    
   ],
   templateUrl: './app.component.html',

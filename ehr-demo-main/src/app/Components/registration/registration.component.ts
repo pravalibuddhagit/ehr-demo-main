@@ -1,3 +1,5 @@
+
+import { AuthService } from '../../services/auth/auth.service';
 import { LoginComponent } from './../login/login.component';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -10,7 +12,9 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule,RouterLink,RouterModule,ButtonModule, InputTextModule, ToastModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule,RouterLink,RouterModule,ButtonModule, InputTextModule, ToastModule,
+    
+  ],
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss'],
   providers: [MessageService],
@@ -21,7 +25,8 @@ export class RegistrationComponent {
   constructor(
     private fb: FormBuilder,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private AuthService: AuthService
   ) {
     this.registerForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.maxLength(35), Validators.pattern(/^[A-Za-z\s]+$/)]],
@@ -31,7 +36,7 @@ export class RegistrationComponent {
         '',
         [
           Validators.required,
-          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
+         // Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8}$/),
         ],
       ],
     });
@@ -47,7 +52,29 @@ export class RegistrationComponent {
       return;
     }
 
-    // Simulate email uniqueness check (replace with actual API call)
+
+    console.log(this.registerForm.value)
+    this.AuthService.register(this.registerForm.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Registration successful! Redirecting to login...',
+        });
+    
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      }
+    });
+   /* // Simulate email uniqueness check (replace with actual API call)
     const isEmailUnique = this.checkEmailUniqueness(this.registerForm.value.email);
     if (!isEmailUnique) {
       this.messageService.add({
@@ -75,6 +102,6 @@ export class RegistrationComponent {
   checkEmailUniqueness(email: string): boolean {
     // Replace this with an actual API call to check if the email is unique
     const registeredEmails = ['test@example.com', 'user@example.com'];
-    return !registeredEmails.includes(email);
+    return !registeredEmails.includes(email);*/
   }
 }
