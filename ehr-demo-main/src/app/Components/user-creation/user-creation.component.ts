@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user/user.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -32,7 +33,10 @@ export class UserCreationComponent implements OnInit{
  // constructor(private fb: FormBuilder)
  constructor(private fb: FormBuilder,
   private messageService: MessageService,
-  private router: Router) {
+  private router: Router,
+  private UserService:UserService
+
+) {
 // Initialize the form with validation
 this.userForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
@@ -40,10 +44,11 @@ this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       mobile_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       address_line_1: ['', [Validators.required, Validators.maxLength(40)]],
-      address_line_2: ['', [Validators.required, Validators.maxLength(40)]],
+      address_line_2: ['', [Validators.maxLength(40)]],
       city: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
       state: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
-      zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$|^\d{9}$/)]],
+      zipcode: ['', [Validators.required, Validators.pattern(/^\d{5}(\d{4})?$/)]],
+
       country: ['United States', Validators.required],
       dob: ['', Validators.required],
       gender: ['', Validators.required],
@@ -65,6 +70,7 @@ this.userForm = this.fb.group({
   onSubmit(): void {
     
     if (this.userForm.invalid) {
+        console.log(this.userForm)
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -72,9 +78,41 @@ this.userForm = this.fb.group({
       });
       return;
     }
+    
+    
+    console.log(this.userForm.value)
+    
+    this.UserService.createUser(this.userForm.value).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'User Creation successful! Redirecting to Dashboard...',
+        });
+    
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']);
+        }, 2000);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      }
+    });
+
+
+
+
+
+
+
+
 
     // Simulate email uniqueness check (replace with actual API call)
-    const isEmailUnique = this.checkEmailUniqueness(this.userForm.value.email);
+  /*  const isEmailUnique = this.checkEmailUniqueness(this.userForm.value.email);
     if (!isEmailUnique) {
       this.messageService.add({
         severity: 'error',
@@ -113,7 +151,7 @@ this.userForm = this.fb.group({
     // Replace this with an actual API call to check if the email is unique
     const registeredEmails = ['test@example.com', 'user@example.com'];
     return !registeredEmails.includes(email);
+  }*/
   }
-}
 
- 
+}

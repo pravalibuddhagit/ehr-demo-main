@@ -9,11 +9,12 @@
       #dt1
       [value]="customers"
       dataKey="id"
-      [rows]="10"
+      [rows]="5"
       [rowsPerPageOptions]="[10, 25, 50]"
       [loading]="loading"
+
       [paginator]="true"
-      [globalFilterFields]="['firstName', 'lastName', 'dob', 'gender', 'email', 'state', 'country']">
+      [globalFilterFields]="['first_name', 'last_name', 'dob', 'gender', 'email', 'state', 'country']">
   
       <ng-template #caption>
         <div class="flex">
@@ -76,8 +77,8 @@
   
       <ng-template #body let-customer>
         <tr>
-          <td>{{ customer.firstName }}</td>
-          <td>{{ customer.lastName }}</td>
+          <td>{{ customer.first_name }}</td>
+          <td>{{ customer.last_name }}</td>
           <td>{{ customer.dob | date: 'MM/dd/yyyy' }}</td>
           <td>{{ customer.gender }}</td>
           <td>{{ customer.email }}</td>
@@ -107,7 +108,7 @@
       <ng-template #header>
           <div class="inline-flex items-center justify-center gap-2">
             <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
-            <span class="font-bold whitespace-nowrap">{{ selectedCustomer?.firstName }} {{ selectedCustomer?.lastName }}</span>
+            <span class="font-bold whitespace-nowrap">{{ selectedCustomer?.first_name }} {{ selectedCustomer?.last_name }}</span>
           </div> 
       </ng-template>
   <span class="text-surface-500 dark:text-surface-400 block mb-8 font-bold text-2xl">Update your information.</span>
@@ -116,13 +117,13 @@
     <!-- Row 1: First Name and Last Name -->
     <div class="flex gap-4">
       <div class="flex-1 flex items-center gap-4">
-        <label for="firstName" class="font-semibold w-32">First Name</label>
-        <input pInputText id="firstName" class="flex-auto" /> 
+        <label for="first_name" class="font-semibold w-32">First Name</label>
+        <input pInputText id="first_name" class="flex-auto"  /> 
         <!-- [(ngModel)]="selectedCustomer.firstName" autocomplete="off" -->
       </div>
       <div class="flex-1 flex items-center gap-4">
-        <label for="lastName" class="font-semibold w-32">Last Name</label>
-        <input pInputText id="lastName" class="flex-auto" />
+        <label for="last_name" class="font-semibold w-32">Last Name</label>
+        <input pInputText id="last_name" class="flex-auto" />
         <!-- [(ngModel)]="selectedCustomer.lastName" autocomplete="off"  -->
       </div>
     </div>
@@ -221,7 +222,8 @@
     <div class="flex items-center gap-4">
       <label for="textNotification" class="font-semibold w-32">Notification</label>
       <!-- <p-toggleButton id="textNotification" [(ngModel)]="selectedCustomer.textNotification"></p-toggleButton> -->
-    </div>
+    </div> 
+   
   </div>
   
   <ng-template #footer>

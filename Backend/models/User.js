@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   mobile_phone: { type: String, required: true, maxlength: 10 },
   address_line_1: { type: String, required: true, maxlength: 40 },
-  address_line_2: { type: String,required: true,  maxlength: 100 },
+  address_line_2: { type: String,maxlength: 100 },
   city: { type: String, required: true, maxlength: 35 },
   state: { type: String, required: true, maxlength: 20 },
   zipcode: { type: String, required: true, match: /^\d{5}(\d{4})?$/ },

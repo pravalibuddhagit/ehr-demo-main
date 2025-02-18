@@ -76,9 +76,11 @@ export class LoginComponent implements OnInit {
           detail: 'Login successful! Redirecting...',
         });
 
+        this.AuthService.setToken(response.token);
+       
         // Redirect to dashboard or home page after 2 seconds
         setTimeout(() => {
-          this.router.navigate(['/dashboard']); // Adjust the route as needed
+          this.router.navigate(['/welcome']); // Adjust the route as needed
         }, 2000);
       },
       error: (error) => {

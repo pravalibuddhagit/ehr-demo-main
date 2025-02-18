@@ -8,6 +8,8 @@ import { LoginComponent } from './Components/login/login.component';
 import { PublicLayoutComponent } from './Components/public-layout/public-layout.component';
 import { MainLayoutComponent } from './Components/main-layout/main-layout.component';
 import { PaginationComponent } from './Components/pagination/pagination.component';
+import { authGuard } from './Components/guards/auth.guard';
+import { WelcomeComponent } from './Components/welcome/welcome.component';
 
 export const routes: Routes = [
     
@@ -20,14 +22,27 @@ export const routes: Routes = [
           { path: 'register', component: RegistrationComponent }
         ]
       },
+      // {
+      //   path: 'dashboard',
+      //   component: MainLayoutComponent,
+      //   canActivate: [authGuard], // Protects Dashboard
+      //   children: [
+      //    { path: '', component: PaginationComponent },
+      //     { path: 'user-creation', component: UserCreationComponent }
+      //   ],
+       
+      // },
+
       {
-        path: 'dashboard',
-        component: MainLayoutComponent,
-       // canActivate: [AuthGuard], // Protects Dashboard
+        path: 'welcome',
+        component: MainLayoutComponent, // Wrapper for sidebar & header
+        canActivate: [authGuard], // Protects Dashboard
         children: [
-         { path: '', component: PaginationComponent },
-          { path: 'user-creation', component: UserCreationComponent }
-        ]
+ 
+          { path: '', component: WelcomeComponent },
+          { path: 'dashboard', component: PaginationComponent },
+          { path: 'user-creation', component: UserCreationComponent },
+        ],
       },
       { path: '**', redirectTo: 'login' }
 

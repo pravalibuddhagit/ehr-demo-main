@@ -1,3 +1,5 @@
+import { User } from './../../models/user.model';
+import { UserService } from './../../services/user/user.service';
 import { Component, ViewChild } from '@angular/core';
 // PrimeNG Modules
 import { Table, TableModule } from 'primeng/table';
@@ -20,6 +22,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { UserCreationComponent } from '../user-creation/user-creation.component';
 
 @Component({
   selector: 'app-pagination',
@@ -39,7 +42,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     ButtonModule,
     ConfirmDialog, 
     ToastModule,
-
+    
     CommonModule,
     FormsModule,
   ],
@@ -49,47 +52,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
   styleUrl: './pagination.component.scss'
 })
 export class PaginationComponent {
-  products = [
-    {
-      code: "f230fh0g3",
-      name: "Bamboo Watch",
-      category: "Accessories",
-      quantity: 10
-    },
-    {
-      code: "nvklal433",
-      name: "Black Watch",
-      category: "Accessories",
-      quantity: 61
-    },
-    {
-      code: "zz21cz3c1",
-      name: "Blue Band",
-      category: "Fitness",
-      quantity: 1
-    },
-    {
-      code: "244wgerg2",
-      name: "Blue T-Shirt",
-      category: "Clothing",
-      quantity: 25
-    },
-    {
-      code: "h456wer53",
-      name: "Bracelet",
-      category: "Accessories",
-      quantity: 73
-    },
-  ]
-  customers1 = [
-    {
-      name: "customers",
-      country: "US",
-      representative: "TEST",
-      status: true
-    }
-  ];
-  representatives = [{ label: "edvak", name: "edvak" }];
+
 
 
 
@@ -101,12 +64,24 @@ export class PaginationComponent {
   // Define a reference to the p-table
   @ViewChild('dt1') dt1!: Table;
 
-  constructor(private confirmationService: ConfirmationService, private messageService: MessageService) {}
+  constructor(private confirmationService: ConfirmationService, 
+    private UserService :UserService,
+    private messageService: MessageService) {}
 
   ngOnInit() {
     // Dummy customer data
-    this.customers = [{
+  /*  this.customers = [{
       id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      dob: '1990-05-15',
+      gender: 'Male',
+      email: 'john.doe@example.com',
+      state: 'California',
+      country: 'USA'
+    },
+    {
+      id: 21,
       firstName: 'John',
       lastName: 'Doe',
       dob: '1990-05-15',
@@ -144,6 +119,16 @@ export class PaginationComponent {
       gender: 'Female',
       email: 'emily.davis@example.com',
       state: 'Florida',
+      country: 'USA'
+    },
+    {
+      id: 22,
+      firstName: 'John',
+      lastName: 'Doe',
+      dob: '1990-05-15',
+      gender: 'Male',
+      email: 'john.doe@example.com',
+      state: 'California',
       country: 'USA'
     },
     {
@@ -306,8 +291,28 @@ export class PaginationComponent {
       state: 'Kentucky',
       country: 'USA'
     }
-    ];
+    ]; */
+    this.fecthAllUsers();
+
     this.loading = false;
+  }
+
+  fecthAllUsers(){
+    this.UserService.getAllUsers().subscribe({
+      next: (res) => {
+       
+        this.customers=res;
+       console.log("data fetchwed ")
+
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      }
+    });
   }
 
   clear(table: Table) {
@@ -391,7 +396,7 @@ export class PaginationComponent {
     // Implement confirmation and deletion logic
         this.confirmationService.confirm({
             target: event.target as EventTarget,
-            message: 'Do you want to delete this record?',
+            message: `Do you want to delete ${customer.first_name}?`,
             header: 'Alert',
             icon: 'pi pi-info-circle',
             rejectLabel: 'Cancel',
@@ -406,7 +411,22 @@ export class PaginationComponent {
             },
 
             accept: () => {
-                this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+              this.UserService.deleteUser(customer._id).subscribe({
+                next: (res) => {
+                  this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: `${customer.first_name} deleted succesfully` });
+                  console.log("user deleted")
+                  this.fecthAllUsers();
+                },
+                error: (error) => {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.message,
+                  });
+                }
+              });
+
+             
             },
             reject: () => {
                 this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });

@@ -11,7 +11,7 @@ export interface User {
     zipcode: string;
     country: string;  // Defaults to 'UK' in backend
     dob: Date;
-    notes: string;  // Optional
+    notes?: string;  // Optional
     gender: string;
     agreeToTerms: boolean;
     allowNotifications?: boolean;  // Defaults to false in backend

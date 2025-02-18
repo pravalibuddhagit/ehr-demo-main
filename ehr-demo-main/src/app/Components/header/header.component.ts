@@ -28,7 +28,7 @@ export class HeaderComponent {
 
   items = [
     {
-      label: 'Options',
+      label: 'Select',
       items: [
         {
           label: 'Refresh',
@@ -55,11 +55,14 @@ export class HeaderComponent {
       },
       rejectButtonProps: {
         label: 'cancel',
+        severity: 'contrast',
+
        
         outlined: true
       },
       accept: () => {
         this.messageService.add({ severity: 'info', summary: 'Signing Out', detail: 'Redirecting to login...', life: 2000 });
+        localStorage.removeItem('authToken');
         setTimeout(() => {
           this.router.navigate(['/login']); // Navigate after confirmation
         }, 2000);
@@ -69,7 +72,12 @@ export class HeaderComponent {
       }
     });
   }
+  visible4: boolean = false;
 
-  
-
+  showDrawer() {
+    this.visible4 = true;
+    setTimeout(() => {
+      this.visible4 = false;
+    }, 1500); // Auto-hide after 3 seconds
+  }
 }

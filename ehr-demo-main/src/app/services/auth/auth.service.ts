@@ -12,7 +12,7 @@ import { Manager } from '../../models/manager.model';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl =  `${environment.apiUrl}/auth`;
    res:any;
   constructor(private http: HttpClient, private router: Router) {}
  
@@ -53,6 +53,20 @@ export class AuthService {
       );
   }
 
+  // Store Token in Local Storage
+  setToken(token: string) {
+    localStorage.setItem('authToken', token);
+  }
+
+  // Get Token
+  getToken() {
+    return localStorage.getItem('authToken');
+  }
+
+  // Check if User is Logged In
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
   
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';

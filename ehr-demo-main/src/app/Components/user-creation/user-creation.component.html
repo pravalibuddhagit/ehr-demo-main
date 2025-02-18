@@ -1,12 +1,12 @@
 <p-toast></p-toast>
 <div class="flex flex-col">
     <!-- Navbar already exists above, so just adding space below -->
-    <section class="bg-gray-50 dark:bg-gray-900">
+    <section class="bg-gray-50 ">
         <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
     <a href="#" class="flex items-center mt-8 mb-6">
         <img class="w-auto h-12 mr-2" src="images/logo.svg" alt="logo">
       </a>
-      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-xl xl:p-0 ">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             User Creation
@@ -88,9 +88,10 @@
                     <small *ngIf="userForm.get('city')?.errors?.['required'] && userForm.get('city')?.touched" class="text-red-500 block mt-1 p-error">City is required.</small>
                 </div>
                 <div>
-                    <label class="block mb-1 text-gray-700">Zipcode</label>
-                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="zipcode" required pattern="\d{6,9}" />
-                    <small *ngIf="userForm.get('zipcode')?.errors?.['required'] && userForm.get('zipcode')?.touched" class="text-red-500 block mt-1 p-error">Enter a valid 6 or 9-digit zip code.</small>
+                    <label for="zipcode" class="block mb-1 text-gray-700">Zipcode</label>
+                    <input type="text" pInputText class="w-full p-2 border border-gray-300 rounded" formControlName="zipcode" />
+                    <small *ngIf="userForm.get('zipcode')?.errors?.['required'] && userForm.get('zipcode')?.touched" class="text-red-500 block mt-1 p-error">Zipcode is required.</small>
+                    <small *ngIf="userForm.get('zipcode')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Enter a valid zipcode ,Must be either 5 or 9</small>
                 </div>
             </div>
         
@@ -135,10 +136,10 @@
             </div>
         
             <div class="flex items-center">
-                <input id="terms" type="checkbox" formControlName="agreeTerms" class="w-4 h-4" />
+                <input id="terms" type="checkbox" formControlName="agreeToTerms" class="w-4 h-4" />
                 <label for="terms" class="ml-2 text-sm text-gray-500">I agree to the <a href="#" class="text-primary-600 hover:underline">Terms and Conditions</a></label>
             </div>
-            <small *ngIf="userForm.get('agreeTerms')?.errors?.['required'] && userForm.get('agreeTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
+            <small *ngIf="userForm.get('agreeToTerms')?.errors?.['required'] && userForm.get('agreeToTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
         
             <div class="text-center mt-4">
                 <button type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
