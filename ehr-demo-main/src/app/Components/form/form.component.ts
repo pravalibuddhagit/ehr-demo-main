@@ -1,31 +1,33 @@
+import { ButtonModule } from 'primeng/button';
 import { UserService } from './../../services/user/user.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges,SimpleChanges, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
 //import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
- 
+import { EventEmitter } from '@angular/core';
 //import { ToggleSwitch } from 'primeng/toggleswitch';
- 
+import { ConfirmDialog } from 'primeng/confirmdialog';
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
-  providers: [MessageService],
+  providers: [ConfirmationService,MessageService],
 })
-export class FormComponent implements OnInit{
-  @Input() editingUser: User | null = null;
+export class FormComponent implements OnInit,OnChanges{
+  @Input() editingUser: any | null = null;
+  @Output() dataEvent = new EventEmitter<boolean>();
   maxDate: string = new Date().toISOString().split('T')[0];
   userForm: FormGroup;
   checked: boolean = true;
   isEditMode: boolean = false;
- 
+  visible: boolean = false; // Control the dialog visibility
  
   // ✅ List of countries
   countries = [
@@ -38,8 +40,9 @@ export class FormComponent implements OnInit{
  constructor(private fb: FormBuilder,
   private messageService: MessageService,
   private router: Router,
-  private UserService:UserService
-
+  private UserService:UserService,
+ private confirmationService:ConfirmationService
+ 
 ) {
 // Initialize the form with validation
 this.userForm = this.fb.group({
@@ -60,15 +63,76 @@ this.userForm = this.fb.group({
       allowNotifications: [false],
       notes: ['', [Validators.maxLength(200)]] // ✅ Notes field (optional, max 200 characters)
 });
+
  
- 
+  }
+
+  confirm1(event: Event) {
+
+     
+    
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Are you sure that you want to proceed?',
+        header: 'Confirmation',
+        closable: true,
+        closeOnEscape: true,
+        icon: 'pi pi-exclamation-triangle',
+        rejectButtonProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true,
+        },
+        acceptButtonProps: {
+            label: 'Save',
+        },
+        accept: () => {
+            this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
+            if (this.editingUser) {
+              
+              // Here, you can either update the customer data in the list or save to a backend.
+              console.log('Saving customer:', this.editingUser);
+              // Find the customer in the list and update it with the modified details.
+              //const index = this.customers.findIndex(c => c.id === this.selectedCustomer.id);
+              
+             
+              console.log(this.visible);
+              this.dataEvent.emit(false);
+              
+            }
+        },
+        reject: () => {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Cancelled',
+                detail: 'Details are not Updated',
+                life: 1000,
+            });
+         
+        },
+    });
   }
  
   ngOnInit(): void {
-    if (this.editingUser) {
+    // console.log("herere in form compo")
+    // console.log(this.editingUser)
+    
+    // if (this.editingUser) {
+    //   console.log(this.editingUser)
+    //   console.log("herere")
+    //   this.isEditMode = true;
+
+    //   this.userForm.patchValue(this.editingUser);
+    // }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['editingUser'] && this.editingUser) {
       this.isEditMode = true;
-      
       this.userForm.patchValue(this.editingUser);
+    }else {
+      this.isEditMode = false;
+      this.userForm.reset(); // Reset form if editingUser is null or undefined
     }
   }
 
@@ -88,8 +152,12 @@ this.userForm = this.fb.group({
     
     console.log(this.userForm.value)
     if (this.isEditMode && this.editingUser) {
+
+    
+    
       // this.UserService.updateUser(this.editingUser._id, this.userForm.value).subscribe({
       //   // Handle update
+        //dialog box close
       alert("updated user");
       // });
     } else {

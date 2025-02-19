@@ -2,7 +2,7 @@
 <!-- <div class="card " style="display: flex; justify-content: center; align-items: center; min-height: 90vh;">-->
   
    
-  <h1 style="font-size: 2rem; margin-bottom: 20px;">Users in the Domain</h1> 
+  <h1 style="font-size: 2rem; margin-bottom: 20px;">All USERS</h1> 
 
   <div >
     <p-table
@@ -104,7 +104,7 @@
   </div>
   
   <div >
-    <p-dialog header="" [(visible)]="visible" [modal]="true" [style]="{ width: '40rem' }"  maskStyleClass="backdrop-blur-sm">
+    <p-dialog header="header" [(visible)]="visible" [modal]="true" [style]="{ width: '40rem' }"  maskStyleClass="backdrop-blur-sm">
       <ng-template #header>
         <div class="inline-flex items-center justify-center gap-2">
           <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
@@ -114,12 +114,9 @@
 <span class="text-surface-500 dark:text-surface-400 block mb-8 font-bold text-2xl">Update your information.</span>
  
   
-<app-form [editingUser]="selectedCustomer"></app-form> <!-- Pass the customer data here -->
+<app-form [editingUser]="selectedCustomer" (dataEvent)="receiveData($event)"></app-form> <!-- Pass the customer data here -->
   
-<ng-template #footer>
-  <p-button label="Cancel" [text]="true" severity="secondary" (click)="visible = false" />
-  <p-button label="Save" [outlined]="true" severity="secondary" (click)="confirm1($event)" />
-</ng-template>
+
   </p-dialog>
   </div>
    

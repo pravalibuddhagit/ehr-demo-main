@@ -20,7 +20,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                 <div>
                     <label for="email" class="block mb-1 text-gray-700">Email</label>
-                    <input type="email" pInputText formControlName="email" class="w-full p-2 border border-gray-300 rounded" />
+                    <input type="email" pInputText formControlName="email"
+                    [readonly]="isEditMode"
+                     class="w-full p-2 border border-gray-300 rounded" />
                     <small *ngIf="userForm.get('email')?.errors?.['required'] && userForm.get('email')?.touched" class="text-red-500 block mt-1 p-error">Email is required.</small>
                     <small *ngIf="userForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1 p-error">Enter a valid email.</small>
                 </div>
@@ -125,16 +127,23 @@
             </div>
         
             <div class="flex items-center">
-                <input id="terms" type="checkbox" formControlName="agreeToTerms" class="w-4 h-4" />
+                <input id="terms" type="checkbox" formControlName="agreeToTerms" class="w-4 h-4" 
+                [disabled]="isEditMode" 
+               
+                />
                 <label for="terms" class="ml-2 text-sm text-gray-500">I agree to the <a href="#" class="text-primary-600 hover:underline">Terms and Conditions</a></label>
             </div>
             <small *ngIf="userForm.get('agreeToTerms')?.errors?.['required'] && userForm.get('agreeToTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
         
             <div class="text-center mt-4">
-                <button type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
+                <button *ngIf="!isEditMode" type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
                     Submit
                 </button>
+                <button *ngIf="isEditMode" type="button" (click)="confirm1($event)"  class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
+                  Update User
+                </button>
+              
             </div>
         </form>
         <p-toast></p-toast>
-        
+        <p-confirmdialog />
