@@ -23,6 +23,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { UserCreationComponent } from '../user-creation/user-creation.component';
+import { FormComponent } from '../form/form.component';
 
 @Component({
   selector: 'app-pagination',
@@ -45,6 +46,7 @@ import { UserCreationComponent } from '../user-creation/user-creation.component'
     
     CommonModule,
     FormsModule,
+    FormComponent
   ],
   providers: [ConfirmationService, MessageService]
 ,
@@ -323,7 +325,8 @@ export class PaginationComponent {
   onEdit(customer: any) {
     // Set the selected customer and show the dialog
     this.selectedCustomer = { ...customer }; // Ensure you don't directly modify the original object
-    this.visible = true; // Show the dialog
+   
+    this.visible = true; // Show the dialog   
   }
 
   onDelete(customer: any) {

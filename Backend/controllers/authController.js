@@ -29,7 +29,7 @@ exports.registerUser = async (req, res) => {
     /* if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{1,8}$/.test(password)) {
       return res.status(400).json({ 
         success: false, 
-        data: null, 
+        data: null,                                                                     
         error: { message: "Password must be 1-8 characters long and include at least one uppercase letter, one number, and one special character." } 
       });
     }*/

@@ -1,0 +1,140 @@
+
+
+ 
+          <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                    <label for="first_name" class="block mb-1 text-gray-700">First Name</label>
+                    <input type="text" pInputText formControlName="first_name" class="w-full p-2 border border-gray-300 rounded" />
+                    <small *ngIf="userForm.get('first_name')?.errors?.['required'] && userForm.get('first_name')?.touched" class="text-red-500 block mt-1 p-error">First Name is required.</small>
+                    <small *ngIf="userForm.get('first_name')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">First Name should contain alphabets only.</small>
+                </div>
+                <div>
+                    <label for="last_name" class="block mb-1 text-gray-700">Last Name</label>
+                    <input type="text" pInputText formControlName="last_name" class="w-full p-2 border border-gray-300 rounded" />
+                    <small *ngIf="userForm.get('last_name')?.errors?.['required'] && userForm.get('last_name')?.touched" class="text-red-500 block mt-1 p-error">Last Name is required.</small>
+                    <small *ngIf="userForm.get('last_name')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Last Name should contain alphabets only.</small>
+                </div>
+            </div>
+        
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                    <label for="email" class="block mb-1 text-gray-700">Email</label>
+                    <input type="email" pInputText formControlName="email" class="w-full p-2 border border-gray-300 rounded" />
+                    <small *ngIf="userForm.get('email')?.errors?.['required'] && userForm.get('email')?.touched" class="text-red-500 block mt-1 p-error">Email is required.</small>
+                    <small *ngIf="userForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1 p-error">Enter a valid email.</small>
+                </div>
+                <div>
+                    <label for="mobile_phone" class="block mb-1 text-gray-700">Mobile Phone</label>
+                    <input type="text" pInputText formControlName="mobile_phone" class="w-full p-2 border border-gray-300 rounded" />
+                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['required'] && userForm.get('mobile_phone')?.touched" class="text-red-500 block mt-1 p-error">Mobile Phone is required.</small>
+                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Enter a valid 10-digit number.</small>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                    <label class="block mb-1 text-gray-700">Gender</label>
+                    <div class="flex items-center space-x-4">
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" formControlName="gender" value="male" class="w-4 h-4" />
+                            <span>Male</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" formControlName="gender" value="female" class="w-4 h-4" />
+                            <span>Female</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" formControlName="gender" value="other" class="w-4 h-4" />
+                            <span>Other</span>
+                        </label>
+                    </div>
+                    <small *ngIf="userForm.get('gender')?.errors?.['required'] && userForm.get('gender')?.touched" class="text-red-500 block mt-1 p-error">Gender is required.</small>
+                </div>
+                <div>
+                    <label class="block mb-1 text-gray-700">Date of Birth</label>
+                    <input type="date" class="w-full p-2 border border-gray-300 rounded" formControlName="dob" [max]="maxDate"/>
+                    <small *ngIf="userForm.get('dob')?.errors?.['required'] && userForm.get('dob')?.touched" class="text-red-500 block mt-1 p-error">Date of Birth is required.</small>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                    <label class="block mb-1 text-gray-700">Address Line 1</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="address_line_1" required />
+                    <small *ngIf="userForm.get('address_line_1')?.errors?.['required'] && userForm.get('address_line_1')?.touched" class="text-red-500 block mt-1 p-error">Address Line 1 is required.</small>
+                </div>
+                <div>
+                    <label class="block mb-1 text-gray-700">Address Line 2</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="address_line_2" />
+                </div>
+            </div>
+        
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                    <label class="block mb-1 text-gray-700">City</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="city" required pattern="[A-Za-z\s]+" />
+                    <small *ngIf="userForm.get('city')?.errors?.['required'] && userForm.get('city')?.touched" class="text-red-500 block mt-1 p-error">City is required.</small>
+                </div>
+                <div>
+                    <label for="zipcode" class="block mb-1 text-gray-700">Zipcode</label>
+                    <input type="text" pInputText class="w-full p-2 border border-gray-300 rounded" formControlName="zipcode" />
+                    <small *ngIf="userForm.get('zipcode')?.errors?.['required'] && userForm.get('zipcode')?.touched" class="text-red-500 block mt-1 p-error">Zipcode is required.</small>
+                    <small *ngIf="userForm.get('zipcode')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Enter a valid zipcode ,Must be either 5 or 9</small>
+                </div>
+            </div>
+        
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+
+                <div>
+                    <label class="block mb-1 text-gray-700">State</label>
+                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="state" />
+                    <small *ngIf="userForm.get('state')?.errors?.['required'] && userForm.get('state')?.touched" class="text-red-500 block mt-1 p-error">State is required.</small>
+                </div>
+
+                        
+          
+                <div>
+                    <label class="block mb-1 text-gray-700">Country</label>
+                    <select class="w-full p-2 border border-gray-300 rounded" formControlName="country">
+                        <option value="">Select Country</option>
+                        <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                    </select>
+                    <small *ngIf="userForm.get('country')?.errors?.['required'] && userForm.get('country')?.touched" class="text-red-500 block mt-1 p-error">Country is required.</small>
+                </div>
+            </div>
+        
+            <div class="mb-3">
+                <label class="block mb-1 text-gray-700">Notes</label>
+                <textarea class="w-full p-2 border border-black rounded" formControlName="notes" placeholder="Add description here"></textarea>
+            </div>
+        
+            <div class="flex items-center justify-between mb-4">
+                <label class="text-gray-700 font-medium">Notifications</label>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" formControlName="allowNotifications" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer 
+                        peer-checked:after:translate-x-full peer-checked:after:border-white after:content-['']
+                        after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 
+                        after:border after:rounded-full after:h-5 after:w-5 after:transition-all
+                        peer-checked:bg-blue-500"></div>
+                    <span class="ml-3 text-gray-700 peer-checked:font-semibold">
+                        {{ userForm.get('allowNotifications')?.value ? 'On' : 'Off' }}
+                    </span>
+                </label>
+            </div>
+        
+            <div class="flex items-center">
+                <input id="terms" type="checkbox" formControlName="agreeToTerms" class="w-4 h-4" />
+                <label for="terms" class="ml-2 text-sm text-gray-500">I agree to the <a href="#" class="text-primary-600 hover:underline">Terms and Conditions</a></label>
+            </div>
+            <small *ngIf="userForm.get('agreeToTerms')?.errors?.['required'] && userForm.get('agreeToTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
+        
+            <div class="text-center mt-4">
+                <button type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
+                    Submit
+                </button>
+            </div>
+        </form>
+        <p-toast></p-toast>
+        
