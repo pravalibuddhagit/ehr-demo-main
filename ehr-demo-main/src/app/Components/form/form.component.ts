@@ -120,22 +120,12 @@ this.userForm = this.fb.group({
   }
  
   ngOnInit(): void {
-    // console.log("herere in form compo")
-    // console.log(this.editingUser)
-    
-    // if (this.editingUser) {
-    //   console.log(this.editingUser)
-    //   console.log("herere")
-    //   this.isEditMode = true;
-
-    //   this.userForm.patchValue(this.editingUser);
-    // }
+   
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingUser'] && this.editingUser) {
       this.isEditMode = true;
-
       this.userForm.patchValue(this.editingUser);
     }else {
       this.isEditMode = false;
@@ -202,55 +192,6 @@ this.userForm = this.fb.group({
     }
    
 
-
-
-
-
-
-
-
-
-    // Simulate email uniqueness check (replace with actual API call)
-  /*  const isEmailUnique = this.checkEmailUniqueness(this.userForm.value.email);
-    if (!isEmailUnique) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Email is already registered.',
-      });
-      return;
-    }
-
-    const registrationSuccess = true; // Replace this with actual condition based on your API response
-
-    if (registrationSuccess) {
-      // Show success message
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'User creation successful! Redirecting to Dashboard...',
-      });
-
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 2000);
-    } else {
-      // Show error message
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'User creation failed. Please try again.',
-      });
-    }
-  }
-
-  // Simulate email uniqueness check (replace with actual API call)
-  checkEmailUniqueness(email: string): boolean {
-    // Replace this with an actual API call to check if the email is unique
-    const registeredEmails = ['test@example.com', 'user@example.com'];
-    return !registeredEmails.includes(email);
-  }*/
   }
 
 }

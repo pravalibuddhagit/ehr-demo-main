@@ -80,6 +80,9 @@ export class PaginationComponent implements OnInit{
   receiveData(data: boolean) {
     this.visible=data;
    this.cdr.detectChanges();
+   if (!data) { // If data is false, meaning the form was submitted or canceled
+    this.fecthAllUsers(); // Refresh the list of users
+  }
   }
   fecthAllUsers(){
     this.UserService.getAllUsers().subscribe({
