@@ -87,17 +87,23 @@ this.userForm = this.fb.group({
             label: 'Save',
         },
         accept: () => {
-            this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
+           
+          this.onSubmit();
+          this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
             if (this.editingUser) {
               
               // Here, you can either update the customer data in the list or save to a backend.
-              console.log('Saving customer:', this.editingUser);
+            //  console.log('Saving customer:', this.editingUser);
               // Find the customer in the list and update it with the modified details.
               //const index = this.customers.findIndex(c => c.id === this.selectedCustomer.id);
               
-             
+            
               console.log(this.visible);
-              this.dataEvent.emit(false);
+              setTimeout(() => {
+                this.dataEvent.emit(false);
+              }, 2000);  // 2000 milliseconds = 2 seconds
+              
+              
               
             }
         },
@@ -129,6 +135,7 @@ this.userForm = this.fb.group({
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingUser'] && this.editingUser) {
       this.isEditMode = true;
+
       this.userForm.patchValue(this.editingUser);
     }else {
       this.isEditMode = false;
@@ -140,7 +147,6 @@ this.userForm = this.fb.group({
   onSubmit(): void {
     
     if (this.userForm.invalid) {
-        console.log(this.userForm)
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -150,16 +156,27 @@ this.userForm = this.fb.group({
     }
     
     
-    console.log(this.userForm.value)
+    console.log("userfomr value in submit function");
+    console.log(this.userForm.value);
     if (this.isEditMode && this.editingUser) {
 
     
-    
-      // this.UserService.updateUser(this.editingUser._id, this.userForm.value).subscribe({
-      //   // Handle update
-        //dialog box close
-      alert("updated user");
-      // });
+     console.log("just befre passing the ediitng user");
+     console.log(this.userForm.value);
+      this.UserService.updateUser(this.editingUser._id,this.userForm.value).subscribe({
+        next: (res) => {
+         
+         console.log("user has updated")
+  
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        }
+      });
     } else {
 
       this.UserService.createUser(this.userForm.value).subscribe({

@@ -126,14 +126,14 @@
                 </label>
             </div>
         
-            <div class="flex items-center">
+            <div *ngIf="!isEditMode" class="flex items-center">
                 <input id="terms" type="checkbox" formControlName="agreeToTerms" class="w-4 h-4" 
-                [disabled]="isEditMode" 
+                
                
                 />
                 <label for="terms" class="ml-2 text-sm text-gray-500">I agree to the <a href="#" class="text-primary-600 hover:underline">Terms and Conditions</a></label>
             </div>
-            <small *ngIf="userForm.get('agreeToTerms')?.errors?.['required'] && userForm.get('agreeToTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
+            <small *ngIf="!isEditMode && userForm.get('agreeToTerms')?.errors?.['required'] && userForm.get('agreeToTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
         
             <div class="text-center mt-4">
                 <button *ngIf="!isEditMode" type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">

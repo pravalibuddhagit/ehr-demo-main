@@ -58,6 +58,22 @@ export class UserService {
     )
 
   }
+
+  
+  updateUser(id: string, user: User) : Observable<any>{
+    return this.http.put<{ success: boolean; message: string; error?: { message: string } }>(`${this.apiUrl}/${id}`,user,{headers :  this.getHeaders() })
+    .pipe(
+      map(response =>{
+        if(response.success){
+          return response.message;
+        }else{
+          return  throwError(() => new Error(response.error?.message || "User can't be Updated"));
+        }
+      }),
+      catchError(this.handleError)
+    )
+
+  }
   
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('authToken');
