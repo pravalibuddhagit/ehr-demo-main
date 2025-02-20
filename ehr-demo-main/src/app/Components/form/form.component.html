@@ -77,7 +77,9 @@
                 <div>
                     <label class="block mb-1 text-gray-700">City</label>
                     <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="city" required pattern="[A-Za-z\s]+" />
+                    
                     <small *ngIf="userForm.get('city')?.errors?.['required'] && userForm.get('city')?.touched" class="text-red-500 block mt-1 p-error">City is required.</small>
+                    <small *ngIf="userForm.get('city')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">City should contain alphabets only.</small>
                 </div>
                 <div>
                     <label for="zipcode" class="block mb-1 text-gray-700">Zipcode</label>
@@ -93,6 +95,7 @@
                     <label class="block mb-1 text-gray-700">State</label>
                     <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="state" />
                     <small *ngIf="userForm.get('state')?.errors?.['required'] && userForm.get('state')?.touched" class="text-red-500 block mt-1 p-error">State is required.</small>
+                    <small *ngIf="userForm.get('state')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">state should contain alphabets only.</small>
                 </div>
 
                         
