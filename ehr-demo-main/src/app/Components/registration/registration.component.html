@@ -47,7 +47,7 @@
               class="w-full  border border-gray-300 rounded p-2 focus:outline-none focus:ring-2" placeholder="Entter your password" />
               <small *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched" class="text-red-500 block mt-1 p-error">Password is required.</small>
               <small *ngIf="registerForm.get('password')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">
-                Password must have at least one uppercase letter, one special character, one number, and be at least 8 characters long.
+                Password must have at least one uppercase letter, one special character, one number, and be max 8 characters long.
               </small>
             </div>
                    <!-- Confirm Password -->

@@ -72,12 +72,7 @@ export class HeaderComponent {
       }
     });
   }
-  visible4: boolean = false;
+ 
 
-  showDrawer() {
-    this.visible4 = true;
-    setTimeout(() => {
-      this.visible4 = false;
-    }, 1500); // Auto-hide after 3 seconds
-  }
+
 }

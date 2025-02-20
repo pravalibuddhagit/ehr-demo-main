@@ -1,8 +1,8 @@
 import { ButtonModule } from 'primeng/button';
 import { UserService } from './../../services/user/user.service';
-import { Component, Input, OnChanges,SimpleChanges, OnInit, Output } from '@angular/core';
+import { Component, Input, OnChanges,SimpleChanges, OnInit, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -12,10 +12,11 @@ import { User } from '../../models/user.model';
 import { EventEmitter } from '@angular/core';
 //import { ToggleSwitch } from 'primeng/toggleswitch';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import {MessageModule} from 'primeng/message';
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule,MessageModule],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   providers: [ConfirmationService,MessageService],
@@ -28,7 +29,7 @@ export class FormComponent implements OnInit,OnChanges{
   checked: boolean = true;
   isEditMode: boolean = false;
   visible: boolean = false; // Control the dialog visibility
- 
+
   // ✅ List of countries
   countries = [
     "United States", "Canada", "United Kingdom", "India", "China", "Russia", "Germany",
@@ -89,7 +90,7 @@ this.userForm = this.fb.group({
         accept: () => {
            
           this.onSubmit();
-          this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
+        //  this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
             if (this.editingUser) {
               
               // Here, you can either update the customer data in the list or save to a backend.
@@ -103,21 +104,34 @@ this.userForm = this.fb.group({
                 this.dataEvent.emit(false);
               }, 2000);  // 2000 milliseconds = 2 seconds
               
-              
+              this.msg.set(true);
+            setTimeout(()=>{
+              this.msg.set(false);
+            },3500);
               
             }
         },
         reject: () => {
-            this.messageService.add({
-                severity: 'error',
-                summary: 'Cancelled',
-                detail: 'Details are not Updated',
-                life: 1000,
-            });
+            // this.messageService.add({
+            //     severity: 'error',
+            //     summary: 'Cancelled',
+            //     detail: 'Details are not Updated',
+            //     life: 1000,
+            // });
+
+            this.msg2.set(true);
+            setTimeout(()=>{
+              this.msg2.set(false);
+            },3500);
          
         },
     });
   }
+
+  msg=signal(false);
+ msg2=signal(false);
+
+
  
   ngOnInit(): void {
    
@@ -125,8 +139,14 @@ this.userForm = this.fb.group({
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingUser'] && this.editingUser) {
+      const formattedDob = this.editingUser.dob ? new Date(this.editingUser.dob).toISOString().split('T')[0] : '';
       this.isEditMode = true;
-      this.userForm.patchValue(this.editingUser);
+      this.userForm.patchValue({
+        ...this.editingUser,
+        dob: formattedDob  // Ensure the date is properly formatted
+      });
+    
+     
     }else {
       this.isEditMode = false;
       this.userForm.reset(); // Reset form if editingUser is null or undefined
@@ -148,6 +168,12 @@ this.userForm = this.fb.group({
     
     console.log("userfomr value in submit function");
     console.log(this.userForm.value);
+    const rawDate = this.userForm.value.dob; // This is in YYYY-MM-DD format
+    const formattedDOB = formatDate(rawDate, 'dd-MM-yyyy', 'en-US'); // Convert to DD-MM-YYYY
+    console.log('Formatted DOB:', formattedDOB);
+ 
+    const isoDOB = new Date(rawDate).toISOString(); // Convert to ISO format for backend
+    console.log('DOB for Backend:', isoDOB);
     if (this.isEditMode && this.editingUser) {
 
     
@@ -168,7 +194,7 @@ this.userForm = this.fb.group({
         }
       });
     } else {
-
+        console.log(this.userForm.value)
       this.UserService.createUser(this.userForm.value).subscribe({
         next: () => {
           this.messageService.add({

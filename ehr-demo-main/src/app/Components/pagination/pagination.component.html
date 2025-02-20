@@ -2,29 +2,37 @@
 <!-- <div class="card " style="display: flex; justify-content: center; align-items: center; min-height: 90vh;">-->
   
    
-  <h1 style="font-size: 2rem; margin-bottom: 20px;">All USERS</h1> 
+  <!-- <h1 style="font-size: 2rem; margin-bottom: 20px;">All USERS</h1>  [rowsPerPageOptions]="[10]"  -->
 
-  <div >
+  <div class="mt-16" >
     <p-table
-      #dt1
+      #dt1    
+      dataKey="id"     
+      [rowsPerPageOptions]="[10]" 
+      [loading]="loading"    
       [value]="customers"
-      dataKey="id"
-      [rows]="2"
-      [rowsPerPageOptions]="[10]"
-      [loading]="loading"
-
-      [paginator]="true"
-      [globalFilterFields]="['first_name', 'last_name', 'dob', 'gender', 'email', 'state', 'country']">
-  
+      [lazy]="true"
+      (onLazyLoad)="onPageChange($event)"
+      [rows]="10"
+      [totalRecords]="totalRecords"
+     
+      [paginator]="true">
       <ng-template #caption>
-        <div class="flex">
-          <p-button label="Clear" [outlined]="true" icon="pi pi-filter-slash" (click)="clear(dt1)" />
-          <p-iconfield iconPosition="left" class="ml-auto">
+        <div class="flex justify-between items-center w-full">
+          <!-- Search Keyword (Leftmost) -->
+          <p-iconfield iconPosition="left">
             <p-inputicon>
               <i class="pi pi-search"></i>
             </p-inputicon>
-            <input pInputText type="text" (input)="onSearch($event)" placeholder="Search keyword" />
+            <input pInputText type="text" (input)="onSearch($event)" placeholder="Search by Name" />
           </p-iconfield>
+      
+          <!-- State and Country Filters (Rightmost) -->
+          <div class="flex gap-2">
+            
+            <p-columnFilter type="text" field="state" placeholder="Search State" ariaLabel="Filter State" ></p-columnFilter>
+            <p-columnFilter type="text" field="country" placeholder="Search Country" ariaLabel="Filter Country" />
+          </div>
         </div>
       </ng-template>
   
@@ -58,13 +66,13 @@
           <th style="min-width:10rem">
             <div class="flex items-center">
               State
-              <p-columnFilter type="text" field="state" display="menu" />
+            
             </div>
           </th>
           <th style="min-width:10rem">
             <div class="flex items-center">
               Country
-              <p-columnFilter type="text" field="country" display="menu" />
+             
             </div>
           </th>
           <th style="min-width:10rem">
@@ -84,11 +92,11 @@
           <td>{{ customer.email }}</td>
           <td>{{ customer.state }}</td>
           <td>{{ customer.country }}</td>
-          <td class="flex gap-base">
+          <td >
             <!-- Edit button -->
            
            
-            <button  class="pi true-icon pi-pencil text-blue-700" (click)="onEdit(customer)"></button>
+            <button  class="pi true-icon pi-pencil text-blue-700 mr-4" (click)="onEdit(customer)"></button>
             <!-- Delete button -->
             <button  class="pi true-icon pi-trash text-red-500" (click)="confirm2($event,customer)"></button>
           </td>
@@ -104,10 +112,10 @@
   </div>
   
   <div >
-    <p-dialog header="header" [(visible)]="visible" [modal]="true" [style]="{ width: '40rem' }"  maskStyleClass="backdrop-blur-sm">
+    <p-dialog header="header" [(visible)]="visible" [modal]="true" [style]="{ width: '45rem' }"  maskStyleClass="backdrop-blur-sm">
       <ng-template #header>
         <div class="inline-flex items-center justify-center gap-2">
-          <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
+          <p-avatar icon="pi pi-user" shape="circle" />
           <span class="font-bold whitespace-nowrap">{{ selectedCustomer?.first_name }} {{ selectedCustomer?.last_name }}</span>
         </div>
     </ng-template>

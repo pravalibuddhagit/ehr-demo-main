@@ -4,23 +4,12 @@
         <input class="mx-4 w-full border rounded-md px-4 py-2" type="text" placeholder="Search">
     </div>
 
-    <!-- Add the notification icons before the profile menu -->
-    <div class="flex items-center gap-4 pr-4 ml-auto">
-        <p-overlaybadge value="">
-            <i class="pi pi-bell" style="font-size: 1rem"></i>
-        </p-overlaybadge>
-        <p-overlaybadge value="">
-            <i class="pi pi-calendar" style="font-size: 1rem"></i>
-        </p-overlaybadge>
-        <p-overlaybadge severity="danger">
-            <i class="pi pi-envelope" style="font-size: 1rem"></i>
-        </p-overlaybadge>
-    </div>
+   
 
     <!-- Profile menu section -->
     <div class="flex items-center pr-4">
         <p-menu #menu [model]="items" [popup]="true" />
-        <p-avatar (click)="menu.toggle($event)" label="P" class="mr-2 cursor-pointer" size="normal" shape="circle" />
+        <p-avatar (click)="menu.toggle($event)" icon="pi pi-user" class="mr-2 cursor-pointer" size="normal" shape="circle" />
     </div>
 </div>
 
@@ -31,8 +20,8 @@
 <p-drawer [(visible)]="visible" [closable]="true">
     <ng-template #header>
         <div class="flex items-center gap-2">
-            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" />
-            <span class="font-bold">Hello ,welcome</span>
+            <p-avatar icon="pi pi-user" shape="circle" />
+            <span class="font-bold">Hello Welcome</span>
         </div>
     </ng-template>
     <p>
@@ -41,11 +30,11 @@
             Home
         </a>
         <a routerLink="/welcome/dashboard" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4">
-            <i class="pi pi-bars"></i>
-            Dashboard
+            <i class="pi pi-users"></i>
+           View Users
         </a>
         <a routerLink="/welcome/user-creation" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
-            <i class="pi pi-user"></i>
+            <i class="pi pi-user-plus"></i>
             User-Creation
         </a>
         
@@ -54,7 +43,7 @@
     </p>
     <ng-template #footer>
         <div class="flex items-center gap-2">
-            <button  pButton label="settings" (click)="showDrawer()" icon="pi pi-cog" class="w-full p-button-outlined" ></button>
+          
             <button pButton label="Logout" (click)="confirmSignOut()" icon="pi pi-sign-out" class="w-full p-button-outlined" severity="danger" ></button>
 
         </div>
@@ -62,6 +51,3 @@
 </p-drawer>
 
 
-<p-drawer header="Settings" [(visible)]="visible4" position="top" >
-    <p>Currently, settings are disabled !!</p>
-</p-drawer>

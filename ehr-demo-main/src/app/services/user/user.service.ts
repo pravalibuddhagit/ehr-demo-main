@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse ,HttpParams} from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { User } from '../../models/user.model';
 })
 export class UserService {
   private apiUrl = `${environment.apiUrl}/users`; // Ensure your backend route matches this
-
+  
   constructor(private http: HttpClient) {}
 
   // Method to create a new user
@@ -43,6 +43,39 @@ export class UserService {
         catchError(this.handleError)
       );
   }
+
+  getAllUsers2(
+    page: number,
+     search: string,
+      state: string,
+      stateMode: string,
+       country: string,
+       countryMode: string
+      )
+       : Observable<any> {
+    let params = new HttpParams()
+        .set('page', page.toString())
+        .set('limit', '10');
+
+    if (search) params = params.set('search', search);
+    if (state) {
+      params = params.set('state', state);
+      params = params.set('stateMode', stateMode);
+    }
+    if (country) {
+      params = params.set('country', country);
+      params = params.set('countryMode', countryMode);
+    }
+
+    console.log('API params:', params.toString());
+    
+    return this.http.get<any>(`${this.apiUrl}/pusers`, { 
+      headers: this.getHeaders(),
+      params: params 
+    }).pipe(
+      catchError(this.handleError)
+    );
+}
  
   deleteUser(id: string) : Observable<any>{
     return this.http.delete<{ success: boolean; message: string; error?: { message: string } }>(`${this.apiUrl}/${id}`,{headers :  this.getHeaders() })

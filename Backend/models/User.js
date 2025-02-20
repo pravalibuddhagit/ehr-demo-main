@@ -18,5 +18,4 @@ const userSchema = new mongoose.Schema({
   allowNotifications: { type: Boolean, default: false },
   deleted: { type: Boolean, default: false },
 });
-
 module.exports = mongoose.model('User', userSchema);
