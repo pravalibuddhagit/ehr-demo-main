@@ -13,6 +13,7 @@ exports.registerUser = async (req, res) => {
     }
     
     const existingUser = await Managers.findOne({ email });
+    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ success: false,  data:null ,error: { message: 'Email already registered' } });
     }

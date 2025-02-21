@@ -24,6 +24,13 @@ export class LoginComponent implements OnInit {
     { email: 'user1@example.com', password: 'Password123!' },
     { email: 'user2@example.com', password: 'Password456!' },
     { email: 'user3@example.com', password: 'Password789!' },
+
+    {
+  "value": "",
+  "valid": false,
+  "errors": { "required": true },             {"email":"true""}
+  "touched": false
+}
   ];*/
 
   constructor(

@@ -74,7 +74,7 @@ export class AuthService {
       errorMessage = `Error: ${error.error.message}`;
     }  else {
       // Extract the error message from the response if available
-      errorMessage = error.error.error?.message || `Error Code: ${error.status}\nMessage: ${error.error.message}`;
+      errorMessage = error.error.error?.message || "Server Down" ;
     }
 
      // Use throwError with a factory function
