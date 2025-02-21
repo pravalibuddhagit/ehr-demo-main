@@ -185,7 +185,7 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
         this.userService.deleteUser(customer._id).subscribe({
           next: () => {
             this.messageService.add({
-              severity: 'info',
+              severity: 'success',
               summary: 'Confirmed',
               detail: `${customer.first_name} deleted successfully`
             });
@@ -193,7 +193,7 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
           },
           error: (error) => {
             this.messageService.add({
-              severity: 'error',
+              severity: 'warn',
               summary: 'Error',
               detail: error.message,
             });

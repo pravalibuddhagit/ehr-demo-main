@@ -51,7 +51,7 @@ export class HeaderComponent {
       icon: 'pi pi-exclamation-circle',
       acceptButtonProps: {
         label: 'Confirm',
-        severity: 'contrast'
+        severity: 'success'
       },
       rejectButtonProps: {
         label: 'cancel',
@@ -61,14 +61,14 @@ export class HeaderComponent {
         outlined: true
       },
       accept: () => {
-        this.messageService.add({ severity: 'info', summary: 'Signing Out', detail: 'Redirecting to login...', life: 2000 });
+        this.messageService.add({ severity: 'success', summary: 'Signing Out', detail: 'Redirecting to login...', life: 2000 });
         localStorage.removeItem('authToken');
         setTimeout(() => {
           this.router.navigate(['/login']); // Navigate after confirmation
         }, 2000);
       },
       reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Cancelled', detail: 'Sign-out cancelled', life: 2000 });
+        this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'Sign-out cancelled', life: 2000 });
       }
     });
   }

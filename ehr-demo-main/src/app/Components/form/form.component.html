@@ -129,17 +129,7 @@
                     </span>
                 </label>
             </div>
-            @if (msg2()) {
-                <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
-                <p-message [life]="3000" severity="info">Cancelled</p-message>
-            </div>
-            }
-            
-            @if (msg()) {
-                <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
-                <p-message [life]="3000" severity="success">Successfully updated</p-message>
-            </div>
-            }
+           
             <div *ngIf="!isEditMode" class="flex items-center">
                 <input id="terms" type="checkbox" formControlName="agreeToTerms" class="w-4 h-4" 
                 
@@ -156,7 +146,17 @@
                 <button *ngIf="isEditMode" type="button" (click)="confirm1($event)"  class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
                   Update User
                 </button>
-
+                @if (msg2()) {
+                    <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
+                    <p-message [life]="3000" severity="warn">Cancelled</p-message>
+                </div>
+                }
+                
+                @if (msg()) {
+                    <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
+                    <p-message [life]="3000" severity="success">Successfully updated</p-message>
+                </div>
+                }
 
               
             </div>
