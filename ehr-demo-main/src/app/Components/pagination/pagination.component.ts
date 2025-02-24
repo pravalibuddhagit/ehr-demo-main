@@ -210,15 +210,5 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
     });
   }
 
-  clear(table: Table) {
-    console.log('clear called');
-    this.searchTerm = '';
-    this.stateFilter = '';
-    this.stateMatchMode = FilterMatchMode.CONTAINS;
-    this.countryFilter = '';
-    this.countryMatchMode = FilterMatchMode.CONTAINS;
-    this.currentPage = 1;
-    table.clear();
-    this.loadUsers();
-  }
+
 }

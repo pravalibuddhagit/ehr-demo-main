@@ -75,38 +75,50 @@
         
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                 <div>
+                    <label class="block mb-1 text-gray-700">Country</label>
+                    <select class="w-full p-2 border border-gray-300 rounded" formControlName="country" (change)="onCountryChange()">
+                        <option value="">Select Country</option>
+                        <option *ngFor="let country of countryList" [value]="country.name">{{ country.name }}</option>
+                    </select>
+                    <small *ngIf="userForm.get('country')?.errors?.['required'] && userForm.get('country')?.touched" class="text-red-500 block mt-1 p-error">Country is required.</small>
+                </div>
+                <div>
+                    <label class="block mb-1 text-gray-700">State</label>
+                   
+                    <select class="w-full p-2 border border-gray-300 rounded" formControlName="state" (change)="onStateChange()" [disabled]="stateList.length === 0">
+                        <option value="">Select State</option>
+                        <option *ngFor="let state of stateList" [value]="state.name">{{ state.name }}</option>
+                    </select>
+                    <small *ngIf="userForm.get('state')?.errors?.['required'] && userForm.get('state')?.touched" class="text-red-500 block mt-1 p-error">State is required.</small>
+                   
+                </div>
+
+                        
+          
+            
+
+            </div>
+        
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+
+            
+
+
+
+
+                <div>
                     <label class="block mb-1 text-gray-700">City</label>
-                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="city" required pattern="[A-Za-z\s]+" />
-                    
+                    <select class="w-full p-2 border border-gray-300 rounded" formControlName="city" [disabled]="cityList.length === 0">
+                        <option value="">Select City</option>
+                        <option *ngFor="let city of cityList" [value]="city">{{ city }}</option>
+                    </select>
                     <small *ngIf="userForm.get('city')?.errors?.['required'] && userForm.get('city')?.touched" class="text-red-500 block mt-1 p-error">City is required.</small>
-                    <small *ngIf="userForm.get('city')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">City should contain alphabets only.</small>
                 </div>
                 <div>
                     <label for="zipcode" class="block mb-1 text-gray-700">Zipcode</label>
                     <input type="text" pInputText class="w-full p-2 border border-gray-300 rounded" formControlName="zipcode" />
                     <small *ngIf="userForm.get('zipcode')?.errors?.['required'] && userForm.get('zipcode')?.touched" class="text-red-500 block mt-1 p-error">Zipcode is required.</small>
                     <small *ngIf="userForm.get('zipcode')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Enter a valid zipcode ,Must be either 5 or 9</small>
-                </div>
-            </div>
-        
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-
-                <div>
-                    <label class="block mb-1 text-gray-700">State</label>
-                    <input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="state" />
-                    <small *ngIf="userForm.get('state')?.errors?.['required'] && userForm.get('state')?.touched" class="text-red-500 block mt-1 p-error">State is required.</small>
-                    <small *ngIf="userForm.get('state')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">state should contain alphabets only.</small>
-                </div>
-
-                        
-          
-                <div>
-                    <label class="block mb-1 text-gray-700">Country</label>
-                    <select class="w-full p-2 border border-gray-300 rounded" formControlName="country">
-                        <option value="">Select Country</option>
-                        <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
-                    </select>
-                    <small *ngIf="userForm.get('country')?.errors?.['required'] && userForm.get('country')?.touched" class="text-red-500 block mt-1 p-error">Country is required.</small>
                 </div>
             </div>
         

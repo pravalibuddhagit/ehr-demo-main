@@ -31,12 +31,81 @@ export class FormComponent implements OnInit,OnChanges{
   visible: boolean = false; // Control the dialog visibility
 
   // ✅ List of countries
-  countries = [
-    "United States", "Canada", "United Kingdom", "India", "China", "Russia", "Germany",
-    "France", "Australia", "Japan", "Brazil", "South Africa", "Mexico", "Spain", "Italy",
-    "Netherlands", "Sweden", "Switzerland", "South Korea", "Singapore", "Argentina"
+  countryList = [
+    {
+      name: 'United States',
+      states: [
+        { name: 'California', cities: ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento', 'San Jose'] },
+        { name: 'Texas', cities: ['Houston', 'Dallas', 'Austin', 'San Antonio', 'Fort Worth'] },
+        { name: 'Florida', cities: ['Miami', 'Orlando', 'Tampa', 'Jacksonville', 'Tallahassee'] },
+        { name: 'New York', cities: ['New York City', 'Buffalo', 'Rochester', 'Albany', 'Syracuse'] },
+        { name: 'Illinois', cities: ['Chicago', 'Springfield', 'Naperville', 'Peoria', 'Rockford'] }
+      ]
+    },
+    {
+      name: 'China',
+      states: [
+        { name: 'Beijing', cities: ['Beijing', 'Tongzhou', 'Haidian', 'Chaoyang', 'Fengtai'] },
+        { name: 'Shanghai', cities: ['Shanghai', 'Pudong', 'Huangpu', 'Xuhui', 'Jingan'] },
+        { name: 'Guangdong', cities: ['Guangzhou', 'Shenzhen', 'Dongguan', 'Foshan', 'Zhuhai'] },
+        { name: 'Sichuan', cities: ['Chengdu', 'Mianyang', 'Leshan', 'Deyang', 'Yibin'] },
+        { name: 'Zhejiang', cities: ['Hangzhou', 'Ningbo', 'Wenzhou', 'Shaoxing', 'Jinhua'] }
+      ]
+    },
+    {
+      name: 'India',
+      states: [
+        { name: 'Andhra Pradesh', cities: ['Vizianagaram','  Vishakapatnam','Guntur','Krishna','Chittoor'] },
+        { name: 'Maharashtra', cities: ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad'] },
+        { name: 'Karnataka', cities: ['Bangalore', 'Mysore', 'Hubli', 'Mangalore', 'Belgaum'] },
+        { name: 'Tamil Nadu', cities: ['Chennai', 'Coimbatore', 'Madurai', 'Salem', 'Tiruchirappalli'] },
+        { name: 'Uttar Pradesh', cities: ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Allahabad'] },
+        { name: 'West Bengal', cities: ['Kolkata', 'Howrah', 'Durgapur', 'Siliguri', 'Asansol'] }
+      ]
+    },
+    {
+      name: 'Canada',
+      states: [
+        { name: 'Ontario', cities: ['Toronto', 'Ottawa', 'Mississauga', 'Hamilton', 'London'] },
+        { name: 'Quebec', cities: ['Montreal', 'Quebec City', 'Laval', 'Gatineau', 'Sherbrooke'] },
+        { name: 'British Columbia', cities: ['Vancouver', 'Victoria', 'Kelowna', 'Surrey', 'Burnaby'] },
+        { name: 'Alberta', cities: ['Calgary', 'Edmonton', 'Red Deer', 'Lethbridge', 'Medicine Hat'] },
+        { name: 'Manitoba', cities: ['Winnipeg', 'Brandon', 'Steinbach', 'Thompson', 'Portage la Prairie'] }
+      ]
+    },
+    {
+      name: 'United Kingdom',
+      states: [
+        { name: 'England', cities: ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds'] },
+        { name: 'Scotland', cities: ['Edinburgh', 'Glasgow', 'Aberdeen', 'Dundee', 'Inverness'] },
+        { name: 'Wales', cities: ['Cardiff', 'Swansea', 'Newport', 'Bangor', 'Wrexham'] },
+        { name: 'Northern Ireland', cities: ['Belfast', 'Derry', 'Lisburn', 'Newry', 'Armagh'] },
+        { name: 'Cornwall', cities: ['Truro', 'Falmouth', 'Penzance', 'St Austell', 'Newquay'] }
+      ]
+    },
+    {
+      name: 'Germany',
+      states: [
+        { name: 'Bavaria', cities: ['Munich', 'Nuremberg', 'Augsburg', 'Regensburg', 'Würzburg'] },
+        { name: 'Berlin', cities: ['Berlin', 'Charlottenburg', 'Friedrichshain', 'Kreuzberg', 'Prenzlauer Berg'] },
+        { name: 'Hesse', cities: ['Frankfurt', 'Wiesbaden', 'Darmstadt', 'Offenbach', 'Kassel'] },
+        { name: 'North Rhine-Westphalia', cities: ['Cologne', 'Düsseldorf', 'Dortmund', 'Essen', 'Bonn'] },
+        { name: 'Saxony', cities: ['Dresden', 'Leipzig', 'Chemnitz', 'Zwickau', 'Görlitz'] }
+      ]
+    },
+    {
+      name: 'France',
+      states: [
+        { name: 'Île-de-France', cities: ['Paris', 'Versailles', 'Boulogne-Billancourt', 'Saint-Denis', 'Nanterre'] },
+        { name: 'Provence-Alpes-Côte d\'Azur', cities: ['Marseille', 'Nice', 'Toulon', 'Avignon', 'Aix-en-Provence'] },
+        { name: 'Nouvelle-Aquitaine', cities: ['Bordeaux', 'Limoges', 'Pau', 'Bayonne', 'Poitiers'] },
+        { name: 'Auvergne-Rhône-Alpes', cities: ['Lyon', 'Grenoble', 'Saint-Étienne', 'Clermont-Ferrand', 'Annecy'] },
+        { name: 'Occitanie', cities: ['Toulouse', 'Montpellier', 'Perpignan', 'Béziers', 'Nîmes'] }
+      ]
+    }
   ];
- 
+  stateList: any[] = [];
+  cityList: any[] = [];
  // constructor(private fb: FormBuilder)
  constructor(private fb: FormBuilder,
   private messageService: MessageService,
@@ -53,8 +122,8 @@ this.userForm = this.fb.group({
       mobile_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       address_line_1: ['', [Validators.required, Validators.maxLength(40)]],
       address_line_2: ['', [Validators.maxLength(40)]],
-      city: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
-      state: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      city: ['', [Validators.required]],
+      state: ['', [Validators.required]],
       zipcode: ['', [Validators.required, Validators.pattern(/^\d{5}(\d{4})?$/)]],
 
       country: ['United States', Validators.required],
@@ -134,23 +203,43 @@ this.userForm = this.fb.group({
 
  
   ngOnInit(): void {
-   
+ 
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingUser'] && this.editingUser) {
+      console.log("hello")
+      console.log(this.editingUser)
       const formattedDob = this.editingUser.dob ? new Date(this.editingUser.dob).toISOString().split('T')[0] : '';
       this.isEditMode = true;
       this.userForm.patchValue({
         ...this.editingUser,
         dob: formattedDob  // Ensure the date is properly formatted
       });
+      this.onCountryChange();
+      this.onStateChange();
     
      
     }else {
       this.isEditMode = false;
       this.userForm.reset(); // Reset form if editingUser is null or undefined
     }
+  }
+
+  onCountryChange() {
+    const selectedCountry = this.userForm.value.country;
+    const country = this.countryList.find(c => c.name === selectedCountry);
+    this.stateList = country ? country.states : [];
+    this.cityList = [];
+
+    
+  }
+
+  onStateChange() {
+    const selectedState = this.userForm.value.state;
+    const state = this.stateList.find(s => s.name === selectedState);
+    this.cityList = state ? state.cities : [];
+  
   }
 
   // Form submission method
