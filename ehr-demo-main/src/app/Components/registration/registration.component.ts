@@ -29,14 +29,14 @@ export class RegistrationComponent {
     private AuthService: AuthService
   ) {
     this.registerForm = this.fb.group({
-      first_name: ['', [Validators.required, Validators.maxLength(35), Validators.pattern(/^[A-Za-z\s]+$/)]],
+      first_name: ['', [Validators.required, Validators.maxLength(35), Validators.pattern(/^(?=.*[A-Za-z])[A-Za-z\s]+$/)]],
       last_name: ['', [Validators.required, Validators.maxLength(35), Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
         [
           Validators.required,
-         Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{3,8}$/),
+         Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{3,8}$/),
         ],
       ],
       confirm_password: ['', [Validators.required]],

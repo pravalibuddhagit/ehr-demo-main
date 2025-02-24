@@ -116,7 +116,7 @@ export class FormComponent implements OnInit,OnChanges{
 ) {
 // Initialize the form with validation
 this.userForm = this.fb.group({
-      first_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      first_name: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])[A-Za-z\s]+$/)]],
       last_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email]],
       mobile_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],

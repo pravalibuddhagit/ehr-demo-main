@@ -27,7 +27,7 @@ exports.registerUser = async (req, res) => {
       });
     }
 
-     if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{1,8}$/.test(password)) {
+     if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{3,8}$/.test(password)) {
       return res.status(400).json({ 
         success: false, 
         data: null,                                                                     
