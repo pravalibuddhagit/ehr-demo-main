@@ -113,9 +113,9 @@ export class PaginationComponent  {
       error: (error) => {
         if(error.message==="Invalid token"){
           this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail:'Session has expired,Login again!',
+            severity: 'warn',
+            summary: 'Timeout',
+            detail:'Session has expired, Login again !',
           });
           setTimeout(() => {
             this.router.navigate(['/login']); // Navigate after confirmation
