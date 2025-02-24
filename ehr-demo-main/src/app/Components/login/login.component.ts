@@ -19,19 +19,6 @@ import { AuthService } from '../../services/auth/auth.service';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  // Dummy users for testing
- /* private dummyUsers = [
-    { email: 'user1@example.com', password: 'Password123!' },
-    { email: 'user2@example.com', password: 'Password456!' },
-    { email: 'user3@example.com', password: 'Password789!' },
-
-    {
-  "value": "",
-  "valid": false,
-  "errors": { "required": true },             {"email":"true""}
-  "touched": false
-}
-  ];*/
 
   constructor(
     private fb: FormBuilder,
@@ -98,28 +85,6 @@ export class LoginComponent implements OnInit {
         });
       },
     });
-    // Simulate API call for login (replace with actual API call)
- /*  const user = this.dummyUsers.find(
-      (u) => u.email.toLowerCase() === email && u.password === password
-    );
 
-    if (user) {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Login successful! Redirecting...',
-      });
-
-      // Redirect to dashboard or home page after 2 seconds
-      setTimeout(() => {
-        this.router.navigate(['/dashboard']);
-      }, 2000);
-    } else {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Incorrect email or password.',
-      });
-    }*/
   }
 }

@@ -84,34 +84,6 @@ export class RegistrationComponent {
         });
       }
     });
-   /* // Simulate email uniqueness check (replace with actual API call)
-    const isEmailUnique = this.checkEmailUniqueness(this.registerForm.value.email);
-    if (!isEmailUnique) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Email is already registered.',
-      });
-      return;
-    }
 
-    // Simulate registration success (replace with actual API call)
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Registration successful! Redirecting to login...',
-    });
-
-    // Redirect to login after 2 seconds
-    setTimeout(() => {
-      this.router.navigate(['/login']);
-    }, 2000);
-  }
-
-  // Simulate email uniqueness check (replace with actual API call)
-  checkEmailUniqueness(email: string): boolean {
-    // Replace this with an actual API call to check if the email is unique
-    const registeredEmails = ['test@example.com', 'user@example.com'];
-    return !registeredEmails.includes(email);*/
   }
 }

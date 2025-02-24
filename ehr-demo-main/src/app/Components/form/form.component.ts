@@ -181,13 +181,7 @@ this.userForm = this.fb.group({
             }
         },
         reject: () => {
-            // this.messageService.add({
-            //     severity: 'error',
-            //     summary: 'Cancelled',
-            //     detail: 'Details are not Updated',
-            //     life: 1000,
-            // });
-
+          
             this.msg2.set(true);
             setTimeout(()=>{
               this.msg2.set(false);

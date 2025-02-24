@@ -7,11 +7,11 @@ import { TableModule } from 'primeng/table';
 import { MenuModule } from 'primeng/menu';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelect, MultiSelectModule } from 'primeng/multiselect';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
-import { NgClass } from '@angular/common';
+
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { CardModule } from 'primeng/card';
@@ -22,16 +22,10 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { ListboxModule } from 'primeng/listbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DrawerModule } from 'primeng/drawer';
-import { LoginComponent } from "./Components/login/login.component";
-import { CommonModule } from '@angular/common';
+
 
 import { Router, RouterModule } from '@angular/router';
-import { SidebarComponent } from "./Components/sidebar/sidebar.component";
-import { HeaderComponent } from "./Components/header/header.component";
 
-import { UserCreationComponent } from './Components/user-creation/user-creation.component';
-import { PaginationComponent } from "./Components/pagination/pagination.component";
-import { MergedAppComponent } from "./Components/merged-app/merged-app.component";
 
 
 @Component({
@@ -45,76 +39,7 @@ import { MergedAppComponent } from "./Components/merged-app/merged-app.component
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
-  title = 'ehr-demo';
-  // items = [
-  //   {
-  //     label: 'Options',
-  //     items: [
-  //       {
-  //         label: 'Refresh',
-  //         icon: 'pi pi-refresh'
-  //       },
-  //       {
-  //         label: 'Export',
-  //         icon: 'pi pi-upload'
-  //       }
-  //     ]
-  //   }
-  // ];
-  // products = [
-  //   {
-  //     code: "f230fh0g3",
-  //     name: "Bamboo Watch",
-  //     category: "Accessories",
-  //     quantity: 10
-  //   },
-  //   {
-  //     code: "nvklal433",
-  //     name: "Black Watch",
-  //     category: "Accessories",
-  //     quantity: 61
-  //   },
-  //   {
-  //     code: "zz21cz3c1",
-  //     name: "Blue Band",
-  //     category: "Fitness",
-  //     quantity: 1
-  //   },
-  //   {
-  //     code: "244wgerg2",
-  //     name: "Blue T-Shirt",
-  //     category: "Clothing",
-  //     quantity: 25
-  //   },
-  //   {
-  //     code: "h456wer53",
-  //     name: "Bracelet",
-  //     category: "Accessories",
-  //     quantity: 73
-  //   },
-  // ]
-  // customers = [
-  //   {
-  //     name: "customers",
-  //     country: "US",
-  //     representative: "TEST",
-  //     status: true
-  //   }
-  // ];
-  // representatives = [{ label: "edvak", name: "edvak" }];
-  // value = "";
-  // ingredient: any = '';
-  // visible = false
-  constructor(private primeng: PrimeNG,private router: Router) { }
+export class AppComponent {
 
-  ngOnInit(): void {
-    this.primeng.ripple.set(true);
-  }
-
-  toggleDarkMode() {
-    const element = document.querySelector('html');
-    element && element.classList.toggle('dark-theme');
-  }
  
 }
