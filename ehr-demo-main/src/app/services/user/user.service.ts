@@ -122,8 +122,14 @@ export class UserService {
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      errorMessage = error.error.error?.message || "Server Error";
+      console.log( error.error.error?.message )
+       errorMessage = error.error.error?.message || "Server Error";
+      
     }
     return throwError(() => new Error(errorMessage));
   }
+
+  
+  
+  
 }

@@ -20,6 +20,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { FilterMatchMode,FilterMetadata } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { FormComponent } from '../form/form.component';
+import { Router,RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-pagination',
@@ -50,7 +51,7 @@ import { FormComponent } from '../form/form.component';
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss'
 })
-export class PaginationComponent implements OnInit {
+export class PaginationComponent  {
   customers: any[] = [];
   loading: boolean = false;
   selectedCustomer: any = null;
@@ -76,13 +77,14 @@ export class PaginationComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private userService: UserService,
     private messageService: MessageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router:Router
   ) {}
 
-  ngOnInit() {
-    console.log('ngOnInit called');
-    this.loadUsers();
-  }
+  // ngOnInit() {
+  //   console.log('ngOnInit called');
+  //   this.loadUsers();
+  // }
 
   loadUsers() {
     //this.loading = true;
@@ -109,12 +111,22 @@ export class PaginationComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        this.messageService.add({
+        if(error.message==="Invalid token"){
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:'Session has expired,Login again!',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/login']); // Navigate after confirmation
+          }, 2000);
+        }
+        else{this.messageService.add({
           severity: 'error',
           summary: 'Error',
           detail: error.message,
         });
-        this.loading = false;
+      }
       }
     });
   }
@@ -189,9 +201,11 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
               summary: 'Confirmed',
               detail: `${customer.first_name} deleted successfully`
             });
+            //this.loading=true;
             this.loadUsers();
           },
           error: (error) => {
+            
             this.messageService.add({
               severity: 'warn',
               summary: 'Error',
