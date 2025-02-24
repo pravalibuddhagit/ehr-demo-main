@@ -4,7 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { CommonModule } from '@angular/common';
 import { Drawer, DrawerModule } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
@@ -12,7 +12,7 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
 
 @Component({
   selector: 'app-header',
-  imports: [MenuModule, AvatarModule, CommonModule, DrawerModule, ButtonModule, RouterLink, ConfirmDialog, ToastModule,OverlayBadgeModule],
+  imports: [RouterModule,MenuModule, AvatarModule, CommonModule, DrawerModule, ButtonModule, RouterLink, ConfirmDialog, ToastModule,OverlayBadgeModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   providers: [ConfirmationService, MessageService] // Add services

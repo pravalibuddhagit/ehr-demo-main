@@ -25,18 +25,31 @@
         </div>
     </ng-template>
     <p>
-        <a routerLink="/welcome" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
-            <i class="pi pi-home"></i>
-            Home
-        </a>
-        <a routerLink="/welcome/dashboard" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4">
-            <i class="pi pi-users"></i>
-           View Users
-        </a>
-        <a routerLink="/welcome/user-creation" class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4">
-            <i class="pi pi-user-plus"></i>
-            User-Creation
-        </a>
+        <a 
+        routerLink="/welcome" 
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4"
+    >
+        <i class="pi pi-home"></i>
+        Home
+    </a>
+    <a 
+        routerLink="/welcome/dashboard" 
+        routerLinkActive="active-link"
+        class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4"
+    >
+        <i class="pi pi-users"></i>
+        View Users
+    </a>
+    <a 
+        routerLink="/welcome/user-creation" 
+        routerLinkActive="active-link"
+        class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4"
+    >
+        <i class="pi pi-user-plus"></i>
+        User-Creation
+    </a>
         
        
 

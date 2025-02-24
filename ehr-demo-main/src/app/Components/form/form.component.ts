@@ -172,7 +172,7 @@ this.userForm = this.fb.group({
               setTimeout(() => {
                 this.dataEvent.emit(false);
               }, 2000);  // 2000 milliseconds = 2 seconds
-              
+              this.msg2.set(false);
               this.msg.set(true);
             setTimeout(()=>{
               this.msg.set(false);
