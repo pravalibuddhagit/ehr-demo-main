@@ -14,6 +14,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { CommonModule } from '@angular/common';
 import { InputMask } from 'primeng/inputmask';
 import {  ConfirmationService, MessageService } from 'primeng/api';
+import { DatePickerModule } from 'primeng/datepicker';
 @Component({
   selector: 'app-patient-registration',
   standalone: true,
@@ -25,7 +26,7 @@ import {  ConfirmationService, MessageService } from 'primeng/api';
     ButtonModule, 
     InputTextModule, 
     ToastModule, 
-    CalendarModule, 
+    DatePickerModule, 
     RadioButtonModule, 
     SelectButtonModule, 
     DropdownModule,

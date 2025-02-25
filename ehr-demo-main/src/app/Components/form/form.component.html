@@ -71,10 +71,20 @@
                     <small *ngIf="userForm.get('gender')?.errors?.['required'] && userForm.get('gender')?.touched" class="text-red-500 block mt-1 p-error">Gender is required.</small>
                 </div>
                 <div>
-                    <label class="block mb-1 text-gray-700">Date of Birth<span style="color: red;"> *</span></label>
-                    <input type="date" class="w-full p-2 border border-gray-300 rounded" formControlName="dob" [max]="maxDate"/>
-                    <small *ngIf="userForm.get('dob')?.errors?.['required'] && userForm.get('dob')?.touched" class="text-red-500 block mt-1 p-error">Date of Birth is required.</small>
+                    <label class="block mb-1 text-gray-700">
+                        Date of Birth<span class="text-red-500"> *</span>
+                    </label>
+                    <p-datePicker 
+                        formControlName="dob"
+                        [showTime]="false"  
+                        dateFormat="mm/dd/yy"  
+                        [showIcon]="true"
+                        class="w-full"
+                        inputStyleClass="w-full p-2 border border-gray-300 rounded"
+                    ></p-datePicker>
                 </div>
+                
+                  
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
