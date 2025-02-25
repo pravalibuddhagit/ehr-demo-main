@@ -63,19 +63,35 @@ export class PatientRegistrationComponent {
 
     // Confirmation Dialog
     this.confirmationService.confirm({
-      message: 'Are you sure you want to register this patient?',
+      message: 'Please confirm to proceed',
       header: 'Confirm Registration',
-      icon: 'pi pi-exclamation-triangle',
+      icon: 'pi pi-exclamation-circle',
+      acceptButtonProps: {
+        label: 'Confirm',
+        severity: 'primary'
+      },
+      rejectButtonProps: {
+        label: 'cancel',
+        severity: 'contrast',
+
+       
+        outlined: true},
       accept: () => {
         // Success toast message
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Patient registered successfully!',
+          life: 2000
         });
 
         // Reset form after successful submission
         this.patientForm.reset();
+      },
+
+      reject: () => {
+        this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'Patient registration cancelled', life: 2000 });
       }
+
     });
   }}
