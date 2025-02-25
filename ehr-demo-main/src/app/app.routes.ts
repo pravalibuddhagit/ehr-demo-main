@@ -9,6 +9,7 @@ import { MainLayoutComponent } from './Components/main-layout/main-layout.compon
 import { PaginationComponent } from './Components/pagination/pagination.component';
 import { authGuard } from './Components/guards/auth.guard';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
+import { PatientRegistrationComponent } from './Components/patient-registration/patient-registration.component';
 
 export const routes: Routes = [
       {
@@ -37,6 +38,8 @@ export const routes: Routes = [
           { path: '', component: WelcomeComponent },
           { path: 'dashboard', component: PaginationComponent },
           { path: 'user-creation', component: UserCreationComponent },
+          {path: 'patient-creation', component:PatientRegistrationComponent}
+        
         ],
       },
       { path: '**', redirectTo: 'login' }

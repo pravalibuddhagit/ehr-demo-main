@@ -1,0 +1,43 @@
+<p-table #dt [value]="patients" 
+         [paginator]="true" [rows]="pageSize"
+         [totalRecords]="totalRecords" [lazy]="true"
+         [loading]="loading"
+         [rowsPerPageOptions]="[5, 10, 20]"
+         (onLazyLoad)="onLazyLoad($event)"
+         sortMode="multiple">
+
+    <ng-template pTemplate="caption">
+        <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Patient List</h3>
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <!-- <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search patients..."> -->
+            </span>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="first_name">First Name <p-sortIcon field="first_name"></p-sortIcon></th>
+            <th pSortableColumn="last_name">Last Name <p-sortIcon field="last_name"></p-sortIcon></th>
+            <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+            <th pSortableColumn="mobile_phone">Mobile <p-sortIcon field="mobile_phone"></p-sortIcon></th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-patient>
+        <tr>
+            <td>{{ patient.first_name }}</td>
+            <td>{{ patient.last_name }}</td>
+            <td>{{ patient.email }}</td>
+            <td>{{ patient.mobile_phone }}</td>
+            <td>
+                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-info" (click)="editPatient(patient)"></button>
+                <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deletePatient(patient)"></button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-confirmDialog></p-confirmDialog>

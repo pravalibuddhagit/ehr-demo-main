@@ -1,0 +1,91 @@
+<p-toast></p-toast>
+ 
+<form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+<div class=" flex items-center justify-center">
+<div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-2xl xl:p-0 ">
+<div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl mb-8">Patient Registration</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+<div>
+<label for="first_name" class="block mb-1 text-gray-700 ">First Name<span style="color: red;"> *</span></label>
+<input type="text" pInputText formControlName="first_name" class="w-full p-2 border border-gray-300 rounded" />
+<small *ngIf="patientForm.get('first_name')?.errors?.['required'] && patientForm.get('first_name')?.touched" class="text-red-500 block mt-1 p-error">First Name is required.</small>
+<small *ngIf="patientForm.get('first_name')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">First Name should contain alphabets only.</small>
+</div>
+<div>
+<label for="last_name" class="block mb-1 text-gray-700">Last Name<span style="color: red;"> *</span></label>
+<input type="text" pInputText formControlName="last_name" class="w-full p-2 border border-gray-300 rounded" />
+<small *ngIf="patientForm.get('last_name')?.errors?.['required'] && patientForm.get('last_name')?.touched" class="text-red-500 block mt-1 p-error">Last Name is required.</small>
+<small *ngIf="patientForm.get('last_name')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Last Name should contain alphabets only.</small>
+</div>
+</div>
+ 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+<div>
+<label for="email" class="block mb-1 text-gray-700">Email<span style="color: red;"> *</span></label>
+<input type="email" pInputText formControlName="email"
+             class="w-full p-2 border border-gray-300 rounded" />
+<small *ngIf="patientForm.get('email')?.errors?.['required'] && patientForm.get('email')?.touched" class="text-red-500 block mt-1 p-error">Email is required.</small>
+<small *ngIf="patientForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1 p-error">Enter a valid email.</small>
+</div>
+<div>
+    <label for="mobile_phone" class="block mb-1 text-gray-700">
+        Mobile Phone<span style="color: red;"> *</span>
+    </label>
+    <p-inputmask 
+        mask="(999) 999-9999" 
+        formControlName="mobile_phone" 
+        placeholder="(999) 999-9999" 
+                                
+        autoClear="false"
+        [slotChar]="' '"
+    ></p-inputmask>
+    
+    <small *ngIf="patientForm.get('mobile_phone')?.errors?.['required'] && patientForm.get('mobile_phone')?.touched" 
+        class="text-red-500 block mt-1 p-error">
+        Mobile Phone is required.
+    </small>
+    <small *ngIf="patientForm.get('mobile_phone')?.errors?.['pattern']" 
+        class="text-red-500 block mt-1 p-error">
+        Enter a valid 10-digit number.
+    </small>
+</div>
+</div>
+ 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+<div>
+<label class="block mb-1 text-gray-700">Gender<span class="text-red-500"> *</span></label>
+<div class="flex space-x-4">
+<label class="flex items-center space-x-2">
+<input type="radio" formControlName="gender" value="male" class="w-4 h-4" /> <span>Male</span>
+</label>
+<label class="flex items-center space-x-2">
+<input type="radio" formControlName="gender" value="female" class="w-4 h-4" /> <span>Female</span>
+</label>
+<label class="flex items-center space-x-2">
+<input type="radio" formControlName="gender" value="other" class="w-4 h-4" /> <span>Other</span>
+</label>
+</div>
+</div>
+<div>
+<label class="block mb-1 text-gray-700">Date of Birth<span class="text-red-500"> *</span></label>
+<input type="date" class="w-full p-2 border border-gray-300 rounded" formControlName="dob" />
+</div>
+</div>
+<div>
+<label class="block mb-1 text-gray-700">Address Line<span style="color: red;"> *</span></label>
+<input type="text" class="w-full p-2 border border-gray-300 rounded" formControlName="address_line_1" required />
+<small *ngIf="patientForm.get('address_line_1')?.errors?.['required'] && patientForm.get('address_line_1')?.touched" class="text-red-500 block mt-1 p-error">Address Line 1 is required.</small>
+</div>
+ 
+    <div class="text-center mt-4">
+        <button type="submit" class="w-full p-2 bg-blue-500 text-white rounded  disabled:bg-blue-300" [disabled]="patientForm.invalid">
+            Submit
+        </button>
+ 
+    </div>
+</div>
+</div>
+</div>
+</form>
+<p-confirmdialog></p-confirmdialog>
