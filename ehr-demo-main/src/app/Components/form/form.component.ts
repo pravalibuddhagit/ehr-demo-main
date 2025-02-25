@@ -174,14 +174,7 @@ this.userForm = this.fb.group({
               
             
               console.log(this.visible);
-              setTimeout(() => {
-                this.dataEvent.emit(false);
-              }, 2000);  // 2000 milliseconds = 2 seconds
-              this.messageService.add({
-                severity: 'success',
-                summary: 'User Updated',
-                detail: `${this.editingUser.first_name} details updated Successfully`
-              });
+              
             }
         },
         reject: () => {
@@ -271,6 +264,15 @@ this.userForm = this.fb.group({
         next: (res) => {
          
          console.log("user has updated")
+
+         setTimeout(() => {
+          this.dataEvent.emit(false);
+        }, 2000);  // 2000 milliseconds = 2 seconds
+        this.messageService.add({
+          severity: 'success',
+          summary: 'User Updated',
+          detail: `${this.editingUser.first_name} details updated Successfully`
+        });
   
         },
         error: (error) => {
