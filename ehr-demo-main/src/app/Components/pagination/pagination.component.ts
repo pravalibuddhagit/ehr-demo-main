@@ -209,7 +209,7 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
           error: (error) => {
             
             this.messageService.add({
-              severity: 'warn',
+              severity: 'error',
               summary: 'Error',
               detail: error.message,
             });
@@ -218,9 +218,9 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
       },
       reject: () => {
         this.messageService.add({
-          severity: 'error',
-          summary: 'Rejected',
-          detail: 'You have rejected'
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Deletion Cancelled'
         });
       },
     });

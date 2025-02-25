@@ -184,7 +184,7 @@
                 <button *ngIf="isEditMode" type="button" (click)="confirm1($event)"  class="w-full p-2 bg-blue-500 text-white rounded  disabled:bg-blue-300" [disabled]="userForm.invalid">
                   Update User
                 </button>
-                @if (msg2()) {
+                <!-- @if (msg2()) {
                     <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
                     <p-message [life]="3000" severity="warn">Cancelled</p-message>
                 </div>
@@ -194,10 +194,10 @@
                     <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
                     <p-message [life]="3000" severity="success">Successfully updated</p-message>
                 </div>
-                }
+                } -->
 
               
             </div>
         </form>
        
-        <p-confirmdialog />
+        <p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>

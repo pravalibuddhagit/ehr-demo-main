@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 
-<form [formGroup]="appointmentForm" (ngSubmit)="confirmSubmit()">
+<form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
   <div class="flex items-center justify-center">
     <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-2xl xl:p-0">
       <div class="p-10 space-y-4 md:space-y-6 sm:p-8">
@@ -8,7 +8,7 @@
           Appointment Creation
         </h1>
 
-        <!-- Doctor Name -->
+        <!-- Doctor Name
         <div>
           <label for="doctor_name" class="block mb-1 text-gray-700">Doctor Name<span style="color: red;"> *</span></label>
           <select formControlName="doctor_name" class="w-full p-2 border border-gray-300 rounded">
@@ -17,9 +17,40 @@
             <option value="dr_jones">Dr. Jones</option>
             <option value="dr_wilson">Dr. Wilson</option>
           </select>
-        </div>
+        </div> -->
 
-        <!-- Patient Name -->
+
+        <div>
+          <label for="doctor_name" class="block mb-1 text-gray-700">Doctor Name<span style="color: red;"> *</span></label>
+          <p-select 
+          [options]="doctors" 
+          [(ngModel)]="selectedDoctor"
+          formControlName="doctor_name" 
+          optionLabel="name" 
+          [filter]="true" 
+          filterBy="name" 
+          [showClear]="true" 
+          placeholder="Select a Doctor" 
+          class="w-full md:w-100">
+          
+          <ng-template #selectedItem let-selectedOption>
+            <div class="flex flex-col gap-1">
+              <div>{{ selectedOption.name }}</div>
+              <div class="text-gray-500 text-sm">{{ selectedOption.speciality }}</div>
+            </div>
+          </ng-template>
+      
+          <ng-template let-doctor #item>
+            <div class="flex flex-col gap-1">
+              <div>{{ doctor.name }}</div>
+              <div class="text-gray-500 text-sm">{{ doctor.speciality }}</div>
+            </div>
+          </ng-template>
+      
+        </p-select>
+      </div>
+
+        <!-- Patient Name
         <div>
           <label for="patient_name" class="block mb-1 text-gray-700">Patient Name<span style="color: red;"> *</span></label>
           <select formControlName="patient_name" class="w-full p-2 border border-gray-300 rounded">
@@ -28,7 +59,39 @@
             <option value="jane_smith">Jane Smith</option>
             <option value="bob_johnson">Bob Johnson</option>
           </select>
-        </div>
+        </div> -->
+
+
+        <div>
+          <label for="patient_name" class="block mb-1 text-gray-700">Patient Name<span style="color: red;"> *</span></label>
+          <p-select 
+          [options]="patients" 
+          [(ngModel)]="selectedpatient"
+          formControlName="patient_name" 
+          optionLabel="name" 
+          [filter]="true" 
+          filterBy="name" 
+          [showClear]="true" 
+          placeholder="Select a Patient" 
+          class="w-full md:w-100">
+          
+          <ng-template #selectedItem let-selectedOption>
+            <div class="flex flex-col gap-1">
+              <div>{{ selectedOption.name }}</div>
+              <div class="text-gray-500 text-sm">{{ selectedOption.email }}</div>
+
+            </div>
+          </ng-template>
+      
+          <ng-template let-patient #item>
+            <div class="flex flex-col gap-1">
+              <div>{{ patient.name }}</div>
+              <div class="text-gray-500 text-sm">{{ patient.email }}</div>
+            </div>
+          </ng-template>
+      
+        </p-select>
+      </div>
 
         <!-- Reason -->
         <div>
@@ -42,7 +105,7 @@
         </div>
 
         <!-- Date & Time -->
-        <div>
+        <div  >
           <label for="appointment_datetime" class="block mb-1 text-gray-700">Date & Time<span style="color: red;"> *</span></label>
           <p-calendar 
             formControlName="appointment_datetime"
@@ -70,4 +133,4 @@
   </div>
 </form>
 
-<p-confirmdialog></p-confirmdialog>
+<p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>

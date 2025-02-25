@@ -159,7 +159,7 @@ this.userForm = this.fb.group({
             outlined: true,
         },
         acceptButtonProps: {
-            label: 'Save',
+            label: 'Confirm',
         },
         accept: () => {
            
@@ -177,27 +177,24 @@ this.userForm = this.fb.group({
               setTimeout(() => {
                 this.dataEvent.emit(false);
               }, 2000);  // 2000 milliseconds = 2 seconds
-              this.msg2.set(false);
-              this.msg.set(true);
-            setTimeout(()=>{
-              this.msg.set(false);
-            },3500);
-              
+              this.messageService.add({
+                severity: 'success',
+                summary: 'User Updated',
+                detail: `${this.editingUser.first_name} details updated Successfully`
+              });
             }
         },
         reject: () => {
           
-            this.msg2.set(true);
-            setTimeout(()=>{
-              this.msg2.set(false);
-            },3500);
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Cancelled',
+            detail: 'User Details not updated'
+          });
          
         },
     });
   }
-
-  msg=signal(false);
- msg2=signal(false);
 
 
  

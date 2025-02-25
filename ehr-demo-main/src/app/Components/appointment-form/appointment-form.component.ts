@@ -11,6 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { SelectModule } from 'primeng/select';
 
 
 @Component({
@@ -30,7 +31,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     DropdownModule,          // Required for dropdown <select>
     InputTextModule,         // Required for input fields
     ButtonModule ,
-    RouterModule         // Required for buttons
+    RouterModule ,        // Required for buttons,
+    SelectModule
   ]
 })
 export class AppointmentFormComponent {
@@ -52,31 +54,46 @@ export class AppointmentFormComponent {
   }
 
   // Confirm before submitting the form
-  confirmSubmit() {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to submit this appointment?',
-      header: 'Confirm Submission',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.onSubmit();
-      }
-    });
-  }
+
+
 
   // Handle form submission
   onSubmit(): void {
     if (this.appointmentForm.valid) {
       console.log('Form Submitted', this.appointmentForm.value);
 
-      // Success message
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Appointment Created',
-        detail: 'Your appointment has been successfully scheduled!'
+      this.confirmationService.confirm({
+        message: 'Please confirm to proceed',
+        header: 'Confirm Registration',
+        icon: 'pi pi-exclamation-circle',
+        acceptButtonProps: {
+          label: 'Confirm',
+          severity: 'primary'
+        },
+        rejectButtonProps: {
+          label: 'cancel',
+          severity: 'contrast',
+  
+         
+          outlined: true},
+        accept: () => {
+          // Success toast message
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Appointment created successfully!',
+            life: 2000
+          });
+  
+          // Reset form after successful submission
+          this.appointmentForm.reset();
+        },
+  
+        reject: () => {
+          this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'Appointment Booking cancelled', life: 2000 });
+        }
+  
       });
-
-      // Reset form after submission
-      this.appointmentForm.reset();
     } else {
       // Error message
       this.messageService.add({
@@ -86,4 +103,38 @@ export class AppointmentFormComponent {
       });
     }
   }
+
+
+  doctors: any[] | undefined;
+
+  selectedDoctor: any = null;
+
+  patients: any[] | undefined;
+
+  selectedpatient: any = null;
+
+  ngOnInit() {
+    this.doctors = [
+      { name: "Dr. Smith", value: "dr_smith", speciality: "Cardiologist" },
+      { name: "Dr. Jones", value: "dr_jones", speciality: "Dermatologist" },
+      { name: "Dr. Wilson", value: "dr_wilson", speciality: "Neurologist" }
+    ];
+  
+
+    this.patients = [
+      { name: "Viraj Patel", value: "patient_001", email: "viraj.patel@example.com" },
+      { name: "Sophia Jones", value: "patient_002", email: "sophia.jones@example.com" },
+      { name: "Parthiv Mehta", value: "patient_003", email: "parthiv.mehta@example.com" },
+      { name: "Aisha Khan", value: "patient_004", email: "aisha.khan@example.com" },
+      { name: "Liam Scott", value: "patient_005", email: "liam.scott@example.com" }
+    ];
+
+  }
+
+
+
+
+
+
+
 }
