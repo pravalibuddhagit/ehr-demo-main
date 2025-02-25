@@ -29,20 +29,6 @@ export class UserService {
       );
   }
 
-  getAllUsers(): Observable<User[]> {
-   
-    return this.http.get<{ success: boolean; data: any; error?: { message: string } }>(this.apiUrl, { headers: this.getHeaders() })
-      .pipe(
-        map(response => {
-          if (response.success) {
-            return response.data;
-          } else {
-            return throwError(() => new Error(response.error?.message || 'User fetching failed'));
-          }
-        }),
-        catchError(this.handleError)
-      );
-  }
 
   getAllUsers2(
     page: number,
@@ -69,10 +55,17 @@ export class UserService {
 
     console.log('API params:', params.toString());
     
-    return this.http.get<any>(`${this.apiUrl}/pusers`, { 
+    return this.http.get<{ success: boolean; data: any; error?: { message: string } }>(`${this.apiUrl}/pusers`, { 
       headers: this.getHeaders(),
       params: params 
     }).pipe(
+      map(response => {
+        if (response.success) {
+          return response.data;
+        } else {
+          return throwError(() => new Error(response.error?.message || 'User fetching failed'));
+        }
+      }),
       catchError(this.handleError)
     );
 }
@@ -107,6 +100,22 @@ export class UserService {
     )
 
   }
+   
+  getUserById(id: string) : Observable<any>{
+    return this.http.get<{ success: boolean; data: any; error?: { message: string } }>(`${this.apiUrl}/${id}`,{headers :  this.getHeaders() })
+    .pipe(
+      map(response =>{
+        if(response.success){
+          return response.data;
+        }else{
+          return  throwError(() => new Error(response.error?.message || "User details can't be fetched"));
+        }
+      }),
+      catchError(this.handleError)
+    )
+
+  }
+
   
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('authToken');

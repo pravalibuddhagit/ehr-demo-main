@@ -173,8 +173,25 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
 
 
   onEdit(customer: any) {
-    this.selectedCustomer = { ...customer };
-    this.visible = true;
+    this.userService.getUserById(customer._id).subscribe({
+      next: (response) => {
+        this.selectedCustomer = response;
+        // console.log("data reciever from ")
+        // console.log(this.selectedCustomer);
+        // this.cdr.detectChanges();
+        this.visible = true;
+
+      },
+      error: (error) => {
+        
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Error',
+          detail: error.message,
+        });
+      }
+    });
+   
   }
 
 

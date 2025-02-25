@@ -119,7 +119,7 @@ this.userForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])[A-Za-z\s]+$/)]],
       last_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email]],
-      mobile_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      mobile_phone: ['', [Validators.required, Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]],
       address_line_1: ['', [Validators.required, Validators.maxLength(40)]],
       address_line_2: ['', [Validators.maxLength(40)]],
       city: ['', [Validators.required]],
@@ -160,7 +160,7 @@ this.userForm = this.fb.group({
            
           this.onSubmit();
         //  this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
-            if (this.editingUser) {
+            if (this.editingUser && !this.userForm.invalid) {
               
               // Here, you can either update the customer data in the list or save to a backend.
             //  console.log('Saving customer:', this.editingUser);
@@ -172,11 +172,8 @@ this.userForm = this.fb.group({
               setTimeout(() => {
                 this.dataEvent.emit(false);
               }, 2000);  // 2000 milliseconds = 2 seconds
-              this.msg2.set(false);
-              this.msg.set(true);
-            setTimeout(()=>{
-              this.msg.set(false);
-            },3500);
+              
+           
               
             }
         },
@@ -262,10 +259,17 @@ this.userForm = this.fb.group({
     
      console.log("just befre passing the ediitng user");
      console.log(this.userForm.value);
+
       this.UserService.updateUser(this.editingUser._id,this.userForm.value).subscribe({
         next: (res) => {
          
          console.log("user has updated")
+
+         this.msg2.set(false);
+         this.msg.set(true);
+       setTimeout(()=>{
+         this.msg.set(false);
+       },3500);
   
         },
         error: (error) => {
