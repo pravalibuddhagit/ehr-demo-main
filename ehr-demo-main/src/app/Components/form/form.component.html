@@ -28,10 +28,26 @@
                     <small *ngIf="userForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1 p-error">Enter a valid email.</small>
                 </div>
                 <div>
-                    <label for="mobile_phone" class="block mb-1 text-gray-700">Mobile Phone<span style="color: red;"> *</span></label>
-                    <input type="text" pInputText formControlName="mobile_phone" class="w-full p-2 border border-gray-300 rounded" />
-                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['required'] && userForm.get('mobile_phone')?.touched" class="text-red-500 block mt-1 p-error">Mobile Phone is required.</small>
-                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Enter a valid 10-digit number.</small>
+                    <label for="mobile_phone" class="block mb-1 text-gray-700">
+                        Mobile Phone<span style="color: red;"> *</span>
+                    </label>
+                    <p-inputmask 
+                        mask="(999) 999-9999" 
+                        formControlName="mobile_phone" 
+                        placeholder="(999) 999-9999" 
+                                                
+                        autoClear="false"
+                        [slotChar]="' '"
+                    ></p-inputmask>
+                    
+                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['required'] && userForm.get('mobile_phone')?.touched" 
+                        class="text-red-500 block mt-1 p-error">
+                        Mobile Phone is required.
+                    </small>
+                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['pattern']" 
+                        class="text-red-500 block mt-1 p-error">
+                        Enter a valid 10-digit number.
+                    </small>
                 </div>
             </div>
 

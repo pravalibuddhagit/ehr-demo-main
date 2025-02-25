@@ -15,7 +15,7 @@ export class UserService {
 
   // Method to create a new user
   createUser(user: User): Observable<User> {
-    debugger
+    
     return this.http.post<{ success: boolean; data: any; error?: { message: string } }>(this.apiUrl, user,{ headers: this.getHeaders() })
       .pipe(
         map(response => {

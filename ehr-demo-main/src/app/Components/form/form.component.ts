@@ -13,10 +13,12 @@ import { EventEmitter } from '@angular/core';
 //import { ToggleSwitch } from 'primeng/toggleswitch';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import {MessageModule} from 'primeng/message';
+import { InputMask } from 'primeng/inputmask';
+
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule,MessageModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule,MessageModule,InputMask],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   providers: [ConfirmationService,MessageService],
@@ -119,7 +121,7 @@ this.userForm = this.fb.group({
       first_name: ['', [Validators.required, Validators.pattern(/^(?=.*[A-Za-z])[A-Za-z\s]+$/)]],
       last_name: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email]],
-      mobile_phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      mobile_phone: ['', [Validators.required, Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]],
       address_line_1: ['', [Validators.required, Validators.maxLength(40)]],
       address_line_2: ['', [Validators.maxLength(40)]],
       city: ['', [Validators.required]],
@@ -302,5 +304,7 @@ this.userForm = this.fb.group({
    
 
   }
+
+  value2: string | undefined;
 
 }
