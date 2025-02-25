@@ -1,0 +1,73 @@
+<p-toast></p-toast>
+
+<form [formGroup]="appointmentForm" (ngSubmit)="confirmSubmit()">
+  <div class="flex items-center justify-center">
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-2xl xl:p-0">
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl mb-8">
+          Appointment Creation
+        </h1>
+
+        <!-- Doctor Name -->
+        <div>
+          <label for="doctor_name" class="block mb-1 text-gray-700">Doctor Name<span style="color: red;"> *</span></label>
+          <select formControlName="doctor_name" class="w-full p-2 border border-gray-300 rounded">
+            <option value="">Select Doctor</option>
+            <option value="dr_smith">Dr. Smith</option>
+            <option value="dr_jones">Dr. Jones</option>
+            <option value="dr_wilson">Dr. Wilson</option>
+          </select>
+        </div>
+
+        <!-- Patient Name -->
+        <div>
+          <label for="patient_name" class="block mb-1 text-gray-700">Patient Name<span style="color: red;"> *</span></label>
+          <select formControlName="patient_name" class="w-full p-2 border border-gray-300 rounded">
+            <option value="">Select Patient</option>
+            <option value="john_doe">John Doe</option>
+            <option value="jane_smith">Jane Smith</option>
+            <option value="bob_johnson">Bob Johnson</option>
+          </select>
+        </div>
+
+        <!-- Reason -->
+        <div>
+          <label for="reason" class="block mb-1 text-gray-700">Reason<span style="color: red;"> *</span></label>
+          <input 
+            type="text" 
+            pInputText 
+            formControlName="reason" 
+            class="w-full p-2 border border-gray-300 rounded" 
+          />
+        </div>
+
+        <!-- Date & Time -->
+        <div>
+          <label for="appointment_datetime" class="block mb-1 text-gray-700">Date & Time<span style="color: red;"> *</span></label>
+          <p-calendar 
+            formControlName="appointment_datetime"
+            [showTime]="true"
+            
+            [hourFormat]="'12'"
+            [showIcon]="true"
+            class="w-full"
+            inputStyleClass="w-full p-2 border border-gray-300 rounded"
+          ></p-calendar>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+          <button 
+            type="submit" 
+            class="w-full p-2 bg-blue-500 text-white rounded disabled:bg-blue-300" 
+            [disabled]="appointmentForm.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<p-confirmdialog></p-confirmdialog>

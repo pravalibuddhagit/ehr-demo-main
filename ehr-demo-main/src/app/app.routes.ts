@@ -10,6 +10,7 @@ import { PaginationComponent } from './Components/pagination/pagination.componen
 import { authGuard } from './Components/guards/auth.guard';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { PatientRegistrationComponent } from './Components/patient-registration/patient-registration.component';
+import { AppointmentFormComponent } from './Components/appointment-form/appointment-form.component';
 
 export const routes: Routes = [
       {
@@ -38,8 +39,8 @@ export const routes: Routes = [
           { path: '', component: WelcomeComponent },
           { path: 'dashboard', component: PaginationComponent },
           { path: 'user-creation', component: UserCreationComponent },
-          {path: 'patient-creation', component:PatientRegistrationComponent}
-        
+          {path: 'patient-creation', component:PatientRegistrationComponent},
+          {path: 'appointment-creation', component:AppointmentFormComponent}
         ],
       },
       { path: '**', redirectTo: 'login' }
