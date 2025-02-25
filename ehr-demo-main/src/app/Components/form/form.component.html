@@ -37,7 +37,7 @@
                         placeholder="(999) 999-9999" 
                                                 
                         autoClear="false"
-                        [slotChar]="' '"
+                        [slotChar]="'_'"
                     ></p-inputmask>
                     
                     <small *ngIf="userForm.get('mobile_phone')?.errors?.['required'] && userForm.get('mobile_phone')?.touched" 
