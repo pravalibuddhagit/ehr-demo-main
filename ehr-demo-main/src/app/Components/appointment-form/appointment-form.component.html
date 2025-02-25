@@ -21,16 +21,16 @@
 
 
         <div>
-          <label for="doctor_name" class="block mb-1 text-gray-700">Doctor Name<span style="color: red;"> *</span></label>
+          <label for="provider_name" class="block mb-1 text-gray-700">Provider Name<span style="color: red;"> *</span></label>
           <p-select 
-          [options]="doctors" 
-          [(ngModel)]="selectedDoctor"
-          formControlName="doctor_name" 
+          [options]="providers" 
+          [(ngModel)]="selectedprovider"
+          formControlName="provider_name" 
           optionLabel="name" 
           [filter]="true" 
           filterBy="name" 
           [showClear]="true" 
-          placeholder="Select a Doctor" 
+          placeholder="Select a Provider" 
           class="w-full md:w-100">
           
           <ng-template #selectedItem let-selectedOption>
@@ -40,10 +40,10 @@
             </div>
           </ng-template>
       
-          <ng-template let-doctor #item>
+          <ng-template let-provider #item>
             <div class="flex flex-col gap-1">
-              <div>{{ doctor.name }}</div>
-              <div class="text-gray-500 text-sm">{{ doctor.speciality }}</div>
+              <div>{{ provider.name }}</div>
+              <div class="text-gray-500 text-sm">{{ provider.speciality }}</div>
             </div>
           </ng-template>
       
@@ -96,12 +96,8 @@
         <!-- Reason -->
         <div>
           <label for="reason" class="block mb-1 text-gray-700">Reason<span style="color: red;"> *</span></label>
-          <input 
-            type="text" 
-            pInputText 
-            formControlName="reason" 
-            class="w-full p-2 border border-gray-300 rounded" 
-          />
+          <textarea class="w-full p-2 border border-gray-300 rounded" formControlName="reason" placeholder="Add reason here"></textarea>
+         
         </div>
 
         <!-- Date & Time -->

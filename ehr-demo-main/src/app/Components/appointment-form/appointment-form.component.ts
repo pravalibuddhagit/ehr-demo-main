@@ -46,7 +46,7 @@ export class AppointmentFormComponent {
   ) {
     // Initialize form with controls & validators
     this.appointmentForm = this.fb.group({
-      doctor_name: ['', Validators.required],
+      provider_name: ['', Validators.required],
       patient_name: ['', Validators.required],
       reason: ['', [Validators.required, Validators.minLength(3)]],
       appointment_datetime: [null, Validators.required] // Ensure correct handling of date-time input
@@ -105,16 +105,16 @@ export class AppointmentFormComponent {
   }
 
 
-  doctors: any[] | undefined;
+  providers: any[] | undefined;
 
-  selectedDoctor: any = null;
+  selectedprovider: any = null;
 
   patients: any[] | undefined;
 
   selectedpatient: any = null;
 
   ngOnInit() {
-    this.doctors = [
+    this.providers = [
       { name: "Dr. Smith", value: "dr_smith", speciality: "Cardiologist" },
       { name: "Dr. Jones", value: "dr_jones", speciality: "Dermatologist" },
       { name: "Dr. Wilson", value: "dr_wilson", speciality: "Neurologist" }

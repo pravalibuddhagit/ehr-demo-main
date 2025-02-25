@@ -1,0 +1,83 @@
+<div class="container mx-auto p-6">
+
+    <h2 class="text-2xl font-semibold mb-4 text-center">Appointments</h2>
+  
+    <p-table #dt [value]="appointments" 
+             [paginator]="true" [rows]="pageSize"
+             [totalRecords]="totalRecords" [lazy]="true"
+             [loading]="loading"
+             [rowsPerPageOptions]="[3, 5, 20]"
+             (onLazyLoad)="onLazyLoad($event)"
+             sortMode="multiple">
+  
+      <ng-template pTemplate="caption">
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold">Appointments</h3>
+        </div>
+      </ng-template>
+  
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon></th>
+          <th pSortableColumn="timeSlot">Time Slot <p-sortIcon field="timeSlot"></p-sortIcon></th>
+          <th pSortableColumn="doctor.name">Doctor <p-sortIcon field="doctor.name"></p-sortIcon></th>
+          <th pSortableColumn="doctor.speciality">Speciality <p-sortIcon field="doctor.speciality"></p-sortIcon></th>
+          <th pSortableColumn="patient.name">Patient <p-sortIcon field="patient.name"></p-sortIcon></th>
+         
+        
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+  
+      <ng-template pTemplate="body" let-appointment>
+        <tr>
+          <td>{{ appointment.date }}</td>
+          <td>{{ appointment.timeSlot }}</td>
+          <td>{{ appointment.doctor.name }}</td>
+          <td>{{ appointment.doctor.speciality }}</td>
+          <td>{{ appointment.patient.name }}</td>
+          
+         
+          <td>
+            <span class="px-2 py-1 text-white rounded"
+                  [ngClass]="{
+                    'bg-green-500': appointment.status === 'Confirmed',
+                    'bg-yellow-500': appointment.status === 'Pending',
+                    'bg-gray-500': appointment.status === 'Completed'
+                  }">
+              {{ appointment.status }}
+            </span>
+          </td>
+          <td>
+            <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-info" (click)="editAppointment(appointment)"></button>
+            <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger" (click)="deleteAppointment(appointment)"></button>
+          </td>
+        </tr>
+      </ng-template>
+  
+    </p-table>
+  
+    <!-- Card Layout
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+      <div *ngFor="let appointment of appointments" class="p-4 border rounded-lg shadow-lg bg-white">
+        <h3 class="text-lg font-semibold text-blue-600">{{ appointment.doctor.name }}</h3>
+        <p class="text-gray-500 text-sm">{{ appointment.doctor.speciality }}</p>
+        <p class="text-gray-700"><strong>Patient:</strong> {{ appointment.patient.name }}</p>
+        <p class="text-gray-500 text-sm">{{ appointment.patient.email }}</p>
+        <p class="text-gray-700"><strong>Time:</strong> {{ appointment.date }} - {{ appointment.timeSlot }}</p>
+        <p class="text-gray-700"><strong>Reason:</strong> {{ appointment.reason }}</p>
+        <p class="text-gray-700"><strong>Address:</strong> {{ appointment.doctor.address }}</p>
+        <span class="px-2 py-1 text-white text-sm rounded mt-2 inline-block"
+              [ngClass]="{
+                'bg-green-500': appointment.status === 'Confirmed',
+                'bg-yellow-500': appointment.status === 'Pending',
+                'bg-gray-500': appointment.status === 'Completed'
+              }">
+          {{ appointment.status }}
+        </span>
+      </div>
+    </div>
+   -->
+  </div>
+  
