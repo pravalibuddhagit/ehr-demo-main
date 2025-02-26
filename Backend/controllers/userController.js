@@ -42,7 +42,8 @@ exports.createUser = async (req, res) => {
       agreeToTerms,
       allowNotifications,
     });
-    if (validationErrors) {
+  
+    if (Object.keys(validationErrors).length !== 0) {
       console.log('Validation errors:', validationErrors); // validation errors
 
       return res.status(400).json({
@@ -52,19 +53,12 @@ exports.createUser = async (req, res) => {
       });
     }
 
-    // Parse dob from mm-dd-yyyy to a Date object
-    let dobDate;
-    if (dob) {
-      const [month, day, year] = dob.split('-').map(Number);
-      dobDate = new Date(year, month - 1, day); // month is 0-based
-      if (isNaN(dobDate.getTime())) {
-        return res.status(400).json({
-          success: false,
-          data: null,
-          error: { message: 'Invalid date of birth format' },
-        });
-      }
-    }
+  
+   // Parse dob from yyyy-mm-dd to Date object, with safety check
+
+     const [year, month, day] = dob.split('-').map(Number);
+     dobDate = new Date(year, month - 1, day); // month is 0-based
+  
 
     // Check for existing email
     const existingUser = await usersCollection.findOne({ email });
@@ -135,13 +129,17 @@ exports.updateUser = async (req, res) => {
     const Data = { ...req.body }; 
 
     const validationErrors = validateUser(Data);
-    if (validationErrors) {
+
+    if (Object.keys(validationErrors).length !== 0) {
+      console.log('Validation errors:', validationErrors); // validation errors
+
       return res.status(400).json({
         success: false,
         data: null,
         error: { message: 'Validation failed', details: validationErrors },
       });
     }
+
 
     // Fetch the existing user
     const existingUser = await usersCollection.findOne({ _id: new ObjectId(req.params.id) });
@@ -155,6 +153,8 @@ exports.updateUser = async (req, res) => {
 
    //console.log(existingUser);
    
+ 
+   
     // Remove email from req.body to avoid accidental updates
     const { email, ...updateFields } = req.body;
     
@@ -163,15 +163,9 @@ exports.updateUser = async (req, res) => {
     for (const [key, value] of Object.entries(updateFields)) {
       // Handle special case for dob (needs parsing)
       if (key === 'dob' && value) {
-        const [month, day, year] = value.split('-').map(Number);
+        const [year, month, day]  = value.split('-').map(Number);
         const dobDate = new Date(year, month - 1, day);
-        if (isNaN(dobDate.getTime())) {
-          return res.status(400).json({
-            success: false,
-            data: null,
-            error: { message: 'Invalid date of birth' },
-          });
-        }
+       
         if (dobDate.toISOString() !== new Date(existingUser.dob).toISOString()) {
           fieldsToUpdate[key] = dobDate;
         }

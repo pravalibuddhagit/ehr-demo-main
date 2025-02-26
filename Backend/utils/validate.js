@@ -6,7 +6,7 @@ const PATTERNS = {
     PASSWORD: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{3,8}$/, // 3-8 chars, uppercase, number, special
     MOBILE_PHONE: /^\(\d{3}\) \d{3}-\d{4}$/, // (123) 456-7890
     ZIPCODE: /^\d{5}(\d{4})?$/, // 5 or 9 digits
-    DOB: /^\d{2}-\d{2}-\d{4}$/, // mm-dd-yyyy format
+    DOB: /^\d{4}-\d{2}-\d{2}$/, //yyyy- mm-dd format
   };
   
   // Validation functions
@@ -86,7 +86,7 @@ const PATTERNS = {
       dob: {
         pattern: PATTERNS.DOB,
         required: true,
-        customMessage: 'Date of birth must be in mm-dd-yyyy format and valid',
+        customMessage: 'Date of birth must be in yyyy-mm-dd format and not in the future',
       },
       gender: {
         required: true,
@@ -105,21 +105,24 @@ const PATTERNS = {
       },
     };
   
-    const errors = validateObject(data, rules);
+    const errors = validateObject(data, rules) || {};
   
-  // Additional DOB validation
-  // if (!errors && data.dob) {
-  //   const [month, day, year] = data.dob.split('-').map(Number);
-  //   const date = new Date(year, month - 1, day); // month is 0-based in JS
-  //   if (
-  //     isNaN(date.getTime()) ||
-  //     date.getMonth() !== month - 1 ||
-  //     date.getDate() !== day ||
-  //     date.getFullYear() !== year
-  //   ) {
-  //     errors.dob = 'Invalid date of birth';
-  //   }
-  // }
+ // Additional DOB validation for yyyy-mm-dd format
+ if (!errors.dob && data.dob) {
+  const [year, month, day] = data.dob.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-based in JS
+  const today = new Date();
+
+  if (
+    isNaN(date.getTime()) || // Invalid date
+    date.getMonth() !== month - 1 || // Month mismatch
+    date.getDate() !== day || // Day mismatch
+    date.getFullYear() !== year || // Year mismatch
+    date > today // Future date check
+  ) {
+    errors.dob = 'Invalid date of birth or date is in the future';
+  }
+}
   
     return errors;
   };
