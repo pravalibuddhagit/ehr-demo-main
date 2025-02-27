@@ -9,6 +9,12 @@ import { MainLayoutComponent } from './Components/main-layout/main-layout.compon
 import { PaginationComponent } from './Components/pagination/pagination.component';
 import { authGuard } from './Components/guards/auth.guard';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
+import { PatientRegistrationComponent } from './Components/patient-registration/patient-registration.component';
+import { AppointmentFormComponent } from './Components/appointment-form/appointment-form.component';
+//import { AppointmentViewComponent } from './Components/appiontment-view/appiontment-view.component';
+import { PatientPaginationComponent } from './Components/patient-pagination/patient-pagination.component';
+//import { AppiontmentViewComponent } from './Components/appiontment-view/appiontment-view.component';
+import { AppointmentViewComponent } from './Components/appointment-view/appointment-view.component';
 
 export const routes: Routes = [
       {
@@ -37,6 +43,10 @@ export const routes: Routes = [
           { path: '', component: WelcomeComponent },
           { path: 'dashboard', component: PaginationComponent },
           { path: 'user-creation', component: UserCreationComponent },
+          {path: 'patient-creation', component:PatientRegistrationComponent},
+          {path: 'patient-view', component:PatientPaginationComponent},
+          {path: 'appointment-creation', component:AppointmentFormComponent},
+          {path: 'appointment-view', component:AppointmentViewComponent}
         ],
       },
       { path: '**', redirectTo: 'login' }

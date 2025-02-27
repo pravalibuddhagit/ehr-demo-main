@@ -3,3 +3,27 @@
     color: #f2f5f8;
     font-weight: 600;
 }
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-header a {
+    font-size: 1rem; /* Larger headers */
+    font-weight: bold;
+    padding: 12px 16px;
+    color: var(--surface-900); /* Darker text */
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content {
+    background-color: var(--surface-100); /* Light background */
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content a {
+    font-size: 0.9rem; /* Slightly smaller for items */
+    font-weight: 500;
+    transition: background 0.3s;
+}
+
+:host ::ng-deep .p-panelmenu .p-menuitem-link.p-menuitem-active {
+    background-color: var(--primary-500) !important; /* Highlight active */
+    color: white !important;
+    font-weight: bold;
+}
+

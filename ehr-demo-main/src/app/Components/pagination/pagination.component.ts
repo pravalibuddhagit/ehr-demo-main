@@ -173,25 +173,10 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
 
 
   onEdit(customer: any) {
-    this.userService.getUserById(customer._id).subscribe({
-      next: (response) => {
-        this.selectedCustomer = response;
-        // console.log("data reciever from ")
-        // console.log(this.selectedCustomer);
-        // this.cdr.detectChanges();
-        this.visible = true;
-
-      },
-      error: (error) => {
-        
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Error',
-          detail: error.message,
-        });
-      }
-    });
    
+    this.selectedCustomer = { ...customer };
+    console.log(this.selectedCustomer)
+    this.visible = true;
   }
 
 
@@ -224,7 +209,7 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
           error: (error) => {
             
             this.messageService.add({
-              severity: 'warn',
+              severity: 'error',
               summary: 'Error',
               detail: error.message,
             });
@@ -233,9 +218,9 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
       },
       reject: () => {
         this.messageService.add({
-          severity: 'error',
-          summary: 'Rejected',
-          detail: 'You have rejected'
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: 'Deletion Cancelled'
         });
       },
     });

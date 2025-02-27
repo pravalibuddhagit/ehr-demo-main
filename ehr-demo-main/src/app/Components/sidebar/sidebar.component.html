@@ -8,31 +8,69 @@
     </div>
     <div class="flex flex-col flex-1 overflow-y-auto">
         <nav class="flex-1 px-2 py-4 bg-white">
-            <a 
-                routerLink="/welcome" 
-                routerLinkActive="active-link"
-                [routerLinkActiveOptions]="{ exact: true }"
-                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4"
-            >
-                <i class="pi pi-home"></i>
-                Home
-            </a>
-            <a 
-                routerLink="/welcome/dashboard" 
-                routerLinkActive="active-link"
-                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 gap-4"
-            >
-                <i class="pi pi-users"></i>
-                View Users
-            </a>
-            <a 
-                routerLink="/welcome/user-creation" 
-                routerLinkActive="active-link"
-                class="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100 gap-4"
-            >
-                <i class="pi pi-user-plus"></i>
-                User-Creation
-            </a>
+            
+
+            <p-panelmenu [model]="[
+            {
+                label: 'Home',
+                icon: 'pi pi-home',
+                routerLink: '/welcome'
+            },
+            {
+                label: 'Users',
+                icon: 'pi pi-user',
+                items: [
+                    {
+                        label: 'User Creation',
+                        icon: 'pi pi-user-plus',
+                        routerLink: '/welcome/user-creation',
+                        routerLinkActiveOptions: { exact: true }
+                    },
+                    {
+                        label: 'View Users',
+                        icon: 'pi pi-eye',
+                        routerLink: '/welcome/dashboard',
+                        routerLinkActiveOptions: { exact: true }
+                    }
+                ]
+            },
+            {
+                label: 'Patients',
+                icon: 'pi pi-users',
+                items: [
+                    {
+                        label: 'Patient Creation',
+                        icon: 'pi pi-user-plus',
+                        routerLink: '/welcome/patient-creation',
+                        routerLinkActiveOptions: { exact: true }
+                    },
+                    {
+                        label: 'Patient View',
+                        icon: 'pi pi-eye',
+                        routerLink: '/welcome/patient-view',
+                        routerLinkActiveOptions: { exact: true }
+                    }
+                ]
+            },
+            {
+                label: 'Appointments',
+                icon: 'pi pi-calendar',
+                items: [
+                    {
+                        label: 'Create Appointment',
+                        icon: 'pi pi-plus',
+                        routerLink: '/welcome/appointment-creation',
+                        routerLinkActiveOptions: { exact: true }
+                    },
+                    {
+                        label: 'View Appointments',
+                        icon: 'pi pi-eye',
+                        routerLink: '/welcome/appointment-view',
+                        routerLinkActiveOptions: { exact: true }
+                    }
+                ]
+            }
+        ]" styleClass="w-full md:w-80"></p-panelmenu>
         </nav>
     </div>
 </div>

@@ -4,11 +4,13 @@
    
   <!-- <h1 style="font-size: 2rem; margin-bottom: 20px;">All USERS</h1>  [rowsPerPageOptions]="[10]"  -->
 
-  <div class="mt-16" >
+  <div >
+
+     
     <p-table
       #dt1    
       dataKey="id"     
-      [rowsPerPageOptions]="[10,20,30]" 
+      [rowsPerPageOptions]="[10]" 
       [loading]="loading"    
       [value]="customers"
       [lazy]="true"
@@ -18,7 +20,12 @@
      
       [paginator]="true">
       <ng-template #caption>
-        <div class="flex justify-between items-center w-full">
+        <div class="px-4 py-2"> 
+          <!-- Heading (Now on Top) -->
+          <h1 class="text-lg font-semibold text-gray-800 mb-6 ">Users List</h1> 
+        
+          <!-- Search and Actions (Next Line) -->
+          <div class="flex justify-between items-center">
           <!-- Search Keyword (Leftmost) -->
           <p-iconfield iconPosition="left">
             <p-inputicon>
@@ -33,7 +40,7 @@
             <p-columnFilter type="text" field="state" placeholder="Search State" ariaLabel="Filter State" ></p-columnFilter>
             <p-columnFilter type="text" field="country" placeholder="Search Country" ariaLabel="Filter Country" />
           </div>
-        </div>
+        </div></div>
       </ng-template>
   
       <ng-template #header>

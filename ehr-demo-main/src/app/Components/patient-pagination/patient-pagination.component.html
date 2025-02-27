@@ -1,0 +1,88 @@
+
+<div class="card">
+
+    <p-table
+      class="mt-base"
+      #dt2
+      [value]="patients"
+      dataKey="id"
+      [rows]="10"
+      [rowsPerPageOptions]="[1, 25, 50]"
+      [loading]="false"
+      [paginator]="true"
+      [globalFilterFields]="['first_name', 'last_name']"
+      [tableStyle]="{ 'min-width': '75rem' }"
+    >
+      <!-- Table Caption -->
+      <ng-template #caption>
+        <div class="flex items-center">
+          <h1 class="text-xl font-semibold text-gray-800">Patient List</h1>
+          <div class="flex items-center gap-sm ml-auto">
+           
+  
+          
+  
+            <!-- Global Search -->
+            <p-iconField iconPosition="left">
+              <input
+                pInputText
+                type="text"
+                (input)="onGlobalSearch($event, dt2)"
+                placeholder="Search"
+              />
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+            </p-iconField>
+          </div>
+        </div>
+      </ng-template>
+  
+      <!-- Table Header -->
+      <ng-template #header>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>DOB</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Mobile Phone</th>
+          <th>Address</th>
+        
+          <th >Actions</th>
+        </tr>
+      </ng-template>
+  
+      <!-- Table Body -->
+      <ng-template #body let-patient>
+        <tr>
+          <td>{{ patient.first_name }}</td>
+          <td>{{ patient.last_name }}</td>
+          <td>{{ patient.dob }}</td>
+          <td>{{ patient.gender }}</td>
+          <td>{{ patient.email }}</td>
+          <td>{{ patient.mobile_phone }}</td>
+          <td>{{ patient.Address}}</td>
+          <td>
+            <button  class="pi true-icon pi-trash text-red-500 ml-4" (click)="confirm2($event,patient)" ></button>
+          </td>
+          
+          
+          
+             
+        
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <p-toast />
+  <p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>
+<!-- 
+  <td class="text-center">
+   
+    <div class="flex justify-center">
+      <i class="pi pi-trash text-red-500 cursor-pointer"></i>
+    </div>
+  </td>
+
+</td> -->

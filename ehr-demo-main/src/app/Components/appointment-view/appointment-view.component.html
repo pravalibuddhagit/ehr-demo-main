@@ -1,0 +1,122 @@
+
+<div class="card">
+  <p-table
+    #dt
+    [value]="appointments"
+    dataKey="id"
+    [rows]="5"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="false"
+    [paginator]="true"
+    [globalFilterFields]="[ 'doctor.name', 'patient.name']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+  >
+    <!-- Table Caption -->
+    <ng-template #caption>
+      <div class="flex justify-between items-center px-4 py-2"> <!-- Reduced padding -->
+        <h1 class="text-lg font-semibold text-gray-800">Appointment List</h1> 
+        <div class="flex items-center gap-2">
+          <!-- Global Search -->
+          <!-- <p-iconField iconPosition="left">
+            <input
+              pInputText
+              type="text"
+              (input)="onGlobalSearch($event, dt)"
+              placeholder="Search..."
+            />
+            <p-inputIcon>
+              <i class="pi pi-search"></i>
+            </p-inputIcon>
+          </p-iconField> -->
+          <!-- Global Search -->
+<div class="relative">
+  <input
+    pInputText
+    type="text"
+    (input)="onGlobalSearch($event, dt)"
+    placeholder="Search by name.."
+    class="border border-gray-300 rounded-lg px-4 py-2 pl-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
+  />
+  <i class="pi pi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+</div>
+
+
+          <!-- Filter by Status -->
+          <p-dropdown
+            [options]="statusOptions"
+            [(ngModel)]="selectedStatus"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Status"
+            (onChange)="onStatusFilterChange($event, dt)"
+            class="p-ml-2"
+          ></p-dropdown>
+        </div>
+      </div>
+    </ng-template>
+
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Date</th>
+        <th>Time Slot</th>
+        <th>Doctor</th>
+        <th>Patient</th>
+        <th>Reason</th>
+        <th>status</th>
+        <th>Actions</th>
+       
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-appointment>
+      <tr>
+        <td>{{ appointment.date }}</td>
+        <td>{{ appointment.timeSlot }}</td>
+       <!-- Doctor Column: Name + Email -->
+    <td>
+      <div class="text-lg font-semibold text-blue-600">{{ appointment.doctor.name }}</div>
+      <div class="text-gray-500 text-sm">{{ appointment.doctor.email }}</div>
+    </td>
+
+    <!-- Patient Column: Name + Email -->
+    <td>
+      <div class="font-semibold text-grey">{{ appointment.patient.name }}</div>
+      <div class="text-gray-500 text-sm">{{ appointment.patient.email }}</div>
+    </td>
+        <td>{{ appointment.reason }}</td>
+        <td>
+          <span class="font-semibold"
+      [ngClass]="{
+        'text-green-600': appointment.status === 'completed',
+        'text-yellow-600': appointment.status === 'pending',
+        'text-red-600': appointment.status === 'rejected'
+      }">
+
+
+  {{ appointment.status }}
+</span>
+        </td>
+        <td>
+          <button (click)="openEditDialog(appointment)" class="pi pi-pencil text-blue-700 mr-4"></button>
+          <!-- Delete button -->
+          <button  class="pi true-icon pi-trash text-red-500" (click)="confirm2($event,appointment)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="isDialogVisible" header="Edit Appointment" [modal]="true" [closable]="true" (onHide)="closeDialog()">
+  <app-appointment-form
+    *ngIf="selectedAppointment"
+    [appointment]="selectedAppointment"
+    (onSave)="saveAppointment($event)"
+    (onClose)="closeDialog()"
+  ></app-appointment-form>
+</p-dialog>
+ 
+
+<p-toast />
+<p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>

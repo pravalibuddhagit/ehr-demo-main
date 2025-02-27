@@ -9,10 +9,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { MenuItem } from 'primeng/api';
+import { PanelMenu } from 'primeng/panelmenu';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterModule,MenuModule, AvatarModule, CommonModule, DrawerModule, ButtonModule, RouterLink, ConfirmDialog, ToastModule,OverlayBadgeModule],
+  imports: [RouterModule,MenuModule, AvatarModule, CommonModule, DrawerModule, ButtonModule,  ConfirmDialog, ToastModule,OverlayBadgeModule, PanelMenu],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   providers: [ConfirmationService, MessageService] // Add services
@@ -72,6 +74,69 @@ export class HeaderComponent {
       }
     });
   }
+
+
+   bars: MenuItem[] = [];
+  
+    ngOnInit() {
+      this.bars = [
+        {
+          label: 'Home',
+          icon: 'pi pi-home',
+          routerLink: ['/welcome']
+        },
+        {
+          label: 'Users',
+          icon: 'pi pi-user',
+          items: [
+            {
+              label: 'User Creation',
+              icon: 'pi pi-user-plus',
+              routerLink: ['/welcome/user-creation']
+            },
+            {
+              label: 'View Users',
+              icon: 'pi pi-eye',
+              routerLink: ['/welcome/dashboard']
+            }
+          ]
+        },
+        {
+          label: 'Patients',
+          icon: 'pi pi-users',
+          items: [
+            {
+              label: 'Patient Creation',
+              icon: 'pi pi-user-plus',
+              routerLink: ['/welcome/patient-creation']
+            },
+            {
+              label: 'Patient View',
+              icon: 'pi pi-eye',
+              routerLink: ['/welcome/patient-view']
+            }
+          ]
+        },
+        {
+          label: 'Appointments',
+          icon: 'pi pi-calendar',
+          items: [
+            {
+              label: 'Appointment Creation',
+              icon: 'pi pi-plus',
+              routerLink: ['/welcome/appointment-creation']
+            },
+            {
+              label: 'Appointment View',
+              icon: 'pi pi-eye',
+              routerLink: ['/welcome/appointment-view']
+            }
+          ]
+        }
+      ];
+    }
+  
+  
  
 
 

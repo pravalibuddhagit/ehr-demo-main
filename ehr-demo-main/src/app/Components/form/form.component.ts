@@ -13,10 +13,15 @@ import { EventEmitter } from '@angular/core';
 //import { ToggleSwitch } from 'primeng/toggleswitch';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import {MessageModule} from 'primeng/message';
+import { InputMask } from 'primeng/inputmask';
+//import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
+
+
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule,MessageModule],
+  imports: [CommonModule, ReactiveFormsModule,FormsModule,RouterModule,ToastModule,ConfirmDialog,ButtonModule,MessageModule,InputMask,DatePickerModule],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
   providers: [ConfirmationService,MessageService],
@@ -154,13 +159,13 @@ this.userForm = this.fb.group({
             outlined: true,
         },
         acceptButtonProps: {
-            label: 'Save',
+            label: 'Confirm',
         },
         accept: () => {
            
           this.onSubmit();
         //  this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Successfully Updated',  life: 1000 });
-            if (this.editingUser && !this.userForm.invalid) {
+            if (this.editingUser) {
               
               // Here, you can either update the customer data in the list or save to a backend.
             //  console.log('Saving customer:', this.editingUser);
@@ -169,27 +174,20 @@ this.userForm = this.fb.group({
               
             
               console.log(this.visible);
-              setTimeout(() => {
-                this.dataEvent.emit(false);
-              }, 2000);  // 2000 milliseconds = 2 seconds
-              
-           
               
             }
         },
         reject: () => {
           
-            this.msg2.set(true);
-            setTimeout(()=>{
-              this.msg2.set(false);
-            },3500);
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Cancelled',
+            detail: 'User Details not updated'
+          });
          
         },
     });
   }
-
-  msg=signal(false);
- msg2=signal(false);
 
 
  
@@ -199,9 +197,11 @@ this.userForm = this.fb.group({
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingUser'] && this.editingUser) {
+     
+      // const formattedDob = this.editingUser.dob ? new Date(this.editingUser.dob).toISOString().split('T')[0] : '';
+      const formattedDob= this.editingUser.dob ? new Date(this.editingUser.dob) : null;
       console.log("hello")
       console.log(this.editingUser)
-      const formattedDob = this.editingUser.dob ? new Date(this.editingUser.dob).toISOString().split('T')[0] : '';
       this.isEditMode = true;
       this.userForm.patchValue({
         ...this.editingUser,
@@ -210,6 +210,7 @@ this.userForm = this.fb.group({
       this.onCountryChange();
       this.onStateChange();
     
+     
      
     }else {
       this.isEditMode = false;
@@ -259,17 +260,19 @@ this.userForm = this.fb.group({
     
      console.log("just befre passing the ediitng user");
      console.log(this.userForm.value);
-
       this.UserService.updateUser(this.editingUser._id,this.userForm.value).subscribe({
         next: (res) => {
          
          console.log("user has updated")
 
-         this.msg2.set(false);
-         this.msg.set(true);
-       setTimeout(()=>{
-         this.msg.set(false);
-       },3500);
+         setTimeout(() => {
+          this.dataEvent.emit(false);
+        }, 2000);  // 2000 milliseconds = 2 seconds
+        this.messageService.add({
+          severity: 'success',
+          summary: 'User Updated',
+          detail: `${this.editingUser.first_name} details updated Successfully`
+        });
   
         },
         error: (error) => {
@@ -306,5 +309,7 @@ this.userForm = this.fb.group({
    
 
   }
+
+  value2: string | undefined;
 
 }

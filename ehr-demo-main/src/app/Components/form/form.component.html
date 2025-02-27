@@ -5,7 +5,7 @@
           <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                 <div>
-                    <label for="first_name" class="block mb-1 text-gray-700">First Name<span style="color: red;"> *</span></label>
+                    <label for="first_name" class="block mb-1 text-gray-700 ">First Name<span style="color: red;"> *</span></label>
                     <input type="text" pInputText formControlName="first_name" class="w-full p-2 border border-gray-300 rounded" />
                     <small *ngIf="userForm.get('first_name')?.errors?.['required'] && userForm.get('first_name')?.touched" class="text-red-500 block mt-1 p-error">First Name is required.</small>
                     <small *ngIf="userForm.get('first_name')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">First Name should contain alphabets only.</small>
@@ -28,10 +28,26 @@
                     <small *ngIf="userForm.get('email')?.errors?.['email']" class="text-red-500 block mt-1 p-error">Enter a valid email.</small>
                 </div>
                 <div>
-                    <label for="mobile_phone" class="block mb-1 text-gray-700">Mobile Phone<span style="color: red;"> *</span></label>
-                    <input type="text" pInputText formControlName="mobile_phone" class="w-full p-2 border border-gray-300 rounded" />
-                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['required'] && userForm.get('mobile_phone')?.touched" class="text-red-500 block mt-1 p-error">Mobile Phone is required.</small>
-                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['pattern']" class="text-red-500 block mt-1 p-error">Enter a valid number.</small>
+                    <label for="mobile_phone" class="block mb-1 text-gray-700">
+                        Mobile Phone<span style="color: red;"> *</span>
+                    </label>
+                    <p-inputmask 
+                        mask="(999) 999-9999" 
+                        formControlName="mobile_phone" 
+                        placeholder="(999) 999-9999" 
+                                                
+                        autoClear="false"
+                        [slotChar]="'_'"
+                    ></p-inputmask>
+                    
+                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['required'] && userForm.get('mobile_phone')?.touched" 
+                        class="text-red-500 block mt-1 p-error">
+                        Mobile Phone is required.
+                    </small>
+                    <small *ngIf="userForm.get('mobile_phone')?.errors?.['pattern']" 
+                        class="text-red-500 block mt-1 p-error">
+                        Enter a valid 10-digit number.
+                    </small>
                 </div>
             </div>
 
@@ -55,10 +71,20 @@
                     <small *ngIf="userForm.get('gender')?.errors?.['required'] && userForm.get('gender')?.touched" class="text-red-500 block mt-1 p-error">Gender is required.</small>
                 </div>
                 <div>
-                    <label class="block mb-1 text-gray-700">Date of Birth<span style="color: red;"> *</span></label>
-                    <input type="date" class="w-full p-2 border border-gray-300 rounded" formControlName="dob" [max]="maxDate"/>
-                    <small *ngIf="userForm.get('dob')?.errors?.['required'] && userForm.get('dob')?.touched" class="text-red-500 block mt-1 p-error">Date of Birth is required.</small>
+                    <label class="block mb-1 text-gray-700">
+                        Date of Birth<span class="text-red-500"> *</span>
+                    </label>
+                    <p-datePicker 
+                        formControlName="dob"
+                        [showTime]="false"  
+                        dateFormat="mm/dd/yy"  
+                        [showIcon]="true"
+                        class="w-full"
+                        inputStyleClass="w-full p-2 border border-gray-300 rounded"
+                    ></p-datePicker>
                 </div>
+                
+                  
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
@@ -152,13 +178,13 @@
             <small *ngIf="!isEditMode && userForm.get('agreeToTerms')?.errors?.['required'] && userForm.get('agreeToTerms')?.touched" class="text-red-500 block mt-1 p-error">You must agree to the terms and conditions.</small>
         
             <div class="text-center mt-4">
-                <button *ngIf="!isEditMode" type="submit" class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
+                <button *ngIf="!isEditMode" type="submit" class="w-full p-2 bg-blue-500 text-white rounded  disabled:bg-blue-300" [disabled]="userForm.invalid">
                     Submit
                 </button>
-                <button *ngIf="isEditMode" type="button" (click)="confirm1($event)"  class="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400" [disabled]="userForm.invalid">
+                <button *ngIf="isEditMode" type="button" (click)="confirm1($event)"  class="w-full p-2 bg-blue-500 text-white rounded  disabled:bg-blue-300" [disabled]="userForm.invalid">
                   Update User
                 </button>
-                @if (msg2()) {
+                <!-- @if (msg2()) {
                     <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
                     <p-message [life]="3000" severity="warn">Cancelled</p-message>
                 </div>
@@ -168,10 +194,10 @@
                     <div class=" flex flex-col items-center justify-center gap-4 -mt-8">
                     <p-message [life]="3000" severity="success">Successfully updated</p-message>
                 </div>
-                }
+                } -->
 
               
             </div>
         </form>
        
-        <p-confirmdialog />
+        <p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>

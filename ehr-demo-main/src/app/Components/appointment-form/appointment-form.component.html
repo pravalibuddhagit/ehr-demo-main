@@ -1,0 +1,150 @@
+<p-toast></p-toast>
+
+<form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+  <div class="flex items-center justify-center">
+    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-2xl xl:p-0">
+      <div class="p-10 space-y-4 md:space-y-6 sm:p-8">
+        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl mb-8">
+          Appointment Creation
+        </h1>
+
+     
+
+
+        <div>
+          <label for="provider_name" class="block mb-1 text-gray-700">Provider Name<span style="color: red;"> *</span></label>
+          <p-select 
+          [options]="providers" 
+          [(ngModel)]="selectedprovider"
+          formControlName="provider_name" 
+          optionLabel="name" 
+          [filter]="true" 
+          filterBy="name" 
+          [showClear]="true" 
+          placeholder="Select a Provider" 
+          class="w-full md:w-100">
+          
+          <ng-template #selectedItem let-selectedOption>
+            <div class="flex flex-col gap-1">
+              <div>{{ selectedOption.name }}</div>
+              <div class="text-gray-500 text-sm">{{ selectedOption.speciality }}</div>
+            </div>
+          </ng-template>
+      
+          <ng-template let-provider #item>
+            <div class="flex flex-col gap-1">
+              <div>{{ provider.name }}</div>
+              <div class="text-gray-500 text-sm">{{ provider.speciality }}</div>
+            </div>
+          </ng-template>
+      
+        </p-select>
+      </div>
+
+        <!-- Patient Name
+        <div>
+          <label for="patient_name" class="block mb-1 text-gray-700">Patient Name<span style="color: red;"> *</span></label>
+          <select formControlName="patient_name" class="w-full p-2 border border-gray-300 rounded">
+            <option value=""></option>
+            <option value="john_doe">John Doe</option>
+            <option value="jane_smith">Jane Smith</option>
+            <option value="bob_johnson">Bob Johnson</option>
+          </select>
+        </div> -->
+
+
+        <div>
+          <label for="patient_name" class="block mb-1 text-gray-700">Patient Name<span style="color: red;"> *</span></label>
+          <p-select 
+          [options]="patients" 
+          [(ngModel)]="selectedpatient"
+          formControlName="patient_name" 
+          optionLabel="name" 
+          [filter]="true" 
+          filterBy="name" 
+          [showClear]="true" 
+          placeholder="Select a Patient" 
+          class="w-full md:w-100">
+          
+          <ng-template #selectedItem let-selectedOption>
+            <div class="flex flex-col gap-1">
+              <div>{{ selectedOption.name }}</div>
+              <div class="text-gray-500 text-sm">{{ selectedOption.email }}</div>
+
+            </div>
+          </ng-template>
+      
+          <ng-template let-patient #item>
+            <div class="flex flex-col gap-1">
+              <div>{{ patient.name }}</div>
+              <div class="text-gray-500 text-sm">{{ patient.email }}</div>
+            </div>
+          </ng-template>
+      
+        </p-select>
+      </div>
+
+        <!-- Reason -->
+        <div>
+          <label for="reason" class="block mb-1 text-gray-700">Reason<span style="color: red;"> *</span></label>
+          <textarea class="w-full p-2 border border-gray-300 rounded" formControlName="reason" placeholder="Add reason here"></textarea>
+         
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+        <!-- Date & Time -->
+        <div>
+          <label for="appointment_date" class="block mb-1 text-gray-700">
+            Date<span style="color: red;"> *</span>
+          </label>
+          <p-calendar 
+            formControlName="appointment_date"
+            [showTime]="false"
+            [showIcon]="true"
+            class="w-full"
+            inputStyleClass="w-full p-2 border border-gray-300 rounded"
+          ></p-calendar>
+        </div>
+
+
+        <!-- Time Slot Dropdown -->
+        <div>
+          <label for="appointment_time" class="block mb-1 text-gray-700">
+            Time Slot<span style="color: red;"> *</span>
+          </label>
+          <p-dropdown 
+            [options]="timeSlots" 
+            formControlName="appointment_time"
+            placeholder="Select a Time Slot"
+            class="w-full"
+            optionLabel="slot">
+          </p-dropdown>
+        </div>
+        </div>
+
+        <div>
+          <label for="status" class="block mb-1 text-gray-700">Status<span class="text-red-500"> *</span></label>
+          <p-dropdown
+            [options]="statusOptions"
+            formControlName="status"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Status"
+            class="w-full">
+          </p-dropdown>
+        </div>
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+          <button 
+            type="submit" 
+            class="w-full p-2 bg-blue-500 text-white rounded disabled:bg-blue-300" 
+            [disabled]="appointmentForm.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>
