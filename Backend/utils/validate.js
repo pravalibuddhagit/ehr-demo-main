@@ -6,7 +6,7 @@ const PATTERNS = {
     PASSWORD: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{3,8}$/, // 3-8 chars, uppercase, number, special
     MOBILE_PHONE: /^\(\d{3}\) \d{3}-\d{4}$/, // (123) 456-7890
     ZIPCODE: /^\d{5}(\d{4})?$/, // 5 or 9 digits
-    DOB: /^\d{4}-\d{2}-\d{2}$/, //yyyy- mm-dd format
+    DOB: /^\d{4}-\d{2}-\d{2}$/, //yyyy-mm-dd format
     OBJECT_ID: /^[0-9a-fA-F]{24}$/, // MongoDB ObjectId format
     TIME_SLOT: /^(9AM - 10AM|10AM - 11AM|11AM - 12PM|12PM - 1PM|2PM - 3PM|3PM - 4PM|4PM - 5PM|5PM - 6PM)$/, // Time slots
   };
@@ -222,7 +222,7 @@ const validateAppointment = (data) => {
     status: {
       required: false,
       customMessage: 'Status must be pending, confirmed, or cancelled',
-      validate: (value) => ['pending', 'confirmed', 'cancelled'].includes(String(value)),
+      validate: (value) => ['pending', 'completed', 'rejected'].includes(String(value)),
     },
   };
 

@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
-
+import { AppointmentService} from  './../../services/appointment/appointment.service'; 
 
 @Component({
   selector: 'app-appointment-form',
@@ -34,30 +34,23 @@ import { SelectModule } from 'primeng/select';
     RouterModule ,        // Required for buttons,
     SelectModule
   ]
-})export class AppointmentFormComponent {
+})export class AppointmentFormComponent implements OnInit{
 
   @Input() appointment: any;  
   isEditMode: boolean = false;
   selectedAppointment: any;
   
-  selectedprovider: any; // or specify correct type
-  selectedpatient: any;  // or specify correct type
+  selectedProvider: any; // or specify correct type
+  selectedPatient: any;  // or specify correct type
 
   appointmentForm!: FormGroup;
-
-  providers = [
-    { name: "Dr. Smith", value: "dr_smith", speciality: "Cardiologist" },
-    { name: "Dr. Jones", value: "dr_jones", speciality: "Dermatologist" },
-    { name: "Dr. Wilson", value: "dr_wilson", speciality: "Neurologist" }
-  ];
-
-  patients = [
-    { name: "Viraj Patel", value: "patient_001", email: "viraj.patel@example.com" },
-    { name: "Sophia Jones", value: "patient_002", email: "sophia.jones@example.com" },
-    { name: "Parthiv Mehta", value: "patient_003", email: "parthiv.mehta@example.com" },
-    { name: "Aisha Khan", value: "patient_004", email: "aisha.khan@example.com" },
-    { name: "Liam Scott", value: "patient_005", email: "liam.scott@example.com" }
-  ];
+  providers: any[] = [];
+  patients: any[] = [];
+  providerPage = 1;
+  patientPage = 1;
+  providerTotalRecords = 0;
+  patientTotalRecords = 0;
+  limit = 4;
 
   timeSlots = [
     { slot: '9AM - 10AM' },
@@ -82,84 +75,158 @@ import { SelectModule } from 'primeng/select';
     private router: Router,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private appointmentService: AppointmentService // Inject PatientService
   ) {}
 
   ngOnInit() {
     this.appointmentForm = this.fb.group({
-      provider_name: [null, Validators.required],
-      patient_name: [null, Validators.required],
+      provider_id: [null, Validators.required], // Changed to provider_id
+      patient_id: [null, Validators.required], // Changed to patient_id
       reason: ['', [Validators.required, Validators.minLength(3)]],
       appointment_date: [null, Validators.required],
       appointment_time: [null, Validators.required],
       status: ['pending', Validators.required]
     });
-  }
+    this.loadProviders();
+    this.loadPatients();
 
-  editAppointment(appointment: any) {
-    this.isEditMode = true;
-    this.selectedAppointment = appointment;
-    this.appointmentForm.patchValue(appointment);
-    this.cdRef.detectChanges();  // Force Angular to update the view
+    if (this.appointment) {
+      this.isEditMode = true;
+      this.selectedAppointment = this.appointment;
+      this.appointmentForm.patchValue({
+        provider_id: this.appointment.provider_id,
+        patient_id: this.appointment.patient_id,
+        reason: this.appointment.reason,
+        appointment_date: new Date(this.appointment.appointment_date),
+        appointment_time: this.timeSlots.find(slot => slot.slot === this.appointment.appointment_time),
+        status: this.appointment.status,
+      });
+    }
+
   }
-  createAppointment() {
-    this.isEditMode = false;
-    this.selectedAppointment = null;
-    this.appointmentForm.reset();
-    console.log("Form reset for new appointment creation.");
-  }
- 
- 
-  openEditDialog(appointment: any): void {
-    this.isEditMode = true;
-    this.selectedAppointment = { ...appointment };
- 
-    this.appointmentForm.patchValue({
-      provider_name: appointment.provider_name,
-      patient_name: appointment.patient_name,
-      reason: appointment.reason,
-      appointment_date: new Date(appointment.appointment_date),
-      appointment_time: appointment.appointment_time,
-      status: appointment.status
+loadProviders(search: string = '') {
+    this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
+      next: (response) => {
+        this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
+        this.providerTotalRecords = response.pagination.totalRecords;
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to load providers',
+        });
+      },
     });
   }
 
+  loadPatients(search: string = '') {
+    this.appointmentService.getPatients(search, this.patientPage, this.limit).subscribe({
+      next: (response) => {
+        this.patients = this.patientPage === 1 ? response.patients : [...this.patients, ...response.patients];
+        this.patientTotalRecords = response.pagination.totalRecords;
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to load patients',
+        });
+      },
+    });
+  }
+  onProviderScroll(event: any) {
+    if (this.providers.length < this.providerTotalRecords) {
+      this.providerPage++;
+      this.loadProviders(event.filter);
+    }
+  }
 
+  onPatientScroll(event: any) {
+    if (this.patients.length < this.patientTotalRecords) {
+      this.patientPage++;
+      this.loadPatients(event.filter);
+    }
+  }
+
+  onProviderFilter(event: any) {
+    this.providerPage = 1;
+    this.loadProviders(event.filter);
+  }
+
+  onPatientFilter(event: any) {
+    this.patientPage = 1;
+    this.loadPatients(event.filter);
+  }
   onSubmit(): void {
-    if (this.appointmentForm.valid) {
-      console.log('Form Submitted', this.appointmentForm.value);
-
-      this.confirmationService.confirm({
-        message: 'Please confirm to proceed',
-        header: 'Confirm Registration',
-        icon: 'pi pi-exclamation-circle',
-        acceptButtonProps: { label: 'Confirm', severity: 'primary' },
-        rejectButtonProps: { label: 'Cancel', severity: 'contrast', outlined: true },
-        accept: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Appointment created successfully!',
-            life: 2000
-          });
-
-          this.appointmentForm.reset();
-        },
-        reject: () => {
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Cancelled',
-            detail: 'Appointment Booking cancelled',
-            life: 2000
-          });
-        }
-      });
-    } else {
+    if (this.appointmentForm.invalid) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'Please fill in all required fields.'
+        detail: 'Please fill in all required fields.',
       });
+      return;
     }
+
+    const formValue = this.appointmentForm.value;
+    const appointmentData = {
+      provider_id: formValue.provider_id._id,
+      patient_id: formValue.patient_id._id,
+      reason: formValue.reason,
+      appointment_date: formValue.appointment_date instanceof Date
+        ? formValue.appointment_date.toISOString().split('T')[0]
+        : formValue.appointment_date,
+      appointment_time: formValue.appointment_time.slot,
+      status: formValue.status,
+    };
+ 
+    this.confirmationService.confirm({
+      message: 'Please confirm to proceed',
+      header: this.isEditMode ? 'Confirm Update' : 'Confirm Registration',
+      icon: 'pi pi-exclamation-circle',
+      acceptButtonProps: { label: 'Confirm', severity: 'primary' },
+      rejectButtonProps: { label: 'Cancel', severity: 'contrast', outlined: true },
+      accept: () => {
+        console.log(appointmentData);
+        const action = this.isEditMode
+          ? this.appointmentService.updateAppointment(this.selectedAppointment._id, appointmentData)
+          : this.appointmentService.createAppointment(appointmentData);
+
+        action.subscribe({
+          next: (response) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!',
+              life: 2000,
+            });
+            this.appointmentForm.reset();
+            this.isEditMode = false;
+            this.selectedAppointment = null;
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message || (this.isEditMode ? 'Failed to update appointment' : 'Failed to create appointment'),
+              life: 2000,
+            });
+          },
+        });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Cancelled',
+          detail: this.isEditMode ? 'Update cancelled' : 'Appointment Booking cancelled',
+          life: 2000,
+        });
+      },
+    });
   }
 }
+
+
+ 
+

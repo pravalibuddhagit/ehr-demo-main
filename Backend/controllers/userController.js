@@ -56,9 +56,9 @@ exports.createUser = async (req, res) => {
   
    // Parse dob from yyyy-mm-dd to Date object, with safety check
 
-     const [year, month, day] = dob.split('-').map(Number);
-     dobDate = new Date(year, month - 1, day); // month is 0-based
-  
+  //    const [year, month, day] = dob.split('-').map(Number);
+  //    dobDate = new Date(year, month - 1, day); // month is 0-based
+  //  console.log(dobDate);
 
     // Check for existing email
     const existingUser = await usersCollection.findOne({ email });
@@ -82,7 +82,7 @@ exports.createUser = async (req, res) => {
       state,
       zipcode,
       country: country || 'US',
-      dob: dobDate,
+      dob,
       notes: notes || '',
       gender,
       agreeToTerms,
@@ -163,14 +163,7 @@ exports.updateUser = async (req, res) => {
     const fieldsToUpdate = {};
     for (const [key, value] of Object.entries(updateFields)) {
       // Handle special case for dob (needs parsing)
-      if (key === 'dob' && value) {
-        const [year, month, day]  = value.split('-').map(Number);
-        const dobDate = new Date(year, month - 1, day);
-       
-        if (dobDate.toISOString() !== new Date(existingUser.dob).toISOString()) {
-          fieldsToUpdate[key] = dobDate;
-        }
-      } else if (value !== undefined && value !== null && String(value) !== String(existingUser[key])) {
+    if (value !== undefined && value !== null && String(value) !== String(existingUser[key])) {
         fieldsToUpdate[key] = value;
       }
     }

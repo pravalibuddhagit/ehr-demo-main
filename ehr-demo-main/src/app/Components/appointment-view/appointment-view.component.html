@@ -8,7 +8,7 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [loading]="false"
     [paginator]="true"
-    [globalFilterFields]="[ 'doctor.name', 'patient.name']"
+    [globalFilterFields]="['provider.name', 'patient.name', 'reason']"
     [tableStyle]="{ 'min-width': '75rem' }"
   >
     <!-- Table Caption -->
@@ -16,19 +16,7 @@
       <div class="flex justify-between items-center px-4 py-2"> <!-- Reduced padding -->
         <h1 class="text-lg font-semibold text-gray-800">Appointment List</h1> 
         <div class="flex items-center gap-2">
-          <!-- Global Search -->
-          <!-- <p-iconField iconPosition="left">
-            <input
-              pInputText
-              type="text"
-              (input)="onGlobalSearch($event, dt)"
-              placeholder="Search..."
-            />
-            <p-inputIcon>
-              <i class="pi pi-search"></i>
-            </p-inputIcon>
-          </p-iconField> -->
-          <!-- Global Search -->
+       
 <div class="relative">
   <input
     pInputText
@@ -72,18 +60,18 @@
     <!-- Table Body -->
     <ng-template pTemplate="body" let-appointment>
       <tr>
-        <td>{{ appointment.date }}</td>
-        <td>{{ appointment.timeSlot }}</td>
+        <td>{{appointment.appointment_date }}</td>
+        <td>{{ appointment.appointment_time }}</td>
        <!-- Doctor Column: Name + Email -->
     <td>
-      <div class="text-lg font-semibold text-blue-600">{{ appointment.doctor.name }}</div>
-      <div class="text-gray-500 text-sm">{{ appointment.doctor.email }}</div>
+      <div class="text-lg font-semibold text-blue-600">{{ appointment.provider?.first_name +" "+ appointment.provider?.last_name}}</div>
+      <div class="text-gray-500 text-sm">{{ appointment.provider?.email }}</div>
     </td>
 
     <!-- Patient Column: Name + Email -->
     <td>
-      <div class="font-semibold text-grey">{{ appointment.patient.name }}</div>
-      <div class="text-gray-500 text-sm">{{ appointment.patient.email }}</div>
+      <div class="font-semibold text-grey">{{ appointment.patient?.first_name+ " "+ appointment.patient?.last_name}}</div>
+      <div class="text-gray-500 text-sm">{{ appointment.patient?.email }}</div>
     </td>
         <td>{{ appointment.reason }}</td>
         <td>

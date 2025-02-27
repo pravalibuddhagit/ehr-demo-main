@@ -131,6 +131,7 @@ exports.getAppointmentsPag = async (req, res) => {
         };
       })
     );
+    
 
     const total = await appointmentCollection.countDocuments(query);
 

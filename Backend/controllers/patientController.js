@@ -29,7 +29,7 @@ exports.createPatient = async (req, res) => {
       gender,
     });
 
-    if (validationErrors) {
+    if (Object.keys(validationErrors).length !== 0) {
       console.log('Validation errors:', validationErrors);
       return res.status(400).json({
         success: false,
@@ -47,9 +47,7 @@ exports.createPatient = async (req, res) => {
       });
     }
 
-    // Parse dob from yyyy-mm-dd to Date object
-    const [year, month, day] = dob.split('-').map(Number);
-    const dobDate = new Date(year, month - 1, day);
+    
 
     const newPatient = {
       first_name,
@@ -57,7 +55,7 @@ exports.createPatient = async (req, res) => {
       email,
       mobile_phone,
       address_line_1,
-      dob: dobDate,
+      dob,
       gender,
       deleted: false,
     };
@@ -105,6 +103,8 @@ exports.getPatientsPag = async (req, res) => {
     const projection = {
       first_name: 1,
       last_name: 1,
+      dob:1,
+      gender:1,
       email: 1,
       mobile_phone: 1,
       address_line_1: 1,
@@ -198,7 +198,7 @@ exports.updatePatient = async (req, res) => {
     const Data = { ...req.body }; 
     const validationErrors = validatePatient(Data);
 
-    if (validationErrors) {
+    if (Object.keys(validationErrors).length !== 0) {
       return res.status(400).json({
         success: false,
         data: null,
@@ -211,20 +211,7 @@ exports.updatePatient = async (req, res) => {
 
     const fieldsToUpdate = {};
     for (const [key, value] of Object.entries(updateFields)) {
-      if (key === 'dob' && value) {
-        const [year, month, day] = value.split('-').map(Number);
-        const dobDate = new Date(year, month - 1, day);
-        if (isNaN(dobDate.getTime())) {
-          return res.status(400).json({
-            success: false,
-            data: null,
-            error: { message: 'Invalid date of birth' },
-          });
-        }
-        if (dobDate.toISOString() !== new Date(existingPatient.dob).toISOString()) {
-          fieldsToUpdate[key] = dobDate;
-        }
-      } else if (value !== undefined && value !== null && String(value) !== String(existingPatient[key])) {
+      if (value !== undefined && value !== null && String(value) !== String(existingPatient[key])) {
         fieldsToUpdate[key] = value;
       }
     }

@@ -250,9 +250,9 @@ this.userForm = this.fb.group({
     console.log("userfomr value in submit function");
     console.log(this.userForm.value);
     const rawDate = this.userForm.value.dob; // This is in YYYY-MM-DD format
-    const formattedDOB = formatDate(rawDate, 'dd-MM-yyyy', 'en-US'); // Convert to DD-MM-YYYY
+    const formattedDOB = formatDate(rawDate, 'yyyy-MM-dd', 'en-US'); // Convert to DD-MM-YYYY
     console.log('Formatted DOB:', formattedDOB);
- 
+    this.userForm.value.dob=formattedDOB;
     const isoDOB = new Date(rawDate).toISOString(); // Convert to ISO format for backend
     console.log('DOB for Backend:', isoDOB);
     if (this.isEditMode && this.editingUser) {
@@ -285,6 +285,7 @@ this.userForm = this.fb.group({
       });
     } else {
         console.log(this.userForm.value)
+
       this.UserService.createUser(this.userForm.value).subscribe({
         next: () => {
           this.messageService.add({

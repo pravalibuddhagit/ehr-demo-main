@@ -11,10 +11,11 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { DropdownModule } from 'primeng/dropdown';
 import { RouterModule } from '@angular/router';
 import { ConfirmDialog } from 'primeng/confirmdialog';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { InputMask } from 'primeng/inputmask';
 import {  ConfirmationService, MessageService } from 'primeng/api';
 import { DatePickerModule } from 'primeng/datepicker';
+import { PatientService } from  './../../services/patient/patient.service'; // Import PatientService
 @Component({
   selector: 'app-patient-registration',
   standalone: true,
@@ -48,7 +49,10 @@ export class PatientRegistrationComponent {
     address_line_1: new FormControl('')
   });
  
-  constructor(private router: Router, private messageService: MessageService,private confirmationService: ConfirmationService
+  constructor(private router: Router,
+     private messageService: MessageService,
+     private confirmationService: ConfirmationService,
+     private patientService: PatientService // Inject PatientService
   ) {} // ✅ Inject Router properly
  
   onSubmit(): void {
@@ -61,38 +65,29 @@ export class PatientRegistrationComponent {
       });
       return;
     }
-
-    // Confirmation Dialog
-    this.confirmationService.confirm({
-      message: 'Please confirm to proceed',
-      header: 'Confirm Registration',
-      icon: 'pi pi-exclamation-circle',
-      acceptButtonProps: {
-        label: 'Confirm',
-        severity: 'primary'
-      },
-      rejectButtonProps: {
-        label: 'cancel',
-        severity: 'contrast',
-
-       
-        outlined: true},
-      accept: () => {
-        // Success toast message
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Patient registered successfully!',
-          life: 2000
+       const rawDate = this.patientForm.value.dob; // This is in YYYY-MM-DD format
+        const formattedDOB = formatDate(rawDate, 'yyyy-MM-dd', 'en-US'); // Convert to DD-MM-YYYY
+        this.patientForm.value.dob=formattedDOB;
+      
+        this.patientService.createPatient(this.patientForm.value).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Patient Creation successful!',
+            });
+        
+            setTimeout(() => {
+              this.router.navigate(['/welcome/patient-view']);
+            }, 2000);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message,
+            });
+          }
         });
-
-        // Reset form after successful submission
-        this.patientForm.reset();
-      },
-
-      reject: () => {
-        this.messageService.add({ severity: 'warn', summary: 'Cancelled', detail: 'Patient registration cancelled', life: 2000 });
       }
-
-    });
-  }}
+}
