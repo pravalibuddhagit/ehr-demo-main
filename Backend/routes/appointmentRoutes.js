@@ -9,8 +9,8 @@ const router = express.Router();
 router.get('/pusers', authenticateToken, getAppointmentsPag);//users who are not deleted and pagination
 router.post('/', authenticateToken, createAppointment);
 
-router.get('/providers', authenticateToken, getProviders);
-router.get('/patients', authenticateToken, getPatients);
+router.get('/providers', authenticateToken, getProviders);// For select cum search
+router.get('/patients', authenticateToken, getPatients);// For select cum search
 
 router.get('/:id', authenticateToken, getAppointmentById);
 router.put('/:id', authenticateToken, updateAppointment);

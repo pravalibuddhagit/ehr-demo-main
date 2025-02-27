@@ -361,7 +361,7 @@ exports.getProviders = async (req, res) => {
   try {
     const db = await getDb();
     const userCollection = db.collection('users');
-    const { search = '' } = req.query;
+    const { search = '', page = 1, limit = 4 } = req.query; // Default limit to 4
 
     const query = { deleted: { $ne: true } };
     if (search) {
@@ -372,11 +372,18 @@ exports.getProviders = async (req, res) => {
       ];
     }
 
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 4;
+    const skip = (pageNum - 1) * limitNum;
+
     const providers = await userCollection
       .find(query, { projection: { first_name: 1, last_name: 1, email: 1 } })
+      .sort({ _id: -1 })
+      .skip(skip)
       .limit(10) // Limit for dropdown
       .toArray();
 
+    const total = await userCollection.countDocuments(query);
     res.status(200).json({
       success: true,
       data: providers.map(p => ({
@@ -384,6 +391,12 @@ exports.getProviders = async (req, res) => {
         name: `${p.first_name} ${p.last_name}`,
         email: p.email,
       })),
+      pagination: {
+        currentPage: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalRecords: total,
+        recordsPerPage: limitNum,
+      },
       error: null,
     });
   } catch (error) {
@@ -399,7 +412,7 @@ exports.getPatients = async (req, res) => {
   try {
     const db = await getDb();
     const patientCollection = db.collection('patients');
-    const { search = '' } = req.query;
+    const { search = '', page = 1, limit = 4 } = req.query; // Default limit to 4
 
     const query = { deleted: { $ne: true } };
     if (search) {
@@ -410,28 +423,43 @@ exports.getPatients = async (req, res) => {
       ];
     }
 
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 4;
+    const skip = (pageNum - 1) * limitNum;
+
+
     const patients = await patientCollection
       .find(query, { projection: { first_name: 1, last_name: 1, email: 1 } })
+      .sort({ _id: -1 })
+      .skip(skip)
       .limit(10) // Limit for dropdown
       .toArray();
 
-    res.status(200).json({
-      success: true,
-      data: patients.map(p => ({
-        _id: p._id,
-        name: `${p.first_name} ${p.last_name}`,
-        email: p.email,
-      })),
-      error: null,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      data: null,
-      error: { message: 'Server Error: ' + error.message },
-    });
-  }
-};
+      const total = await patientCollection.countDocuments(query);
+
+      res.status(200).json({
+        success: true,
+        data: patients.map(p => ({
+          _id: p._id,
+          name: `${p.first_name} ${p.last_name}`,
+          email: p.email,
+        })),
+        pagination: {
+          currentPage: pageNum,
+          totalPages: Math.ceil(total / limitNum),
+          totalRecords: total,
+          recordsPerPage: limitNum,
+        },
+        error: null,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        data: null,
+        error: { message: 'Server Error: ' + error.message },
+      });
+    }
+  };
 
 module.exports = {
   createAppointment: exports.createAppointment,
