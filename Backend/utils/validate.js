@@ -7,6 +7,8 @@ const PATTERNS = {
     MOBILE_PHONE: /^\(\d{3}\) \d{3}-\d{4}$/, // (123) 456-7890
     ZIPCODE: /^\d{5}(\d{4})?$/, // 5 or 9 digits
     DOB: /^\d{4}-\d{2}-\d{2}$/, //yyyy- mm-dd format
+    OBJECT_ID: /^[0-9a-fA-F]{24}$/, // MongoDB ObjectId format
+    TIME_SLOT: /^(9AM - 10AM|10AM - 11AM|11AM - 12PM|12PM - 1PM|2PM - 3PM|3PM - 4PM|4PM - 5PM|5PM - 6PM)$/, // Time slots
   };
   
   // Validation functions
@@ -126,10 +128,128 @@ const PATTERNS = {
   
     return errors;
   };
+
+  const validatePatient = (data) => {
+    const rules = {
+      first_name: {
+        pattern: PATTERNS.NAME,
+        maxLength: 35,
+        required: true,
+        customMessage: 'First name must contain alphabets and spaces only',
+      },
+      last_name: {
+        pattern: PATTERNS.LAST_NAME,
+        maxLength: 35,
+        required: true,
+        customMessage: 'Last name must contain alphabets only',
+      },
+      email: {
+        pattern: PATTERNS.EMAIL,
+        required: true,
+        customMessage: 'Enter a valid email',
+      },
+      mobile_phone: {
+        pattern: PATTERNS.MOBILE_PHONE,
+        required: true,
+        customMessage: 'Mobile phone must be in format (123) 456-7890',
+      },
+      address_line_1: {
+        maxLength: 40,
+        required: true,
+        customMessage: 'Address Line 1 is required',
+      },
+      dob: {
+        pattern: PATTERNS.DOB,
+        required: true,
+        customMessage: 'Date of birth must be in yyyy-mm-dd format and not in the future',
+      },
+      gender: {
+        required: true,
+        customMessage: 'Gender must be male, female, or other',
+        validate: (value) => ['male', 'female', 'other'].includes(String(value)),
+      },
+    };
+  
+    let errors = validateObject(data, rules) || {};
+  
+    // Additional DOB validation for yyyy-mm-dd format
+    if (!errors.dob && data.dob) {
+      const [year, month, day] = data.dob.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      const today = new Date();
+      if (
+        isNaN(date.getTime()) ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day ||
+        date.getFullYear() !== year ||
+        date > today
+      ) {
+        errors.dob = 'Invalid date of birth or date is in the future';
+      }
+    }
+  
+    return errors;
+  };
+
+  // New validator for appointments
+const validateAppointment = (data) => {
+  const rules = {
+     provider_id: {
+      pattern: PATTERNS.OBJECT_ID,
+      required: true,
+      customMessage: 'Provider ID must be a valid ObjectId',
+    },
+    patient_id: {
+      pattern: PATTERNS.OBJECT_ID,
+      required: true,
+      customMessage: 'Patient ID must be a valid ObjectId',
+    },
+    reason: {
+      maxLength: 500,
+      required: true,
+      customMessage: 'Reason is required and must be 500 characters or less',
+    },
+    appointment_date: {
+      pattern: PATTERNS.DOB, // Using DOB pattern for yyyy-mm-dd
+      required: true,
+      customMessage: 'Appointment date must be in yyyy-mm-dd format',
+    },
+    appointment_time: {
+      pattern: PATTERNS.TIME_SLOT,
+      required: true,
+      customMessage: 'Time slot must be one of the predefined options',
+    },
+    status: {
+      required: false,
+      customMessage: 'Status must be pending, confirmed, or cancelled',
+      validate: (value) => ['pending', 'confirmed', 'cancelled'].includes(String(value)),
+    },
+  };
+
+  let errors = validateObject(data, rules) || {};
+
+  // Additional appointment_date validation
+  if (!errors.appointment_date && data.appointment_date) {
+    const [year, month, day] = data.appointment_date.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    if (
+      isNaN(date.getTime()) ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day ||
+      date.getFullYear() !== year
+    ) {
+      errors.appointment_date = 'Invalid appointment date';
+    }
+  }
+
+  return errors ;
+};
   
   module.exports = {
     validateRegistration,
     validateUser,
     validateField,
+    validatePatient,
+    validateAppointment,
     PATTERNS,
   };

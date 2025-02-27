@@ -125,6 +125,16 @@ exports.updateUser = async (req, res) => {
     const db = await getDb();
     const usersCollection = db.collection('users');
    
+    // Fetch the existing user
+    const existingUser = await usersCollection.findOne({ _id: new ObjectId(req.params.id) });
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        data: null,
+        error: { message: 'User not found' },
+      });
+    }
+
 
     const Data = { ...req.body }; 
 
@@ -142,15 +152,6 @@ exports.updateUser = async (req, res) => {
 
 
     // Fetch the existing user
-    const existingUser = await usersCollection.findOne({ _id: new ObjectId(req.params.id) });
-    if (!existingUser) {
-      return res.status(404).json({
-        success: false,
-        data: null,
-        error: { message: 'User not found' },
-      });
-    }
-
    //console.log(existingUser);
    
  
@@ -200,7 +201,7 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({
         success: false,
         data: null,
-        error: { message: 'User not found' },
+        error: { message: 'User not updated' },
       });
     }
 

@@ -4,6 +4,8 @@ const cors = require('cors');
 const { dbConnect, closeDb } = require('./config/db'); // Import closeDb
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const patientRoutes = require('./routes/patientRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
 const app = express();
 
 dotenv.config();
@@ -32,3 +34,5 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/patients', patientRoutes);
+app.use('/api/appointments', appointmentRoutes);
