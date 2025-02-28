@@ -100,6 +100,7 @@ exports.getAppointmentsPag = async (req, res) => {
       search = '',
     } = req.query;
 
+    console.log('Query Parameters:appointments', req.query);
     const query = { deleted: { $ne: true } };
 
     if (search) {
@@ -113,8 +114,9 @@ exports.getAppointmentsPag = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     const appointments = await appointmentCollection
+    //appointment_date: -1, 
       .find(query)
-      .sort({ appointment_date: -1, _id: -1 }) // Sort by date descending, then ID
+      .sort({ _id: -1 }) // Sort by date descending, then ID
       .skip(skip)
       .limit(limitNum)
       .toArray();
@@ -362,8 +364,8 @@ exports.getProviders = async (req, res) => {
   try {
     const db = await getDb();
     const userCollection = db.collection('users');
-    const { search = '', page = 1, limit = 4 } = req.query; // Default limit to 4
-
+    const { search = '', page = 1, limit = 10 } = req.query; // Default limit to 4
+console.log("query params : in getporviders" ,req.query);
     const query = { deleted: { $ne: true } };
     if (search) {
       query.$or = [
@@ -381,7 +383,7 @@ exports.getProviders = async (req, res) => {
       .find(query, { projection: { first_name: 1, last_name: 1, email: 1 } })
       .sort({ _id: -1 })
       .skip(skip)
-      .limit(10) // Limit for dropdown
+      .limit(limitNum) // Limit for dropdown
       .toArray();
 
     const total = await userCollection.countDocuments(query);
@@ -433,7 +435,7 @@ exports.getPatients = async (req, res) => {
       .find(query, { projection: { first_name: 1, last_name: 1, email: 1 } })
       .sort({ _id: -1 })
       .skip(skip)
-      .limit(10) // Limit for dropdown
+      .limit(limitNum) // Limit for dropdown
       .toArray();
 
       const total = await patientCollection.countDocuments(query);

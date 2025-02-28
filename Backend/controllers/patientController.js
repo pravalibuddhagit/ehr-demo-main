@@ -86,7 +86,7 @@ exports.getPatientsPag = async (req, res) => {
       limit = 10,
       search = '',
     } = req.query;
-
+    console.log('Query Parameters: patients', req.query);
     const query = { deleted: { $ne: true } }; // Active patients only
 
     if (search) {

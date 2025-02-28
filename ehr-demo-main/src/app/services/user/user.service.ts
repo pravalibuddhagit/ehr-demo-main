@@ -31,6 +31,7 @@ export class UserService {
  
   getAllUsers2(
     page: number,
+    limit:number,
      search: string,
       state: string,
       stateMode: string,
@@ -40,7 +41,7 @@ export class UserService {
        : Observable<any> {
     let params = new HttpParams()
         .set('page', page.toString())
-        .set('limit', '10');
+        .set('limit', limit.toString());
  
     if (search) params = params.set('search', search);
     if (state) {

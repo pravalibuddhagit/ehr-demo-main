@@ -31,10 +31,10 @@ export class AppointmentService {
   }
 
   // Method to get paginated appointments
-  getAppointmentsPag(page: number, search: string = ''): Observable<any> {
+  getAppointmentsPag(page: number,limit:number, search: string = ''): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', '10');
+      .set('limit', limit.toString());
 
     if (search) params = params.set('search', search);
 
@@ -79,7 +79,7 @@ export class AppointmentService {
     let params = new HttpParams()
       .set('search', search)
       .set('page', page.toString())
-      .set('limit', limit.toString());
+    //  .set('limit', limit.toString());
 
     return this.http
       .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(
@@ -103,7 +103,7 @@ export class AppointmentService {
     let params = new HttpParams()
       .set('search', search)
       .set('page', page.toString())
-      .set('limit', limit.toString());
+     // .set('limit', limit.toString());
 
     return this.http
       .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(

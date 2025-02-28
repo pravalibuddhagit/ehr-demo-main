@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Table, TableModule } from 'primeng/table';
@@ -37,10 +37,14 @@ import { AppointmentService } from '../../services/appointment/appointment.servi
   providers: [ConfirmationService, MessageService],
   styleUrls: []
 })
-export class AppointmentViewComponent implements OnInit {
+export class AppointmentViewComponent {
   appointments: any[] = [];
   selectedAppointment: any = null;
   isDialogVisible: boolean = false;
+  totalRecords: number = 0; 
+  currentPage: number = 1; 
+  rowsPerPage: number = 5; 
+  searchTerm: string = ''; 
 
   selectedStatus: string | null = null;
   statusOptions = [
@@ -49,7 +53,7 @@ export class AppointmentViewComponent implements OnInit {
     { label: 'Rejected', value: 'rejected' },
     { label: 'Pending', value: 'pending' },
   ];
-
+  @ViewChild('dt') dt!: Table;
   constructor(
     private confirmationService: ConfirmationService,
     private appointmentService: AppointmentService,
@@ -58,13 +62,15 @@ export class AppointmentViewComponent implements OnInit {
     private router:Router
   ) {}
 
-  ngOnInit(): void {
-    this.loadAppointments();
-  }
-  loadAppointments(page: number = 1, search: string = '') {
-    this.appointmentService.getAppointmentsPag(page, search).subscribe({
+  loadAppointments() {
+    this.appointmentService.getAppointmentsPag(
+      this.currentPage,
+      this.rowsPerPage,
+      this.searchTerm
+    ).subscribe({
       next: (response) => {
         this.appointments = response.appointments;
+        this.totalRecords = response.pagination.totalRecords;
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -76,22 +82,28 @@ export class AppointmentViewComponent implements OnInit {
       },
     });
   }
-
+  onPageChange(event: any) {
+    console.log('onPageChange called:', event);
+    this.currentPage = event.first / event.rows + 1;
+    this.rowsPerPage = event.rows;
+    this.loadAppointments();
+  }
 
   onGlobalSearch(event: Event, dt: Table): void {
-   const inputElement = event.target as HTMLInputElement;
-    const filterValue = inputElement.value.trim().toLowerCase();
-    dt.filterGlobal(filterValue, 'contains');
-    this.loadAppointments(1, filterValue);
+    const inputElement = event.target as HTMLInputElement;
+    this.searchTerm = inputElement.value.trim().toLowerCase();
+    // dt.filterGlobal(this.searchTerm, 'contains'); this triggers client sidde/front end side filtering
+    this.currentPage = 1; // Reset to page 1 on search
+    this.loadAppointments();
   }
   
-
   onStatusFilterChange(event: any, table: Table): void {
     if (!this.selectedStatus) {
       table.filter('', 'status', 'equals');
     } else {
       table.filter(this.selectedStatus.toLowerCase(), 'status', 'equals');
     }
+    this.loadAppointments(); // Refresh list after status filter
   }
 
   openEditDialog(appointment: any): void {
@@ -102,13 +114,9 @@ export class AppointmentViewComponent implements OnInit {
   closeDialog(): void {
     this.isDialogVisible = false;
     this.selectedAppointment = null;
+
   }
-  saveAppointment(updatedAppointment: any): void {
-    const index = this.appointments.findIndex((a) => a._id === updatedAppointment._id);
-    if (index !== -1) {
-      this.appointments[index] = updatedAppointment;
-      this.cdr.detectChanges();
-    }
+  saveAppointment(): void {
     this.closeDialog();
     this.loadAppointments(); // Refresh list after update
   }

@@ -3,15 +3,20 @@
 
     <p-table
       class="mt-base"
-      #dt2
-      [value]="patients"
-      dataKey="id"
-      [rows]="10"
-      [rowsPerPageOptions]="[1, 25, 50]"
-      [loading]="false"
-      [paginator]="true"
-      [globalFilterFields]="['first_name', 'last_name']"
-      [tableStyle]="{ 'min-width': '75rem' }"
+      
+     
+    #dt2
+    [value]="patients"
+    dataKey="id"
+    [rows]="3"
+    [rowsPerPageOptions]="[10, 15, 20]"
+    [loading]="false"
+    [paginator]="true"
+    [globalFilterFields]="['first_name', 'last_name']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [lazy]="true"
+    (onLazyLoad)="onPageChange($event)"
+    [totalRecords]="totalRecords"
     >
       <!-- Table Caption -->
       <ng-template #caption>

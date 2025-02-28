@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { PrimeNG } from 'primeng/config';
 import { AvatarModule } from 'primeng/avatar';
@@ -42,7 +42,14 @@ import { PatientService } from  './../../services/patient/patient.service'; // I
 export class PatientPaginationComponent {
  
   patients: any[] = []; // Initialize as empty array
-  
+  loading: boolean = false;
+  totalRecords: number = 0; // Add totalRecords
+  currentPage: number = 1; // Add currentPage
+  rowsPerPage: number = 3; // Default rows per page
+  searchTerm: string = ''; // Add searchTerm
+
+  @ViewChild('dt2') dt2!: Table;
+
 constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
@@ -52,22 +59,29 @@ constructor(
   ) {}
   
   
-  
-  ngOnInit(): void {
-    this.loadPatients(); // Fetch patients on init
-  }
+
 
 onGlobalSearch(event: Event, dt: Table) {
+
     const inputElement = event.target as HTMLInputElement;
-    dt.filterGlobal(inputElement.value, 'contains');
-    this.loadPatients(1, inputElement.value); // Update list based on search
+    this.searchTerm = inputElement.value;
+    // dt.filterGlobal(inputElement.value, 'contains');
+    this.currentPage = 1; // Reset to page 1 on search
+    this.loadPatients();
   }
 
 // Load patients from API
-loadPatients(page: number = 1, search: string = '') {
-  this.patientService.getPatientsPag(page, search).subscribe({
+loadPatients() {
+ 
+  this.patientService.getPatientsPag(
+    this.currentPage,
+    this.rowsPerPage,
+    this.searchTerm
+    
+  ).subscribe({
     next: (response) => {
       this.patients = response.patients; // Update patients array
+      this.totalRecords=response.pagination.totalRecords;
       this.cdr.detectChanges(); // Ensure UI updates
     },
     error: (error) => {
@@ -80,7 +94,12 @@ loadPatients(page: number = 1, search: string = '') {
   });
 }
 
-
+onPageChange(event: any) {
+  console.log('onPageChange called:', event);
+  this.currentPage = event.first / event.rows + 1;
+  this.rowsPerPage = event.rows;
+  this.loadPatients();
+}
       
    
       confirm2(event: Event, patient: any) {
