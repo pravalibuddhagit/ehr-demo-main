@@ -17,6 +17,7 @@ import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
 import { AppointmentService } from '../../services/appointment/appointment.service';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-appointment-view',
@@ -31,7 +32,7 @@ import { AppointmentService } from '../../services/appointment/appointment.servi
     TagModule,
     IconFieldModule,
     InputIconModule,
-    CardModule, ConfirmDialog,ToastModule,DialogModule,AppointmentFormComponent
+    CardModule, ConfirmDialog,ToastModule,DialogModule,AppointmentFormComponent,AvatarModule
   ],
   templateUrl: './appointment-view.component.html',
   providers: [ConfirmationService, MessageService],
@@ -79,11 +80,31 @@ export class AppointmentViewComponent implements OnInit {
 
 
   onGlobalSearch(event: Event, dt: Table): void {
-   const inputElement = event.target as HTMLInputElement;
+    const inputElement = event.target as HTMLInputElement;
     const filterValue = inputElement.value.trim().toLowerCase();
-    dt.filterGlobal(filterValue, 'contains');
-    this.loadAppointments(1, filterValue);
-  }
+ 
+    if (filterValue === '') {
+        // Reload full list when search is cleared
+        this.loadAppointments();
+    } else {
+        // Apply filter for provider and patient name
+        dt.filterGlobal(filterValue, 'contains');
+ 
+        this.appointments = this.appointments.filter((appointment) => {
+            const providerName = `${appointment.provider?.first_name || ''} ${appointment.provider?.last_name || ''}`.toLowerCase();
+            const patientName = `${appointment.patient?.first_name || ''} ${appointment.patient?.last_name || ''}`.toLowerCase();
+            const reason = appointment.reason?.toLowerCase() || '';
+ 
+            return (
+                providerName.includes(filterValue) ||
+                patientName.includes(filterValue) ||
+                reason.includes(filterValue)
+            );
+        });
+    }
+ 
+    this.cdr.detectChanges(); // Ensure UI updates
+}
   
 
   onStatusFilterChange(event: any, table: Table): void {

@@ -1,17 +1,20 @@
 <p-toast></p-toast>
 
+
+<div  class="flex items-center justify-center">
+  <div [ngClass]="{'w-full max-w-[600px] bg-white rounded-lg shadow dark:border md:mt-0 xl:p-0': !isEditMode}">
+    <div [ngClass]="{'p-10 space-y-4 md:space-y-6 sm:p-8': !isEditMode}">
+      <h1 *ngIf="!isEditMode" class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl mb-8">
+        Appointment Creation
+      </h1>
+
 <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
-  <div class="flex items-center justify-center">
-    <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-2xl xl:p-0">
-      <div class="p-10 space-y-4 md:space-y-6 sm:p-8">
-        <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl mb-8">
-          {{ isEditMode ? 'Edit Appointment' : 'Appointment Creation' }}
-        </h1>
+
 
      
 
 
-        <div>
+        <div class="grid grid-cols-1 gap-4 mb-3">
           <label for="provider_name" class="block mb-1 text-gray-700">Provider Name<span style="color: red;"> *</span></label>
           <p-select 
           [options]="providers"
@@ -47,7 +50,7 @@
       </div>
 
 
-        <div>
+        <div class="grid grid-cols-1 gap-4 mb-3">
           <label for="patient_name" class="block mb-1 text-gray-700">Patient Name<span style="color: red;"> *</span></label>
           <p-select 
           [options]="patients"
@@ -84,12 +87,12 @@
       </div>
 
         <!-- Reason -->
-        <div>
+        <div class="grid grid-cols-1 gap-4 mb-3">
           <label for="reason" class="block mb-1 text-gray-700">Reason<span style="color: red;"> *</span></label>
           <textarea class="w-full p-2 border border-gray-300 rounded" formControlName="reason" placeholder="Add reason here"></textarea>
          
-        </div>
-        <div class="grid grid-cols-2 gap-4">
+        </div >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
         <!-- Date & Time -->
         <div>
           <label for="appointment_date" class="block mb-1 text-gray-700">
@@ -99,6 +102,7 @@
             formControlName="appointment_date"
             [showTime]="false"
             [showIcon]="true"
+            [minDate]="minDate"
             class="w-full"
             inputStyleClass="w-full p-2 border border-gray-300 rounded"
           ></p-calendar>
@@ -106,7 +110,7 @@
 
 
         <!-- Time Slot Dropdown -->
-        <div>
+        <div >
           <label for="appointment_time" class="block mb-1 text-gray-700">
             Time Slot<span style="color: red;"> *</span>
           </label>
@@ -120,7 +124,7 @@
         </div>
         </div>
 
-        <div>
+        <div class="grid grid-cols-1 gap-4 mb-3">
           <label for="status" class="block mb-1 text-gray-700">Status<span class="text-red-500"> *</span></label>
           <p-dropdown
             [options]="statusOptions"
@@ -128,11 +132,12 @@
             optionLabel="label"
             optionValue="value"
             placeholder="Select Status"
-            class="w-full">
+            class="w-full"
+            appendTo="body">
           </p-dropdown>
         </div>
         <!-- Submit Button -->
-        <div class="text-center mt-4">
+        <div class="text-center mt-6">
           <button 
             type="submit" 
             class="w-full p-2 bg-blue-500 text-white rounded disabled:bg-blue-300" 
@@ -141,9 +146,10 @@
           {{ isEditMode ? 'Update' : 'Submit' }}
           </button>
         </div>
+      </form>
       </div>
     </div>
   </div>
-</form>
+
 
 <p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>

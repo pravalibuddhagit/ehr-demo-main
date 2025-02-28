@@ -8,7 +8,8 @@
     [rowsPerPageOptions]="[10, 25, 50]"
     [loading]="false"
     [paginator]="true"
-    [globalFilterFields]="['provider.name', 'patient.name', 'reason']"
+    [globalFilterFields]="['provider.first_name', 'provider.last_name',
+    'patient.first_name', 'patient.last_name',]"
     [tableStyle]="{ 'min-width': '75rem' }"
   >
     <!-- Table Caption -->
@@ -96,15 +97,26 @@
   </p-table>
 </div>
 
-<p-dialog [(visible)]="isDialogVisible" header="Edit Appointment" [modal]="true" [closable]="true" (onHide)="closeDialog()">
+
+<p-dialog [(visible)]="isDialogVisible" header="Edit Appointment"  [modal]="true"  [closable]="true"  maskStyleClass="backdrop-blur-sm">
+
+  <!-- <ng-template #header>
+    <div class="inline-flex items-center justify-center gap-2">
+      <p-avatar icon="pi pi-user" shape="circle" />
+      <span class="font-bold whitespace-nowrap">provider- {{ selectedAppointment?.provider?.first_name }} | patient- {{ selectedAppointment?.patient?.first_name }}</span>
+    </div>
+</ng-template>
+<span class="text-surface-500 dark:text-surface-400 block mb-8 font-bold text-2xl">Edit Appointment</span> -->
+
   <app-appointment-form
     *ngIf="selectedAppointment"
     [appointment]="selectedAppointment"
     (onSave)="saveAppointment($event)"
     (onClose)="closeDialog()"
   ></app-appointment-form>
+  
 </p-dialog>
- 
+
 
 <p-toast />
 <p-confirmdialog [style]="{ width: '400px' }"></p-confirmdialog>

@@ -79,7 +79,10 @@ import { AppointmentService} from  './../../services/appointment/appointment.ser
     private appointmentService: AppointmentService // Inject PatientService
   ) {}
 
+  minDate: Date = new Date();
+
   ngOnInit() {
+    this.minDate.setDate(this.minDate.getDate() + 1);
     this.appointmentForm = this.fb.group({
       provider_id: [null, Validators.required], // Changed to provider_id
       patient_id: [null, Validators.required], // Changed to patient_id
@@ -201,9 +204,14 @@ loadProviders(search: string = '') {
               detail: this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!',
               life: 2000,
             });
-            this.appointmentForm.reset();
+
+            if (!this.isEditMode) {
+              this.appointmentForm.reset();
             this.isEditMode = false;
             this.selectedAppointment = null;
+            }
+           
+            
           },
           error: (error) => {
             this.messageService.add({

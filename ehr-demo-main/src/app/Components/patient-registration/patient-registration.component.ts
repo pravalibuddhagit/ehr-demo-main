@@ -39,6 +39,7 @@ import { PatientService } from  './../../services/patient/patient.service'; // I
   providers: [MessageService,ConfirmationService],
 })
 export class PatientRegistrationComponent {
+  maxDate = new Date();
   patientForm: FormGroup = new FormGroup({  // ✅ Ensure patientForm is declared
     first_name: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
     last_name: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]*$')]),

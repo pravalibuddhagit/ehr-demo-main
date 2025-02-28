@@ -21,7 +21,7 @@
     "@primeng/themes": "^19.0.5",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
-    "primeng": "^19.0.8",
+    "primeng": "^19.0.9",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
