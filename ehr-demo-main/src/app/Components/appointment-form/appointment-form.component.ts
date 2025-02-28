@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,9 +34,12 @@ import { AppointmentService} from  './../../services/appointment/appointment.ser
     RouterModule ,        // Required for buttons,
     SelectModule
   ]
-})export class AppointmentFormComponent implements OnInit{
+})
 
-  @Input() appointment: any;  
+export class AppointmentFormComponent implements OnInit{
+
+  @Input() appointment: any; 
+  @Output() appointmentSaved = new EventEmitter<any>(); 
   isEditMode: boolean = false;
   selectedAppointment: any;
   
@@ -50,6 +53,8 @@ import { AppointmentService} from  './../../services/appointment/appointment.ser
   patientPage = 1;
   providerTotalRecords = 0;
   patientTotalRecords = 0;
+  providerSearch: string = '';
+  patientSearch: string = '';
   limit = 4;
 
   timeSlots = [
@@ -96,23 +101,49 @@ import { AppointmentService} from  './../../services/appointment/appointment.ser
 
     if (this.appointment) {
       this.isEditMode = true;
-      this.selectedAppointment = this.appointment;
-      this.appointmentForm.patchValue({
-        provider_id: this.appointment.provider_id,
-        patient_id: this.appointment.patient_id,
-        reason: this.appointment.reason,
-        appointment_date: new Date(this.appointment.appointment_date),
-        appointment_time: this.timeSlots.find(slot => slot.slot === this.appointment.appointment_time),
-        status: this.appointment.status,
-      });
-    }
+      this.patchAppointmentData();
+     
 
   }
+}
+  patchAppointmentData() {
+    // Find the provider and patient objects from the loaded lists
+    console.log(this.appointment)
+    const providerr =  {    
+      email: this.appointment.provider.email,
+      name: this.appointment.provider.first_name + ' ' + this.appointment.provider.last_name,
+      _id: this.appointment.provider_id
+    };
+    const patientt ={
+      email: this.appointment.patient.email,
+      name: this.appointment.patient.first_name + ' ' + this.appointment.patient.last_name,
+     
+      _id: this.appointment.patient_id
+    };
+
+    this.selectedProvider = providerr;
+    this.selectedPatient = patientt;
+
+    this.appointmentForm.patchValue({
+      provider_id: providerr,
+      patient_id: patientt,
+      reason: this.appointment.reason,
+      appointment_date: new Date(this.appointment.appointment_date),
+      appointment_time: this.timeSlots.find(slot => slot.slot === this.appointment.appointment_time),
+      status: this.appointment.status
+    });
+    console.log("here")
+    console.log(this.appointmentForm.value)
+
+    this.cdRef.detectChanges();
+  }
+
 loadProviders(search: string = '') {
     this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
       next: (response) => {
         this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
         this.providerTotalRecords = response.pagination.totalRecords;
+      //  if (this.appointment) this.patchAppointmentData(); // Patch after loading providers
       },
       error: (error) => {
         this.messageService.add({
@@ -129,6 +160,7 @@ loadProviders(search: string = '') {
       next: (response) => {
         this.patients = this.patientPage === 1 ? response.patients : [...this.patients, ...response.patients];
         this.patientTotalRecords = response.pagination.totalRecords;
+       // if (this.appointment) this.patchAppointmentData(); // Patch after loading patients
       },
       error: (error) => {
         this.messageService.add({
@@ -162,6 +194,7 @@ loadProviders(search: string = '') {
     this.patientPage = 1;
     this.loadPatients(event.filter);
   }
+
   onSubmit(): void {
     if (this.appointmentForm.invalid) {
       this.messageService.add({
@@ -173,6 +206,9 @@ loadProviders(search: string = '') {
     }
 
     const formValue = this.appointmentForm.value;
+    console.log("FROM VALUEE")
+   console.log(formValue)
+
     const appointmentData = {
       provider_id: formValue.provider_id._id,
       patient_id: formValue.patient_id._id,
@@ -193,25 +229,26 @@ loadProviders(search: string = '') {
       accept: () => {
         console.log(appointmentData);
         const action = this.isEditMode
-          ? this.appointmentService.updateAppointment(this.selectedAppointment._id, appointmentData)
+          ? this.appointmentService.updateAppointment(this.appointment._id, appointmentData)
           : this.appointmentService.createAppointment(appointmentData);
 
         action.subscribe({
           next: (response) => {
+
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
               detail: this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!',
               life: 2000,
             });
-
-            if (!this.isEditMode) {
-              this.appointmentForm.reset();
+            setTimeout(() => {
+              this.appointmentSaved.emit(); // Emit the updated/created appointment
+            }, 2000);
+            
+           // this.appointmentForm.reset();
             this.isEditMode = false;
             this.selectedAppointment = null;
-            }
-           
-            
+            this.router.navigate(['welcome/appointment-view'])
           },
           error: (error) => {
             this.messageService.add({

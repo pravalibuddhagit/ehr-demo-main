@@ -51,11 +51,12 @@ export class PatientService {
   // Method to get paginated patients
   getPatientsPag(
     page: number,
+    limit:number,
     search: string = '',
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('limit', '10');
+      .set('limit', limit.toString());
 
     if (search) params = params.set('search', search);
  

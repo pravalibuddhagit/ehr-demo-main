@@ -90,6 +90,7 @@ export class PaginationComponent  {
     //this.loading = true;
     console.log('loadUsers called with:', {
       currentPage: this.currentPage,
+      rowsPerPage: this.rowsPerPage, 
       searchTerm: this.searchTerm,
       stateFilter: this.stateFilter,
       stateMatchMode: this.stateMatchMode,
@@ -98,6 +99,7 @@ export class PaginationComponent  {
     });
     this.userService.getAllUsers2(
       this.currentPage,
+      this.rowsPerPage, // Log rowsPerPage
       this.searchTerm,
       this.stateFilter,
       this.stateMatchMode,

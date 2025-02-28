@@ -268,7 +268,7 @@ exports.getUsersPag = async (req, res) => {
       countryMode = 'contains',
     } = req.query;
 
-    console.log('Query Parameters:', req.query);
+    console.log('Query Parameters:users', req.query);
     const query = { 
     deleted: { $ne: true }
      }; // Active users only
