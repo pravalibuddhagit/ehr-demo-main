@@ -79,7 +79,7 @@ export class AppointmentService {
     let params = new HttpParams()
       .set('search', search)
       .set('page', page.toString())
-    //  .set('limit', limit.toString());
+      .set('limit', limit.toString());
 
     return this.http
       .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(
@@ -103,7 +103,7 @@ export class AppointmentService {
     let params = new HttpParams()
       .set('search', search)
       .set('page', page.toString())
-     // .set('limit', limit.toString());
+      .set('limit', limit.toString());
 
     return this.http
       .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(
