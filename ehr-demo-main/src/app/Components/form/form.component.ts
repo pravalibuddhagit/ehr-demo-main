@@ -27,9 +27,10 @@ import { DatePickerModule } from 'primeng/datepicker';
   providers: [ConfirmationService,MessageService],
 })
 export class FormComponent implements OnInit,OnChanges{
+  maxDate = new Date();
   @Input() editingUser: any | null = null;
   @Output() dataEvent = new EventEmitter<boolean>();
-  maxDate: string = new Date().toISOString().split('T')[0];
+  //maxDate: string = new Date().toISOString().split('T')[0];
   userForm: FormGroup;
   checked: boolean = true;
   isEditMode: boolean = false;
@@ -271,7 +272,7 @@ this.userForm = this.fb.group({
         this.messageService.add({
           severity: 'success',
           summary: 'User Updated',
-          detail: `${this.editingUser.first_name} details updated Successfully`
+          detail: `${this.editingUser.first_name} ${this.editingUser.last_name} details are updated successfully`
         });
   
         },

@@ -10,11 +10,12 @@
         <nav class="flex-1 px-2 py-4 bg-white">
             
 
-            <p-panelmenu [model]="[
+            <p-panelmenu [multiple]="true" [model]="[
             {
                 label: 'Home',
                 icon: 'pi pi-home',
-                routerLink: '/welcome'
+                routerLink: '/welcome',
+                routerLinkActiveOptions: { exact: true }
             },
             {
                 label: 'Users',
@@ -24,13 +25,13 @@
                         label: 'User Creation',
                         icon: 'pi pi-user-plus',
                         routerLink: '/welcome/user-creation',
-                        routerLinkActiveOptions: { exact: true }
+                       
                     },
                     {
                         label: 'View Users',
                         icon: 'pi pi-eye',
                         routerLink: '/welcome/dashboard',
-                        routerLinkActiveOptions: { exact: true }
+                        
                     }
                 ]
             },
@@ -42,13 +43,13 @@
                         label: 'Patient Creation',
                         icon: 'pi pi-user-plus',
                         routerLink: '/welcome/patient-creation',
-                        routerLinkActiveOptions: { exact: true }
+                       
                     },
                     {
                         label: 'Patient View',
                         icon: 'pi pi-eye',
                         routerLink: '/welcome/patient-view',
-                        routerLinkActiveOptions: { exact: true }
+                        
                     }
                 ]
             },
@@ -60,13 +61,13 @@
                         label: 'Create Appointment',
                         icon: 'pi pi-plus',
                         routerLink: '/welcome/appointment-creation',
-                        routerLinkActiveOptions: { exact: true }
+                       
                     },
                     {
                         label: 'View Appointments',
                         icon: 'pi pi-eye',
                         routerLink: '/welcome/appointment-view',
-                        routerLinkActiveOptions: { exact: true }
+                       
                     }
                 ]
             }

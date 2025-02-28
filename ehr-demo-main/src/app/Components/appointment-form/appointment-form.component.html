@@ -124,7 +124,7 @@
         </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 mb-3">
+        <div class="grid grid-cols-1 gap-4 mb-3" *ngIf="isEditMode">
           <label for="status" class="block mb-1 text-gray-700">Status<span class="text-red-500"> *</span></label>
           <p-dropdown
             [options]="statusOptions"
