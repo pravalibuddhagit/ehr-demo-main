@@ -72,7 +72,7 @@ export class AppointmentViewComponent {
       next: (response) => {
         this.appointments = response.appointments;
         this.totalRecords = response.pagination.totalRecords;
-        this.cdr.detectChanges();
+      //  this.cdr.detectChanges();
       },
       error: (error) => {
         this.messageService.add({

@@ -57,15 +57,13 @@ exports.createAppointment = async (req, res) => {
       });
     }
 
-    // Parse appointment_date
-    const [year, month, day] = appointment_date.split('-').map(Number);
-    const appointmentDate = new Date(year, month - 1, day);
+   
 
     const newAppointment = {
       provider_id: new ObjectId(provider_id),
       patient_id: new ObjectId(patient_id),
       reason,
-      appointment_date: appointmentDate,
+      appointment_date,
       appointment_time,
       status,
       deleted: false,
@@ -276,17 +274,8 @@ exports.updateAppointment = async (req, res) => {
     }
     if (status && status !== existingAppointment.status) fieldsToUpdate.status = status;
 
-    if (appointment_date && appointment_date !== existingAppointment.appointment_date.toISOString().split('T')[0]) {
-      const [year, month, day] = appointment_date.split('-').map(Number);
-      const appointmentDate = new Date(year, month - 1, day);
-      if (isNaN(appointmentDate.getTime())) {
-        return res.status(400).json({
-          success: false,
-          data: null,
-          error: { message: 'Invalid appointment date' },
-        });
-      }
-      fieldsToUpdate.appointment_date = appointmentDate;
+    if (appointment_date && appointment_date !== existingAppointment.appointment_date) {
+      fieldsToUpdate.appointment_date = appointment_date;
     }
 
     if (Object.keys(fieldsToUpdate).length === 0) {
@@ -464,6 +453,91 @@ exports.getPatients = async (req, res) => {
     }
   };
 
+
+  //Helper APIs for select cum search
+exports.getAllProviders = async (req, res) => {
+  try {
+    const db = await getDb();
+    const userCollection = db.collection('users');
+    const { search = ''} = req.query; // Default limit to 4
+console.log("query params : in getallporviders" ,req.query);
+    const query = { deleted: { $ne: true } };
+    if (search) {
+      query.$or = [
+        { first_name: { $regex: search, $options: 'i' } },
+        { last_name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+   
+
+    const providers = await userCollection
+      .find(query, { projection: { first_name: 1, last_name: 1, email: 1 } })
+      .sort({ _id: -1 })
+      .toArray();
+
+    const total = await userCollection.countDocuments(query);
+    res.status(200).json({
+      success: true,
+      data: providers.map(p => ({
+        _id: p._id,
+        name: `${p.first_name} ${p.last_name}`,
+        email: p.email,
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      data: null,
+      error: { message: 'Server Error: ' + error.message },
+    });
+  }
+};
+
+
+exports.getAllPatients = async (req, res) => {
+  try {
+    const db = await getDb();
+    const patientCollection = db.collection('patients');
+    const { search = '' } = req.query; // Default limit to 4
+
+    const query = { deleted: { $ne: true } };
+    if (search) {
+      query.$or = [
+        { first_name: { $regex: search, $options: 'i' } },
+        { last_name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+
+    const patients = await patientCollection
+      .find(query, { projection: { first_name: 1, last_name: 1, email: 1 } })
+      .sort({ _id: -1 })
+      .toArray();
+
+      const total = await patientCollection.countDocuments(query);
+
+      res.status(200).json({
+        success: true,
+        data: patients.map(p => ({
+          _id: p._id,
+          name: `${p.first_name} ${p.last_name}`,
+          email: p.email,
+        })),
+        error: null,
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        data: null,
+        error: { message: 'Server Error: ' + error.message },
+      });
+    }
+  };
+
+
 module.exports = {
   createAppointment: exports.createAppointment,
   getAppointmentsPag: exports.getAppointmentsPag,
@@ -472,4 +546,9 @@ module.exports = {
   deleteAppointment: exports.deleteAppointment,
   getProviders: exports.getProviders,
   getPatients: exports.getPatients,
+  getAllProviders: exports.getAllProviders,
+  getAllPatients: exports.getAllPatients,
+  
+  
+   
 };

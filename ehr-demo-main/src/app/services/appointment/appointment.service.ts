@@ -98,6 +98,28 @@ export class AppointmentService {
       );
   }
 
+    // Method to get providers with pagination for select cum search
+    getAllProviders(search: string = ''): Observable<any> {
+      let params = new HttpParams()
+        .set('search', search)
+      
+      return this.http
+        .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(
+          `${this.apiUrl}/Allproviders`,
+          { headers: this.getHeaders(), params }
+        )
+        .pipe(
+          map((response) => {
+            if (response.success) {
+              return { providers: response.data};
+            } else {
+              return throwError(() => new Error(response.error?.message || 'Failed to fetch providers'));
+            }
+          }),
+          catchError(this.handleError)
+        );
+    }
+
   // Method to get patients with pagination for select cum search
   getPatients(search: string = '', page: number = 1, limit: number = 4): Observable<any> {
     let params = new HttpParams()
@@ -108,6 +130,26 @@ export class AppointmentService {
     return this.http
       .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(
         `${this.apiUrl}/patients`,
+        { headers: this.getHeaders(), params }
+      )
+      .pipe(
+        map((response) => {
+          if (response.success) {
+            return { patients: response.data, pagination: response.pagination };
+          } else {
+            return throwError(() => new Error(response.error?.message || 'Failed to fetch patients'));
+          }
+        }),
+        catchError(this.handleError)
+      );
+  }
+
+  getAllPatients(search: string = '', page: number = 1, limit: number = 4): Observable<any> {
+    let params = new HttpParams()
+      .set('search', search)
+    return this.http
+      .get<{ success: boolean; data: any; pagination: any; error?: { message: string } }>(
+        `${this.apiUrl}/Allpatients`,
         { headers: this.getHeaders(), params }
       )
       .pipe(

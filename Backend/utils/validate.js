@@ -9,6 +9,7 @@ const PATTERNS = {
     DOB: /^\d{4}-\d{2}-\d{2}$/, //yyyy-mm-dd format
     OBJECT_ID: /^[0-9a-fA-F]{24}$/, // MongoDB ObjectId format
     TIME_SLOT: /^(9AM - 10AM|10AM - 11AM|11AM - 12PM|12PM - 1PM|2PM - 3PM|3PM - 4PM|4PM - 5PM|5PM - 6PM)$/, // Time slots
+    ISO_DATE: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/, // UTC ISO 8601 format (e.g., 2025-03-03T00:00:00.000Z)
   };
   
   // Validation functions
@@ -210,9 +211,9 @@ const validateAppointment = (data) => {
       customMessage: 'Reason is required and must be 500 characters or less',
     },
     appointment_date: {
-      pattern: PATTERNS.DOB, // Using DOB pattern for yyyy-mm-dd
+      pattern: PATTERNS.ISO_DATE, // Validate UTC ISO format
       required: true,
-      customMessage: 'Appointment date must be in yyyy-mm-dd format',
+      customMessage: 'Appointment date must be in ISO 8601 UTC format (e.g., 2025-03-03T00:00:00.000Z)',
     },
     appointment_time: {
       pattern: PATTERNS.TIME_SLOT,
@@ -228,17 +229,15 @@ const validateAppointment = (data) => {
 
   let errors = validateObject(data, rules) || {};
 
-  // Additional appointment_date validation
+  // ✅ Additional validation: Check if appointment_date is in the future
   if (!errors.appointment_date && data.appointment_date) {
-    const [year, month, day] = data.appointment_date.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
-    if (
-      isNaN(date.getTime()) ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day ||
-      date.getFullYear() !== year
-    ) {
+    const appointmentDate = new Date(data.appointment_date);
+    const today = new Date();
+
+    if (isNaN(appointmentDate.getTime())) {
       errors.appointment_date = 'Invalid appointment date';
+    } else if (appointmentDate < today) {
+      errors.appointment_date = 'Appointment date cannot be in the past';
     }
   }
 

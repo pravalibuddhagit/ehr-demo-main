@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, Input, ChangeDetectorRef, OnInit, EventEmitter, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -82,12 +82,8 @@ export class AppointmentFormComponent implements OnInit{
     private confirmationService: ConfirmationService,
     private cdRef: ChangeDetectorRef,
     private appointmentService: AppointmentService // Inject PatientService
-  ) {}
-
-  minDate: Date = new Date();
-
-  ngOnInit() {
-     this.minDate.setDate(this.minDate.getDate() + 1);
+  ) {
+    this.minDate.setDate(this.minDate.getDate() + 1);
     this.appointmentForm = this.fb.group({
       provider_id: [null, Validators.required], // Changed to provider_id
       patient_id: [null, Validators.required], // Changed to patient_id
@@ -96,17 +92,59 @@ export class AppointmentFormComponent implements OnInit{
       appointment_time: [null, Validators.required],
       status: ['pending', Validators.required]
     });
+  }
+
+  minDate: Date = new Date();
+
+  ngOnInit() {
+   
     this.loadProviders();
     this.loadPatients();
+   
+    // if (this.appointment) {
+    //   this.isEditMode = true;
+    //   this.patchAppointmentData();
+    // }
+  
+}
 
-    if (this.appointment) {
-      this.isEditMode = true;
-      this.patchAppointmentData();
+
+ngOnChanges(changes: SimpleChanges) {
+ 
+  if (changes['appointment'] && this.appointment) {
+  
+  //  console.log(this.appointment)
+    this.isEditMode = true;
+    const providerr =  {    
+      email: this.appointment.provider.email,
+      name: this.appointment.provider.first_name + ' ' + this.appointment.provider.last_name,
+      _id: this.appointment.provider_id
+    };
+    const patientt ={
+      email: this.appointment.patient.email,
+      name: this.appointment.patient.first_name + ' ' + this.appointment.patient.last_name,
      
+      _id: this.appointment.patient_id
+    };
 
+    this.selectedProvider = providerr;
+    this.selectedPatient = patientt;
+
+    this.appointmentForm.patchValue({
+      provider_id: providerr,
+      patient_id: patientt,
+      reason: this.appointment.reason,
+      appointment_date: new Date(this.appointment.appointment_date),
+      appointment_time: this.timeSlots.find(slot => slot.slot === this.appointment.appointment_time),
+      status: this.appointment.status
+    });
+    this.cdRef.detectChanges();
+  }else {
+    this.isEditMode = false;
+    this.appointmentForm.reset(); // Reset form if editingUser is null or undefined
   }
 }
-  patchAppointmentData() {
+  /*patchAppointmentData() {
     // Find the provider and patient objects from the loaded lists
     console.log(this.appointment)
     const providerr =  {    
@@ -135,11 +173,25 @@ export class AppointmentFormComponent implements OnInit{
     console.log("here")
     console.log(this.appointmentForm.value)
 
-    this.cdRef.detectChanges();
-  }
+   
+  }*/
 
 loadProviders(search: string = '') {
-    this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
+  /*  this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
+      next: (response) => {
+        this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
+        this.providerTotalRecords = response.pagination.totalRecords;
+      //  if (this.appointment) this.patchAppointmentData(); // Patch after loading providers
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to load providers',
+        });
+      },
+    });*/
+    this.appointmentService.getAllProviders(search).subscribe({
       next: (response) => {
         this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
         this.providerTotalRecords = response.pagination.totalRecords;
@@ -153,12 +205,13 @@ loadProviders(search: string = '') {
         });
       },
     });
+    
   }
 
   loadPatients(search: string = '') {
-    this.appointmentService.getPatients(search, this.patientPage, this.limit).subscribe({
+    /*this.appointmentService.getPatients(search, this.patientPage, this.limit).subscribe({
       next: (response) => {
-        this.patients = this.patientPage === 1 ? response.patients : [...this.patients, ...response.patients];
+        this.patients = response.patients
         this.patientTotalRecords = response.pagination.totalRecords;
        // if (this.appointment) this.patchAppointmentData(); // Patch after loading patients
       },
@@ -169,7 +222,22 @@ loadProviders(search: string = '') {
           detail: error.message || 'Failed to load patients',
         });
       },
+    });*/
+    this.appointmentService.getAllPatients(search).subscribe({
+      next: (response) => {
+        this.patients = response.patients
+       // if (this.appointment) this.patchAppointmentData(); // Patch after loading patients
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to load patients',
+        });
+      },
     });
+
+    
   }
   onProviderScroll(event: any) {
     if (this.providers.length < this.providerTotalRecords) {
@@ -208,17 +276,30 @@ loadProviders(search: string = '') {
     const formValue = this.appointmentForm.value;
     console.log("FROM VALUEE")
    console.log(formValue)
+    // Convert date to UTC format before sending to backend
+  const selectedDate = formValue.appointment_date instanceof Date
+  ? new Date(
+      Date.UTC(
+        formValue.appointment_date.getFullYear(),
+        formValue.appointment_date.getMonth(),
+        formValue.appointment_date.getDate()
+      )
+    ).toISOString()  // Convert to UTC format
+  : formValue.appointment_date;
 
+  console.log("SELECTED DATE")
+  console.log(selectedDate)
     const appointmentData = {
       provider_id: formValue.provider_id._id,
       patient_id: formValue.patient_id._id,
       reason: formValue.reason,
-      appointment_date: formValue.appointment_date instanceof Date
-        ? formValue.appointment_date.toISOString().split('T')[0]
-        : formValue.appointment_date,
+      appointment_date: selectedDate,
       appointment_time: formValue.appointment_time.slot,
       status: formValue.status,
     };
+
+    console.log("appouintment data")
+    console.log(appointmentData)
  
     this.confirmationService.confirm({
       message: 'Please confirm to proceed',
@@ -227,7 +308,7 @@ loadProviders(search: string = '') {
       acceptButtonProps: { label: 'Confirm', severity: 'primary' },
       rejectButtonProps: { label: 'Cancel', severity: 'contrast', outlined: true },
       accept: () => {
-        console.log(appointmentData);
+       // console.log(appointmentData);
         const action = this.isEditMode
           ? this.appointmentService.updateAppointment(this.appointment._id, appointmentData)
           : this.appointmentService.createAppointment(appointmentData);
@@ -238,17 +319,29 @@ loadProviders(search: string = '') {
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
-              detail: this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!',
+              detail: this.isEditMode ? 'Appointment updated successfully!' : 'Appointment created successfully!Redirecting to Appointment-Views',
               life: 2000,
             });
+
+            if(this.isEditMode){
             setTimeout(() => {
-              this.appointmentSaved.emit(); // Emit the updated/created appointment
+              this.appointmentSaved.emit(); // Emit the updated appointment
             }, 2000);
-            
-           // this.appointmentForm.reset();
-            this.isEditMode = false;
+           
+          }else{
+            this.appointmentForm.reset();
+            setTimeout(() => {
+              this.router.navigate(['welcome/appointment-view']);
+            }, 2000);
+          }
+
+
+         
+           
             this.selectedAppointment = null;
-            this.router.navigate(['welcome/appointment-view'])
+
+           // this.router.navigate(['welcome/appointment-view'])
+          
           },
           error: (error) => {
             this.messageService.add({
@@ -269,6 +362,7 @@ loadProviders(search: string = '') {
         });
       },
     });
+   
   }
 }
 

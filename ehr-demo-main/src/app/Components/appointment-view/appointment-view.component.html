@@ -64,7 +64,7 @@
     <!-- Table Body -->
     <ng-template pTemplate="body" let-appointment>
       <tr>
-        <td>{{appointment.appointment_date }}</td>
+        <td>{{appointment.appointment_date | date: 'MM/dd/yyyy'}}</td>
         <td>{{ appointment.appointment_time }}</td>
        <!-- Doctor Column: Name + Email -->
     <td>
