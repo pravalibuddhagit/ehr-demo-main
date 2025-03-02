@@ -100,25 +100,22 @@ export class AppointmentViewComponent {
     this.currentPage = 1; // Reset to page 1 on search
     this.loadAppointments();
   }
-  
   onStatusFilterChange(): void {
+    this.applyFilters();
+  }
+
+  applyFilters() {
     if (this.selectedStatus) {
       this.filteredAppointments = this.appointments.filter(
         (appointment) => appointment.status === this.selectedStatus
       );
     } else {
-      this.filteredAppointments = [...this.appointments]; // Show all if "All" is selected
+      this.filteredAppointments = [...this.appointments];
+    }
+    if (this.searchTerm) {
+      this.dt.filterGlobal(this.searchTerm, 'contains');
     }
   }
-  applyFilters() {
-    // 🔹 Filter appointments based on the selected status
-    if (this.selectedStatus) {
-      this.filteredAppointments = this.appointments.filter(appointment => appointment.status === this.selectedStatus);
-    } else {
-      this.filteredAppointments = [...this.appointments]; // Show all if no status is selected
-    }
-  }
-
   openEditDialog(appointment: any): void {
     this.selectedAppointment = { ...appointment };
     this.isDialogVisible = true;
@@ -137,7 +134,7 @@ export class AppointmentViewComponent {
   confirm2(event: Event, appointment: any) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: "Do you want to delete Appointment?",
+      message: `Do you want to delete Appointment for ${appointment.patient.first_name}?`,
       header: 'Alert',
       icon: 'pi pi-info-circle',
       rejectButtonProps: {
