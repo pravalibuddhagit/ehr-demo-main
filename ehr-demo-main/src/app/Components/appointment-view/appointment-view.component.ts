@@ -48,7 +48,7 @@ export class AppointmentViewComponent {
   isDialogVisible: boolean = false;
   totalRecords: number = 0; 
   currentPage: number = 1; 
-  rowsPerPage: number = 5; 
+  rowsPerPage: number = 10; 
   searchTerm: string = ''; 
 
   selectedStatus: string | null = null;

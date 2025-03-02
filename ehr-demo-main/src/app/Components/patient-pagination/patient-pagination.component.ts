@@ -46,7 +46,7 @@ export class PatientPaginationComponent {
   loading: boolean = false;
   totalRecords: number = 0; // Add totalRecords
   currentPage: number = 1; // Add currentPage
-  rowsPerPage: number = 3; // Default rows per page
+  rowsPerPage: number = 10; // Default rows per page
   searchTerm: string = ''; // Add searchTerm
 
   @ViewChild('dt2') dt2!: Table;
