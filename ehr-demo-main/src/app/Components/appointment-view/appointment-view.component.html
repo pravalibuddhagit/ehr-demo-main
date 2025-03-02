@@ -1,8 +1,7 @@
-
 <div class="card">
   <p-table
     #dt
-    [value]="appointments"
+    [value]="filteredAppointments"
     dataKey="id"
     [rows]="5"
     [rowsPerPageOptions]="[10, 15, 20]"
@@ -40,7 +39,7 @@
             optionLabel="label"
             optionValue="value"
             placeholder="Select Status"
-            (onChange)="onStatusFilterChange($event, dt)"
+            (onChange)="onStatusFilterChange()"
             class="p-ml-2"
           ></p-dropdown>
         </div>

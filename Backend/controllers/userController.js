@@ -88,7 +88,7 @@ exports.createUser = async (req, res) => {
       agreeToTerms,
       allowNotifications: allowNotifications || false,
       // status: 0,
-      deleted : false
+      status: 0
     
     };
 
@@ -126,7 +126,7 @@ exports.updateUser = async (req, res) => {
     const usersCollection = db.collection('users');
    
     // Fetch the existing user
-    const existingUser = await usersCollection.findOne({ _id: new ObjectId(req.params.id) });
+    const existingUser = await usersCollection.findOne({ _id: new ObjectId(req.params.id), status: 0  });
     if (!existingUser) {
       return res.status(404).json({
         success: false,
@@ -238,7 +238,7 @@ exports.getUsers = async (req, res) => {
     const db = await getDb();
     const usersCollection = db.collection('users');
 
-    const users = await usersCollection.find({ deleted: false }).toArray();
+    const users = await usersCollection.find({ status:0}).toArray();
     res.status(200).json({
       success: true,
       data: users,
@@ -270,7 +270,7 @@ exports.getUsersPag = async (req, res) => {
 
     console.log('Query Parameters:users', req.query);
     const query = { 
-    deleted: { $ne: true }
+    status:0
      }; // Active users only
 
     if (search) {
@@ -283,13 +283,13 @@ exports.getUsersPag = async (req, res) => {
     const buildFilter = (value, mode) => {
       switch (mode.toLowerCase()) {
         case 'startswith':
-          return { $regex: `^${value}`, $options: 'i' };
+          return { $regex: `^${value}`, $options: 'i' }; // Correct string interpolation
         case 'contains':
           return { $regex: value, $options: 'i' };
         case 'notcontains':
           return { $not: { $regex: value, $options: 'i' } };
         case 'endswith':
-          return { $regex: `${value}$`, $options: 'i' };
+          return { $regex: `${value}$`, $options: 'i' }; // Correct string interpolation
         case 'equals':
           return value;
         case 'notequals':
@@ -298,7 +298,7 @@ exports.getUsersPag = async (req, res) => {
           return { $regex: value, $options: 'i' };
       }
     };
-
+    
     if (state) query.state = buildFilter(state, stateMode);
     if (country) query.country = buildFilter(country, countryMode);
 
@@ -359,7 +359,7 @@ exports.getUserById = async (req, res) => {
     const db = await getDb();
     const usersCollection = db.collection('users');
   
-    const user = await usersCollection.findOne({ _id: new ObjectId(req.params.id) });
+    const user = await usersCollection.findOne({ _id: new ObjectId(req.params.id), status: 0 });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -391,8 +391,8 @@ exports.deleteUser = async (req, res) => {
   
 
     const result = await usersCollection.findOneAndUpdate(
-      { _id: new ObjectId(req.params.id) },
-      { $set: { deleted: true} },
+      { _id: new ObjectId(req.params.id), status: 0  },
+      { $set: { status:1} },
       { returnDocument: 'after' }
     );
 

@@ -85,6 +85,122 @@ exports.createAppointment = async (req, res) => {
   }
 };
 
+// exports.getAppointmentsPag = async (req, res) => {
+//   try {
+//     const db = await getDb();
+//     const appointmentCollection = db.collection('appointments');
+//     const userCollection = db.collection('users');
+//     const patientCollection = db.collection('patients');
+
+//     const {
+//       page = 1,
+//       limit = 10,
+//       search = '',
+//     } = req.query;
+
+//     console.log('Query Parameters:appointments', req.query);
+//     const query = { deleted: { $ne: true } };
+
+//     if (search) {
+//       // Search will require joining with users and patients, so we'll handle it differently
+//       // For simplicity, assume search is on reason for now
+//       //query.reason = { $regex: search, $options: 'i' };
+//       const searchRegex = { $regex: search, $options: 'i' };
+
+//       // Find matching providers
+//       const matchingProviders = await userCollection
+//         .find(
+//           {
+//             $or: [
+//               { first_name: searchRegex },
+//               { last_name: searchRegex },
+//             ],
+//           },
+//           { projection: { _id: 1 } }
+//         )
+//         .toArray();
+//       const providerIds = matchingProviders.map((p) => p._id);
+
+//       // Find matching patients
+//       const matchingPatients = await patientCollection
+//         .find(
+//           {
+//             $or: [
+//               { first_name: searchRegex },
+//               { last_name: searchRegex },
+//             ],
+//           },
+//           { projection: { _id: 1 } }
+//         )
+//         .toArray();
+//       const patientIds = matchingPatients.map((p) => p._id);
+//       // Update query to include appointments where provider_id or patient_id matches
+//       if (providerIds.length > 0 || patientIds.length > 0) {
+//         query.$or = [];
+//         if (providerIds.length > 0) {
+//           query.$or.push({ provider_id: { $in: providerIds } });
+//         }
+//         if (patientIds.length > 0) {
+//           query.$or.push({ patient_id: { $in: patientIds } });
+//         }
+//       } else {
+//         // If no matches found in providers or patients, return empty result
+//         query._id = null; // This ensures no results are returned
+//       }
+    
+//     }
+
+//     const pageNum = parseInt(page, 10) || 1;
+//     const limitNum = parseInt(limit, 10) || 10;
+//     const skip = (pageNum - 1) * limitNum;
+
+//     const appointments = await appointmentCollection
+//     //appointment_date: -1, 
+//       .find(query)
+//       .sort({ _id: -1 }) // Sort by date descending, then ID
+//       .skip(skip)
+//       .limit(limitNum)
+//       .toArray();
+
+//     // Populate provider and patient details
+//     const populatedAppointments = await Promise.all(
+//       appointments.map(async (appt) => {
+//         const provider = await userCollection.findOne({ _id: appt.provider_id }, { projection: { first_name: 1, last_name: 1, email: 1 } });
+//         const patient = await patientCollection.findOne({ _id: appt.patient_id }, { projection: { first_name: 1, last_name: 1, email: 1 } });
+//         return {
+//           ...appt,
+//           provider: provider ? { first_name: provider.first_name, last_name: provider.last_name, email: provider.email } : null,
+//           patient: patient ? { first_name: patient.first_name, last_name: patient.last_name, email: patient.email } : null,
+//         };
+//       })
+//     );
+    
+
+//     const total = await appointmentCollection.countDocuments(query);
+
+//     res.json({
+//       success: true,
+//       data: {
+//         appointments: populatedAppointments,
+//         pagination: {
+//           currentPage: pageNum,
+//           totalPages: Math.ceil(total / limitNum),
+//           totalRecords: total,
+//           recordsPerPage: limitNum,
+//         },
+//       },
+//       error: null,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       data: null,
+//       error: { message: 'Server Error: ' + error.message },
+//     });
+//   }
+// };
+
+
 exports.getAppointmentsPag = async (req, res) => {
   try {
     const db = await getDb();
@@ -92,19 +208,96 @@ exports.getAppointmentsPag = async (req, res) => {
     const userCollection = db.collection('users');
     const patientCollection = db.collection('patients');
 
-    const {
-      page = 1,
-      limit = 10,
-      search = '',
-    } = req.query;
+    const { page = 1, limit = 10, search = '' } = req.query;
 
     console.log('Query Parameters:appointments', req.query);
     const query = { deleted: { $ne: true } };
-
+    // Apply status filter if provided (excluding 'null' for "All")
+     // Apply status filter if provided (excluding 'null' for "All")
+    
+    
     if (search) {
-      // Search will require joining with users and patients, so we'll handle it differently
-      // For simplicity, assume search is on reason for now
-      query.reason = { $regex: search, $options: 'i' };
+      const searchRegex = { $regex: search, $options: 'i' };
+   
+
+      // Use aggregation to search for full names (first_name + " " + last_name) for providers
+      const providerPipeline = [
+        {
+          $project: {
+            fullName: { $concat: ['$first_name', ' ', '$last_name'] },
+            _id: 1,
+          },
+        },
+        {
+          $match: {
+            fullName: searchRegex,
+          },
+        },
+      ];
+      const matchingProviders = await userCollection.aggregate(providerPipeline).toArray();
+      const providerIds = matchingProviders.map((p) => p._id);
+
+      // Use aggregation to search for full names (first_name + " " + last_name) for patients
+      const patientPipeline = [
+        {
+          $project: {
+            fullName: { $concat: ['$first_name', ' ', '$last_name'] },
+            _id: 1,
+          },
+        },
+        {
+          $match: {
+            fullName: searchRegex,
+          },
+        },
+      ];
+      const matchingPatients = await patientCollection.aggregate(patientPipeline).toArray();
+      const patientIds = matchingPatients.map((p) => p._id);
+
+      // Also keep individual first_name and last_name searches for backward compatibility
+      const individualProviders = await userCollection
+        .find(
+          {
+            $or: [
+              { first_name: searchRegex },
+              { last_name: searchRegex },
+            ],
+          },
+          { projection: { _id: 1 } }
+        )
+        .toArray();
+      const individualProviderIds = individualProviders.map((p) => p._id);
+
+      const individualPatients = await patientCollection
+        .find(
+          {
+            $or: [
+              { first_name: searchRegex },
+              { last_name: searchRegex },
+            ],
+          },
+          { projection: { _id: 1 } }
+        )
+        .toArray();
+      const individualPatientIds = individualPatients.map((p) => p._id);
+
+      // Combine full-name and individual-name matches (remove duplicates)
+      const uniqueProviderIds = [...new Set([...providerIds, ...individualProviderIds])];
+      const uniquePatientIds = [...new Set([...patientIds, ...individualPatientIds])];
+
+      // Update query to include appointments where provider_id or patient_id matches
+      if (uniqueProviderIds.length > 0 || uniquePatientIds.length > 0) {
+        query.$or = [];
+        if (uniqueProviderIds.length > 0) {
+          query.$or.push({ provider_id: { $in: uniqueProviderIds } });
+        }
+        if (uniquePatientIds.length > 0) {
+          query.$or.push({ patient_id: { $in: uniquePatientIds } });
+        }
+      } else {
+        // If no matches found in providers or patients, return empty result
+        query._id = null; // This ensures no results are returned
+      }
     }
 
     const pageNum = parseInt(page, 10) || 1;
@@ -112,7 +305,6 @@ exports.getAppointmentsPag = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     const appointments = await appointmentCollection
-    //appointment_date: -1, 
       .find(query)
       .sort({ _id: -1 }) // Sort by date descending, then ID
       .skip(skip)
@@ -122,16 +314,25 @@ exports.getAppointmentsPag = async (req, res) => {
     // Populate provider and patient details
     const populatedAppointments = await Promise.all(
       appointments.map(async (appt) => {
-        const provider = await userCollection.findOne({ _id: appt.provider_id }, { projection: { first_name: 1, last_name: 1, email: 1 } });
-        const patient = await patientCollection.findOne({ _id: appt.patient_id }, { projection: { first_name: 1, last_name: 1, email: 1 } });
+        const provider = await userCollection.findOne(
+          { _id: appt.provider_id },
+          { projection: { first_name: 1, last_name: 1, email: 1 } }
+        );
+        const patient = await patientCollection.findOne(
+          { _id: appt.patient_id },
+          { projection: { first_name: 1, last_name: 1, email: 1 } }
+        );
         return {
           ...appt,
-          provider: provider ? { first_name: provider.first_name, last_name: provider.last_name, email: provider.email } : null,
-          patient: patient ? { first_name: patient.first_name, last_name: patient.last_name, email: patient.email } : null,
+          provider: provider
+            ? { first_name: provider.first_name, last_name: provider.last_name, email: provider.email }
+            : null,
+          patient: patient
+            ? { first_name: patient.first_name, last_name: patient.last_name, email: patient.email }
+            : null,
         };
       })
     );
-    
 
     const total = await appointmentCollection.countDocuments(query);
 
@@ -156,7 +357,6 @@ exports.getAppointmentsPag = async (req, res) => {
     });
   }
 };
-
 exports.getAppointmentById = async (req, res) => {
   try {
     const db = await getDb();
@@ -380,7 +580,7 @@ console.log("query params : in getporviders" ,req.query);
       success: true,
       data: providers.map(p => ({
         _id: p._id,
-        name: `${p.first_name} ${p.last_name}`,
+        name:`${p.first_name} ${p.last_name}`,
         email: p.email,
       })),
       pagination: {
@@ -523,7 +723,7 @@ exports.getAllPatients = async (req, res) => {
         success: true,
         data: patients.map(p => ({
           _id: p._id,
-          name: `${p.first_name} ${p.last_name}`,
+          name:`${p.first_name} ${p.last_name}`,
           email: p.email,
         })),
         error: null,

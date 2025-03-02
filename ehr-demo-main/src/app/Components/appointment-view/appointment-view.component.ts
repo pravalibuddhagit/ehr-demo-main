@@ -40,6 +40,8 @@ import { AvatarModule } from 'primeng/avatar';
 })
 export class AppointmentViewComponent {
   appointments: any[] = [];
+  filteredAppointments: any[] = [];  // ✅ Add this line
+ 
   selectedAppointment: any = null;
   isDialogVisible: boolean = false;
   totalRecords: number = 0; 
@@ -50,9 +52,9 @@ export class AppointmentViewComponent {
   selectedStatus: string | null = null;
   statusOptions = [
     { label: 'All', value: null },
-    { label: 'Completed', value: 'completed' },
-    { label: 'Rejected', value: 'rejected' },
-    { label: 'Pending', value: 'pending' },
+    { label: 'completed', value: 'completed' },
+    { label: 'rejected', value: 'rejected' },
+    { label: 'pending', value: 'pending' },
   ];
   @ViewChild('dt') dt!: Table;
   constructor(
@@ -67,10 +69,11 @@ export class AppointmentViewComponent {
     this.appointmentService.getAppointmentsPag(
       this.currentPage,
       this.rowsPerPage,
-      this.searchTerm
+      this.searchTerm 
     ).subscribe({
       next: (response) => {
         this.appointments = response.appointments;
+        this.filteredAppointments = [...this.appointments];
         this.totalRecords = response.pagination.totalRecords;
       //  this.cdr.detectChanges();
       },
@@ -98,13 +101,22 @@ export class AppointmentViewComponent {
     this.loadAppointments();
   }
   
-  onStatusFilterChange(event: any, table: Table): void {
-    if (!this.selectedStatus) {
-      table.filter('', 'status', 'equals');
+  onStatusFilterChange(): void {
+    if (this.selectedStatus) {
+      this.filteredAppointments = this.appointments.filter(
+        (appointment) => appointment.status === this.selectedStatus
+      );
     } else {
-      table.filter(this.selectedStatus.toLowerCase(), 'status', 'equals');
+      this.filteredAppointments = [...this.appointments]; // Show all if "All" is selected
     }
-    this.loadAppointments(); // Refresh list after status filter
+  }
+  applyFilters() {
+    // 🔹 Filter appointments based on the selected status
+    if (this.selectedStatus) {
+      this.filteredAppointments = this.appointments.filter(appointment => appointment.status === this.selectedStatus);
+    } else {
+      this.filteredAppointments = [...this.appointments]; // Show all if no status is selected
+    }
   }
 
   openEditDialog(appointment: any): void {
@@ -125,7 +137,7 @@ export class AppointmentViewComponent {
   confirm2(event: Event, appointment: any) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Do you want to delete Appointment?`,
+      message: "Do you want to delete Appointment?",
       header: 'Alert',
       icon: 'pi pi-info-circle',
       rejectButtonProps: {
@@ -143,7 +155,7 @@ export class AppointmentViewComponent {
             this.messageService.add({
               severity: 'success',
               summary: 'Confirmed',
-              detail: `Appointment deleted successfully`,
+              detail: "Appointment deleted successfully",
             });
             this.loadAppointments();
           },

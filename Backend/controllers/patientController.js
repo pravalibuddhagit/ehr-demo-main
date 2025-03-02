@@ -57,7 +57,8 @@ exports.createPatient = async (req, res) => {
       address_line_1,
       dob,
       gender,
-      deleted: false,
+     // deleted: false,
+     status:0
     };
 
     const result = await patientsCollection.insertOne(newPatient);
@@ -87,7 +88,7 @@ exports.getPatientsPag = async (req, res) => {
       search = '',
     } = req.query;
     console.log('Query Parameters: patients', req.query);
-    const query = { deleted: { $ne: true } }; // Active patients only
+    const query = { status:0 }; // Active patients only
 
     if (search) {
       query.$or = [
@@ -265,7 +266,7 @@ exports.deletePatient = async (req, res) => {
 
     const result = await patientsCollection.findOneAndUpdate(
       { _id: new ObjectId(req.params.id) },
-      { $set: { deleted: true } },
+      { $set: { status: 1  } },
       { returnDocument: 'after' }
     );
 
