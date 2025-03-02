@@ -17,7 +17,7 @@ const PATTERNS = {
     // Convert value to string if it exists, or treat as empty if undefined/null
   const stringValue = value != null ? String(value) : '';
 
-  if (required && (!value || stringValue.trim() === '')) {
+  if (required && (value===undefined || value===null || (typeof value ==='string' && value.trim() === ''))) {
     return `${field} is required`;
   }
   if (stringValue && maxLength && stringValue.length > maxLength) {
@@ -106,6 +106,14 @@ const PATTERNS = {
         customMessage: 'allowNotifications must be a boolean',
         validate: (value) => typeof value === 'boolean',
       },
+      status: {
+        required: true,
+        customMessage: 'Status must be either 0 or 1',
+        validate: (value) => {
+          const numValue = Number(value); // Convert to number
+          return Number.isInteger(numValue) && [0, 1].includes(numValue);
+        },
+      }
     };
   
     const errors = validateObject(data, rules) || {};
@@ -169,6 +177,11 @@ const PATTERNS = {
         customMessage: 'Gender must be male, female, or other',
         validate: (value) => ['male', 'female', 'other'].includes(String(value)),
       },
+      status: {
+        required: true,
+        customMessage: 'Status must be either 0 or 1',
+        validate: (value) => [0, 1].includes(value),
+      }
     };
   
     let errors = validateObject(data, rules) || {};

@@ -57,7 +57,37 @@ exports.createAppointment = async (req, res) => {
       });
     }
 
-   
+    // *Check if the provider already has an appointment at the given date and time*
+    const providerConflict = await appointmentCollection.findOne({
+      provider_id: new ObjectId(provider_id),
+      appointment_date,
+      appointment_time,
+      deleted: false, // Only check active appointments
+    });
+
+    if (providerConflict) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        error: { message: "The provider is already booked for this time slot on the selected date." },
+      });
+    }
+
+    // *Check if the patient already has an appointment at the given date and time*
+    const patientConflict = await appointmentCollection.findOne({
+      patient_id: new ObjectId(patient_id),
+      appointment_date,
+      appointment_time,
+      deleted: false,
+    });
+
+    if (patientConflict) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        error: { message: "The patient is already booked for this time slot on the selected date."},
+      });
+    }
 
     const newAppointment = {
       provider_id: new ObjectId(provider_id),
