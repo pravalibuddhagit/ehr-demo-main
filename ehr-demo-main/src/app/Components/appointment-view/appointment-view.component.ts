@@ -18,6 +18,8 @@ import { DialogModule } from 'primeng/dialog';
 import { AppointmentFormComponent } from '../appointment-form/appointment-form.component';
 import { AppointmentService } from '../../services/appointment/appointment.service';
 import { AvatarModule } from 'primeng/avatar';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
 
 @Component({
   selector: 'app-appointment-view',
@@ -57,6 +59,9 @@ export class AppointmentViewComponent {
     { label: 'pending', value: 'pending' },
   ];
   @ViewChild('dt') dt!: Table;
+
+  private searchSubject = new Subject<string>();
+
   constructor(
     private confirmationService: ConfirmationService,
     private appointmentService: AppointmentService,
@@ -64,6 +69,23 @@ export class AppointmentViewComponent {
     private cdr: ChangeDetectorRef,
     private router:Router
   ) {}
+
+
+  ngOnInit() {
+    this.loadAppointments();
+
+    // ✅ Debounce search input
+    this.searchSubject.pipe(
+      debounceTime(300),  // ✅ Wait for 500ms pause in typing
+      distinctUntilChanged() // ✅ Only search if value changes
+    ).subscribe((search) => {
+      this.searchTerm = search;
+      this.currentPage = 1;
+      this.loadAppointments();
+    });
+  }
+
+
 
   loadAppointments() {
     this.appointmentService.getAppointmentsPag(
@@ -95,11 +117,16 @@ export class AppointmentViewComponent {
 
   onGlobalSearch(event: Event, dt: Table): void {
     const inputElement = event.target as HTMLInputElement;
-    this.searchTerm = inputElement.value.trim().toLowerCase();
-    // dt.filterGlobal(this.searchTerm, 'contains'); this triggers client sidde/front end side filtering
-    this.currentPage = 1; // Reset to page 1 on search
-    this.loadAppointments();
+    this.searchSubject.next(inputElement.value.trim().toLowerCase());
   }
+
+  // onGlobalSearch(event: Event, dt: Table): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   this.searchTerm = inputElement.value.trim().toLowerCase();
+  //   // dt.filterGlobal(this.searchTerm, 'contains'); this triggers client sidde/front end side filtering
+  //   this.currentPage = 1; // Reset to page 1 on search
+  //   this.loadAppointments();
+  // }
   
   onStatusFilterChange(): void {
     if (this.selectedStatus) {

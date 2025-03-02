@@ -28,6 +28,7 @@ import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { PatientService } from  './../../services/patient/patient.service'; // Import PatientService
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-patient-pagination',
@@ -50,6 +51,9 @@ export class PatientPaginationComponent {
 
   @ViewChild('dt2') dt2!: Table;
 
+  private searchSubject = new Subject<string>(); // ✅ Add Subject
+
+
 constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
@@ -58,17 +62,33 @@ constructor(
     private patientService: PatientService
   ) {}
   
-  
-
-
-onGlobalSearch(event: Event, dt: Table) {
-
-    const inputElement = event.target as HTMLInputElement;
-    this.searchTerm = inputElement.value;
-    // dt.filterGlobal(inputElement.value, 'contains');
-    this.currentPage = 1; // Reset to page 1 on search
+  ngOnInit() {
     this.loadPatients();
+
+    // ✅ Debounce search input
+    this.searchSubject.pipe(
+      debounceTime(300),  // ✅ Wait for 500ms pause in typing
+      distinctUntilChanged() // ✅ Only search if value changes
+    ).subscribe((search) => {
+      this.searchTerm = search;
+      this.currentPage = 1;
+      this.loadPatients();
+    });
   }
+
+  onGlobalSearch(event: Event, dt: Table) {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchSubject.next(inputElement.value.trim().toLowerCase());
+  }
+
+// onGlobalSearch(event: Event, dt: Table) {
+
+//     const inputElement = event.target as HTMLInputElement;
+//     this.searchTerm = inputElement.value;
+//     // dt.filterGlobal(inputElement.value, 'contains');
+//     this.currentPage = 1; // Reset to page 1 on search
+//     this.loadPatients();
+//   }
 
 // Load patients from API
 loadPatients() {

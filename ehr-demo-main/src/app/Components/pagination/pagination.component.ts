@@ -21,6 +21,7 @@ import { FilterMatchMode,FilterMetadata } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { FormComponent } from '../form/form.component';
 import { Router,RouterModule } from '@angular/router';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-pagination',
@@ -73,6 +74,8 @@ export class PaginationComponent  {
   
   @ViewChild('dt1') dt1!: Table;
 
+  private searchSubject = new Subject<string>();
+
   constructor(
     private confirmationService: ConfirmationService,
     private userService: UserService,
@@ -85,6 +88,20 @@ export class PaginationComponent  {
   //   console.log('ngOnInit called');
   //   this.loadUsers();
   // }
+
+  ngOnInit() {
+    this.loadUsers();
+
+    // ✅ Debounce search input
+    this.searchSubject.pipe(
+      debounceTime(300),  // ✅ Wait for 500ms pause in typing
+      distinctUntilChanged() // ✅ Only search if value changes
+    ).subscribe((search) => {
+      this.searchTerm = search;
+      this.currentPage = 1;
+      this.loadUsers();
+    });
+  }
 
   loadUsers() {
     //this.loading = true;
@@ -164,11 +181,14 @@ console.log('Country filter:', { value: this.countryFilter, matchMode: this.coun
   }
 
   onSearch(event: Event) {
-    const input = event.target as HTMLInputElement;
-    console.log('onSearch called, value:', input.value);
-    this.searchTerm = input.value;
-    this.currentPage = 1;
-    this.loadUsers();
+
+    const inputElement = event.target as HTMLInputElement;
+    this.searchSubject.next(inputElement.value.trim().toLowerCase());
+    // const input = event.target as HTMLInputElement;
+    // console.log('onSearch called, value:', input.value);
+    // this.searchTerm = input.value;
+    // this.currentPage = 1;
+    // this.loadUsers();
   }
 
   
