@@ -41,7 +41,7 @@ export const routes: Routes = [
         children: [
  
           { path: '', component: WelcomeComponent },
-          { path: 'dashboard', component: PaginationComponent },
+          { path: 'user-view', component: PaginationComponent },
           { path: 'user-creation', component: UserCreationComponent },
           {path: 'patient-creation', component:PatientRegistrationComponent},
           {path: 'patient-view', component:PatientPaginationComponent},

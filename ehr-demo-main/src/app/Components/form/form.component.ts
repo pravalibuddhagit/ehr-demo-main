@@ -296,7 +296,7 @@ this.userForm = this.fb.group({
           });
       
           setTimeout(() => {
-            this.router.navigate(['/welcome/dashboard']);
+            this.router.navigate(['/welcome/user-view']);
           }, 2000);
         },
         error: (error) => {
