@@ -126,7 +126,13 @@ ngOnChanges(changes: SimpleChanges) {
      
       _id: this.appointment.patient_id
     };
-
+  // Ensure selected provider and patient are in the dropdown options
+  if (!this.providers.some(p => p._id === providerr._id)) {
+    this.providers.unshift(providerr); // Add if not already present
+  }
+  if (!this.patients.some(p => p._id === patientt._id)) {
+    this.patients.unshift(patientt); // Add if not already present
+  }
     this.selectedProvider = providerr;
     this.selectedPatient = patientt;
 
@@ -142,6 +148,8 @@ ngOnChanges(changes: SimpleChanges) {
   }else {
     this.isEditMode = false;
     this.appointmentForm.reset(); // Reset form if editingUser is null or undefined
+    this.selectedProvider = null;
+      this.selectedPatient = null;
   }
 }
   /*patchAppointmentData() {
@@ -177,7 +185,33 @@ ngOnChanges(changes: SimpleChanges) {
   }*/
 
 loadProviders(search: string = '') {
-  /*  this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
+  this.providerSearch = search;
+   this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
+      next: (response) => {
+        this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
+        this.providerTotalRecords = response.pagination.totalRecords;
+        if (this.isEditMode && this.selectedAppointment) {
+          const providerr = {
+            _id: this.selectedAppointment.provider_id,
+            name: `${this.selectedAppointment.provider.first_name} ${this.selectedAppointment.provider.last_name}`,
+            email: this.selectedAppointment.provider.email,
+          };
+          if (!this.providers.some(p => p._id === providerr._id)) {
+            this.providers.unshift(providerr);
+          }
+          this.appointmentForm.patchValue({ provider_id: providerr._id });
+        }
+        this.cdRef.detectChanges();
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to load providers',
+        });
+      },
+    });
+   /*  this.appointmentService.getAllProviders(search).subscribe({
       next: (response) => {
         this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
         this.providerTotalRecords = response.pagination.totalRecords;
@@ -191,28 +225,39 @@ loadProviders(search: string = '') {
         });
       },
     });*/
-    this.appointmentService.getAllProviders(search).subscribe({
-      next: (response) => {
-        this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
-        this.providerTotalRecords = response.pagination.totalRecords;
-      //  if (this.appointment) this.patchAppointmentData(); // Patch after loading providers
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message || 'Failed to load providers',
-        });
-      },
-    });
     
   }
 
   loadPatients(search: string = '') {
-    /*this.appointmentService.getPatients(search, this.patientPage, this.limit).subscribe({
+    this.patientSearch = search;
+  this.appointmentService.getPatients(search, this.patientPage, this.limit).subscribe({
       next: (response) => {
         this.patients = response.patients
         this.patientTotalRecords = response.pagination.totalRecords;
+        if (this.isEditMode && this.selectedAppointment) {
+          const patientt = {
+            _id: this.selectedAppointment.patient_id,
+            name: `${this.selectedAppointment.patient.first_name} ${this.selectedAppointment.patient.last_name}`,
+            email: this.selectedAppointment.patient.email,
+          };
+          if (!this.patients.some(p => p._id === patientt._id)) {
+            this.patients.unshift(patientt);
+          }
+          this.appointmentForm.patchValue({ patient_id: patientt._id });
+        }
+        this.cdRef.detectChanges();
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message || 'Failed to load patients',
+        });
+      },
+    });
+      /*this.appointmentService.getAllPatients(search).subscribe({
+      next: (response) => {
+        this.patients = response.patients
        // if (this.appointment) this.patchAppointmentData(); // Patch after loading patients
       },
       error: (error) => {
@@ -223,38 +268,26 @@ loadProviders(search: string = '') {
         });
       },
     });*/
-    this.appointmentService.getAllPatients(search).subscribe({
-      next: (response) => {
-        this.patients = response.patients
-       // if (this.appointment) this.patchAppointmentData(); // Patch after loading patients
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message || 'Failed to load patients',
-        });
-      },
-    });
 
     
   }
   onProviderScroll(event: any) {
     if (this.providers.length < this.providerTotalRecords) {
       this.providerPage++;
-      this.loadProviders(event.filter);
+      this.loadProviders(this.providerSearch);
     }
   }
 
   onPatientScroll(event: any) {
     if (this.patients.length < this.patientTotalRecords) {
       this.patientPage++;
-      this.loadPatients(event.filter);
+      this.loadPatients(this.patientSearch);
     }
   }
 
   onProviderFilter(event: any) {
     this.providerPage = 1;
+    this.providers = [];
     this.loadProviders(event.filter);
   }
 
@@ -290,8 +323,8 @@ loadProviders(search: string = '') {
   console.log("SELECTED DATE")
   console.log(selectedDate)
     const appointmentData = {
-      provider_id: formValue.provider_id._id,
-      patient_id: formValue.patient_id._id,
+      provider_id: typeof formValue.provider_id === 'string' ? formValue.provider_id : formValue.provider_id._id,
+      patient_id: typeof formValue.patient_id === 'string' ? formValue.patient_id : formValue.patient_id._id,
       reason: formValue.reason,
       appointment_date: selectedDate,
       appointment_time: formValue.appointment_time.slot,
@@ -365,7 +398,3 @@ loadProviders(search: string = '') {
    
   }
 }
-
-
- 
-
