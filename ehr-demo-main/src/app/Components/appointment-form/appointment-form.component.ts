@@ -56,6 +56,7 @@ export class AppointmentFormComponent implements OnInit{
   providerSearch: string = '';
   patientSearch: string = '';
   limit = 4;
+  minDate: Date;
 
   timeSlots = [
     { slot: '9AM - 10AM' },
@@ -83,7 +84,7 @@ export class AppointmentFormComponent implements OnInit{
     private cdRef: ChangeDetectorRef,
     private appointmentService: AppointmentService // Inject PatientService
   ) {
-    this.minDate.setDate(this.minDate.getDate() + 1);
+    this.minDate = new Date();
     this.appointmentForm = this.fb.group({
       provider_id: [null, Validators.required], // Changed to provider_id
       patient_id: [null, Validators.required], // Changed to patient_id
@@ -94,7 +95,7 @@ export class AppointmentFormComponent implements OnInit{
     });
   }
 
-  minDate: Date = new Date();
+
 
   ngOnInit() {
    
@@ -136,17 +137,26 @@ ngOnChanges(changes: SimpleChanges) {
     this.selectedProvider = providerr;
     this.selectedPatient = patientt;
 
+    
+
+
+     const appointmentDate = new Date(this.appointment.appointment_date);
+    this.minDate = this.isEditMode ? appointmentDate : new Date();
+
     this.appointmentForm.patchValue({
       provider_id: providerr,
       patient_id: patientt,
       reason: this.appointment.reason,
-      appointment_date: new Date(this.appointment.appointment_date),
+      
+      appointment_date: appointmentDate,
       appointment_time: this.timeSlots.find(slot => slot.slot === this.appointment.appointment_time),
       status: this.appointment.status
     });
     this.cdRef.detectChanges();
   }else {
     this.isEditMode = false;
+    this.minDate = new Date(); 
+    
     this.appointmentForm.reset(); // Reset form if editingUser is null or undefined
     this.selectedProvider = null;
       this.selectedPatient = null;
