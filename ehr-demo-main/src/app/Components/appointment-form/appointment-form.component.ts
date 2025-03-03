@@ -36,7 +36,7 @@ import { AppointmentService} from  './../../services/appointment/appointment.ser
   ]
 })
 
-export class AppointmentFormComponent implements OnInit{
+export class AppointmentFormComponent{
 
   @Input() appointment: any; 
   @Output() appointmentSaved = new EventEmitter<any>(); 
@@ -45,18 +45,28 @@ export class AppointmentFormComponent implements OnInit{
   
   selectedProvider: any; // or specify correct type
   selectedPatient: any;  // or specify correct type
-
+  loading: boolean = false;
   appointmentForm!: FormGroup;
   providers: any[] = [];
   patients: any[] = [];
-  providerPage = 1;
-  patientPage = 1;
+  //providerPage = 1;
+  patientPage : number = 1;
   providerTotalRecords = 0;
   patientTotalRecords = 0;
   providerSearch: string = '';
   patientSearch: string = '';
-  limit = 4;
-
+  limit :number=10;
+  lastLazyEvent: any; // Added proper declaration here
+  providerPage: number = 1; // Starting from 0 like your friend's code
+ // providerTotalRecords: number = 0;
+ // limit: number = 10;
+ // loading: boolean = false;
+  //searchProvider: string = '';
+  lastLazyLoadTime: number = 0;
+  lastLazyLoadTimep: number = 0;
+  debounceTimeout: any;
+  allProvidersLoaded: boolean = false;
+  allPatientsLoaded : boolean = false;
   timeSlots = [
     { slot: '9AM - 10AM' },
     { slot: '10AM - 11AM' },
@@ -96,17 +106,6 @@ export class AppointmentFormComponent implements OnInit{
 
   minDate: Date = new Date();
 
-  ngOnInit() {
-   
-    this.loadProviders();
-    this.loadPatients();
-   
-    // if (this.appointment) {
-    //   this.isEditMode = true;
-    //   this.patchAppointmentData();
-    // }
-  
-}
 
 
 ngOnChanges(changes: SimpleChanges) {
@@ -152,44 +151,28 @@ ngOnChanges(changes: SimpleChanges) {
       this.selectedPatient = null;
   }
 }
-  /*patchAppointmentData() {
-    // Find the provider and patient objects from the loaded lists
-    console.log(this.appointment)
-    const providerr =  {    
-      email: this.appointment.provider.email,
-      name: this.appointment.provider.first_name + ' ' + this.appointment.provider.last_name,
-      _id: this.appointment.provider_id
-    };
-    const patientt ={
-      email: this.appointment.patient.email,
-      name: this.appointment.patient.first_name + ' ' + this.appointment.patient.last_name,
-     
-      _id: this.appointment.patient_id
-    };
 
-    this.selectedProvider = providerr;
-    this.selectedPatient = patientt;
 
-    this.appointmentForm.patchValue({
-      provider_id: providerr,
-      patient_id: patientt,
-      reason: this.appointment.reason,
-      appointment_date: new Date(this.appointment.appointment_date),
-      appointment_time: this.timeSlots.find(slot => slot.slot === this.appointment.appointment_time),
-      status: this.appointment.status
-    });
-    console.log("here")
-    console.log(this.appointmentForm.value)
-
-   
-  }*/
-
-loadProviders(search: string = '') {
-  this.providerSearch = search;
-   this.appointmentService.getProviders(search, this.providerPage, this.limit).subscribe({
+loadProviders(search: string = this.providerSearch ,start: number, limit: number) {
+  if (this.allProvidersLoaded) return;
+  console.log('Loading providers:', { start, limit }); // Debug log
+    this.loading = true;
+  
+   this.appointmentService.getProviders(search, start, limit).subscribe({
       next: (response) => {
-        this.providers = this.providerPage === 1 ? response.providers : [...this.providers, ...response.providers];
+        console.log('Response received:', response); // Debug log
+        if (start === 1) {
+          this.providers = response.providers;
+        } else {
+          this.providers = [...this.providers, ...response.providers];
+        }
         this.providerTotalRecords = response.pagination.totalRecords;
+
+        if (response.providers.length < limit) {
+          this.allProvidersLoaded = true;
+          console.log('All providers loaded');
+        }
+      
         if (this.isEditMode && this.selectedAppointment) {
           const providerr = {
             _id: this.selectedAppointment.provider_id,
@@ -201,9 +184,12 @@ loadProviders(search: string = '') {
           }
           this.appointmentForm.patchValue({ provider_id: providerr._id });
         }
+        this.loading = false;
         this.cdRef.detectChanges();
       },
       error: (error) => {
+        console.log('Error loading providers:', error); // Debug log
+        this.loading = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -228,12 +214,30 @@ loadProviders(search: string = '') {
     
   }
 
-  loadPatients(search: string = '') {
-    this.patientSearch = search;
-  this.appointmentService.getPatients(search, this.patientPage, this.limit).subscribe({
+  loadPatients(search: string = this.patientSearch ,start: number, limit: number) {
+  
+    if (this.allPatientsLoaded) return;
+
+    console.log('Loading patients:', { start, limit }); // Debug log
+    this.loading = true;
+
+         
+        
+  this.appointmentService.getPatients(search, start, limit).subscribe({
       next: (response) => {
-        this.patients = response.patients
+        console.log('Response received:', response); // Debug log
+        if (start === 1) {
+          this.patients = response.patients;
+        } else {
+          this.patients = [...this.patients, ...response.patients];
+        }
         this.patientTotalRecords = response.pagination.totalRecords;
+
+        if (response.patients.length < limit) {
+          this.allPatientsLoaded = true;
+          console.log('All patients loaded');
+        }
+        
         if (this.isEditMode && this.selectedAppointment) {
           const patientt = {
             _id: this.selectedAppointment.patient_id,
@@ -271,29 +275,62 @@ loadProviders(search: string = '') {
 
     
   }
-  onProviderScroll(event: any) {
-    if (this.providers.length < this.providerTotalRecords) {
-      this.providerPage++;
-      this.loadProviders(this.providerSearch);
-    }
-  }
+
 
   onPatientScroll(event: any) {
-    if (this.patients.length < this.patientTotalRecords) {
-      this.patientPage++;
-      this.loadPatients(this.patientSearch);
+    const now = Date.now();
+    if (now - this.lastLazyLoadTimep < 500) { // Debounce
+      return;
     }
+
+   // console.log('Lazy load event triggeredssss in patient:', event); // Debug log
+    
+    
+     
+      this.lastLazyLoadTimep = now;
+      const newStart = this.patientPage++;
+      this.loadPatients(this.patientSearch,newStart, 10);
   }
 
   onProviderFilter(event: any) {
-    this.providerPage = 1;
-    this.providers = [];
-    this.loadProviders(event.filter);
+    this.lastLazyLoadTime = Date.now();
+    this.providerSearch = event.filter || '';
+    
+    clearTimeout(this.debounceTimeout);
+    this.debounceTimeout = setTimeout(() => {
+      this.providers = [];
+      this.providerPage = 1;
+      this.allProvidersLoaded = false;
+      this.loadProviders(this.providerSearch,1, this.limit);
+    }, 300);
   }
 
   onPatientFilter(event: any) {
-    this.patientPage = 1;
-    this.loadPatients(event.filter);
+    this.lastLazyLoadTimep = Date.now();
+    this.patientSearch = event.filter || '';
+    
+    clearTimeout(this.debounceTimeout);
+    this.debounceTimeout = setTimeout(() => {
+      this.patients = [];
+      this.patientPage = 1;
+      this.allPatientsLoaded = false;
+      this.loadPatients(this.patientSearch,1, this.limit);
+    }, 300);
+  }
+  onProviderScroll(event: any) {
+    const now = Date.now();
+    if (now - this.lastLazyLoadTime < 500) { // Debounce
+      return;
+    }
+
+    //console.log('Lazy load event triggeredssss:', event); // Debug log
+    
+    
+     
+      this.lastLazyLoadTime = now;
+      const newStart = this.providerPage++;
+      this.loadProviders(this.providerSearch,newStart, 10);
+    
   }
 
   onSubmit(): void {

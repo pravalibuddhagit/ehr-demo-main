@@ -585,7 +585,7 @@ exports.getProviders = async (req, res) => {
     const userCollection = db.collection('users');
     const { search = '', page = 1, limit = 10 } = req.query; // Default limit to 4
 console.log("query params : in getporviders" ,req.query);
-    const query = { deleted: { $ne: true } };
+    const query = { status: { $ne: 1 } };
     if (search) {
       query.$or = [
         { first_name: { $regex: search, $options: 'i' } },
@@ -595,7 +595,7 @@ console.log("query params : in getporviders" ,req.query);
     }
 
     const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 4;
+    const limitNum = parseInt(limit, 10) || 10;
     const skip = (pageNum - 1) * limitNum;
 
     const providers = await userCollection
@@ -634,9 +634,9 @@ exports.getPatients = async (req, res) => {
   try {
     const db = await getDb();
     const patientCollection = db.collection('patients');
-    const { search = '', page = 1, limit = 4 } = req.query; // Default limit to 4
-
-    const query = { deleted: { $ne: true } };
+    const { search = '', page = 1, limit = 10 } = req.query; // Default limit to 4
+    console.log("query params : in getpatients" ,req.query);
+    const query = { status: { $ne: 1 } };
     if (search) {
       query.$or = [
         { first_name: { $regex: search, $options: 'i' } },
@@ -646,7 +646,7 @@ exports.getPatients = async (req, res) => {
     }
 
     const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 4;
+    const limitNum = parseInt(limit, 10) || 10;
     const skip = (pageNum - 1) * limitNum;
 
 

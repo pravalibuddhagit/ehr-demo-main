@@ -22,15 +22,15 @@
           formControlName="provider_id"
           optionLabel="name"
           [filter]="true"
-          filterBy="name"
           [showClear]="true"
-          [virtualScroll]="true"
-          [virtualScrollItemSize]="50"
+          [lazy]="true"
           (onLazyLoad)="onProviderScroll($event)"
           (onFilter)="onProviderFilter($event)"
           placeholder="Select a Provider"
           class="w-full md:w-100"
-          >
+          [virtualScroll]="true"  
+         [virtualScrollItemSize]="38"
+        >
           <!-- hiii -->
           <ng-template #selectedItem let-selectedOption>
             <div class="flex flex-col gap-1">
@@ -58,14 +58,14 @@
             formControlName="patient_id"
             optionLabel="name"
             [filter]="true"
-            filterBy="name"
             [showClear]="true"
-            [virtualScroll]="true"
-            [virtualScrollItemSize]="50"
+            [lazy]="true"
             (onLazyLoad)="onPatientScroll($event)"
             (onFilter)="onPatientFilter($event)"
             placeholder="Select a Patient"
             class="w-full md:w-100"
+            [virtualScroll]="true"  
+            [virtualScrollItemSize]="38"
           >
           
           <ng-template #selectedItem let-selectedOption>
