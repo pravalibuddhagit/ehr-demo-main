@@ -70,9 +70,9 @@ export class AppointmentViewComponent {
     private router:Router
   ) {}
 
-
+  dialogStyle = { width: '30rem' };
   ngOnInit() {
-    this.loadAppointments();
+    // this.loadAppointments();
 
     // ✅ Debounce search input
     this.searchSubject.pipe(
@@ -83,6 +83,8 @@ export class AppointmentViewComponent {
       this.currentPage = 1;
       this.loadAppointments();
     });
+
+    
   }
 
 
@@ -92,6 +94,7 @@ export class AppointmentViewComponent {
       this.currentPage,
       this.rowsPerPage,
       this.searchTerm 
+    
     ).subscribe({
       next: (response) => {
         this.appointments = response.appointments;

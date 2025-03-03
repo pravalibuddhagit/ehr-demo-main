@@ -90,7 +90,7 @@ export class PaginationComponent  {
   // }
 
   ngOnInit() {
-    this.loadUsers();
+    // this.loadUsers();
 
     // ✅ Debounce search input
     this.searchSubject.pipe(

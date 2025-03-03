@@ -63,7 +63,7 @@ constructor(
   ) {}
   
   ngOnInit() {
-    this.loadPatients();
+    // this.loadPatients();
 
     // ✅ Debounce search input
     this.searchSubject.pipe(
