@@ -12,21 +12,24 @@ dotenv.config();
 app.use(express.json());
 app.use(cors());
 
-dbConnect().then(() => {
-  const server = app.listen(process.env.PORT || 5000, (err) => {
-    if (err) console.log(err);
-    console.log(`Running at port ${process.env.PORT || 5000}`);
-  });
-
-  // Handle server shutdown gracefully
-  process.on('SIGINT', async () => {
-    await closeDb();
-    server.close(() => {
-      console.log('Server shut down');
-      process.exit(0);
+const PORT = process.env.PORT || 5000;
+ 
+// Connect to MongoDB before starting the server
+dbConnect()
+  .then(() => {
+    const server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
-  });
-});
+ 
+    server.on('error', (err) => {
+      console.error('Error starting the server:', err.message);
+      process.exit(1);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
+  }); 
 
 app.get('/', (req, res) => {
   res.send('API running');
