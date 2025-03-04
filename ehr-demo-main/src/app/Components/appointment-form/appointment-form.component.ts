@@ -307,11 +307,15 @@ loadProviders(search: string = this.providerSearch ,start: number, limit: number
     this.providerSearch = event.filter || '';
     
     clearTimeout(this.debounceTimeout);
+
+    //Schedules a function to run after 300 milliseconds 
+    //This debouncing ensures the backend isn’t hammered with requests for every keystroke,
+    //  waiting 300ms for the user to pause typing.
     this.debounceTimeout = setTimeout(() => {
       this.providers = [];
       this.providerPage = 1;
       this.allProvidersLoaded = false;
-      this.loadProviders(this.providerSearch,1, this.limit);
+      this.loadProviders(this.providerSearch,this.providerPage , this.limit);
     }, 300);
   }
 
@@ -332,7 +336,7 @@ loadProviders(search: string = this.providerSearch ,start: number, limit: number
     if (now - this.lastLazyLoadTime < 500) { // Debounce
       return;
     }
-
+/*if (now - this.lastLazyLoadTime < 500) { return; } (Debouncing) This is a debounce mechanism to prevent the function from executing too frequently (e.g., multiple scroll events in rapid succession).*/
     //console.log('Lazy load event triggeredssss:', event); // Debug log
     
     

@@ -106,14 +106,14 @@ const PATTERNS = {
         customMessage: 'allowNotifications must be a boolean',
         validate: (value) => typeof value === 'boolean',
       },
-      status: {
-        required: true,
-        customMessage: 'Status must be either 0 or 1',
-        validate: (value) => {
-          const numValue = Number(value); // Convert to number
-          return Number.isInteger(numValue) && [0, 1].includes(numValue);
-        },
-      }
+      // status: {
+      //   required: true,
+      //   customMessage: 'Status must be either 0 or 1',
+      //   validate: (value) => {
+      //     const numValue = Number(value); // Convert to number
+      //     return Number.isInteger(numValue) && [0, 1].includes(numValue);
+      //   },
+      // }
     };
   
     const errors = validateObject(data, rules) || {};

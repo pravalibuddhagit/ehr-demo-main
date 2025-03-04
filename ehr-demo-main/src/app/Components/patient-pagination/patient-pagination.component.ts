@@ -63,8 +63,8 @@ constructor(
   ) {}
   
   ngOnInit() {
-    this.loadPatients();
-
+   
+console.log("oninit called")
     // ✅ Debounce search input
     this.searchSubject.pipe(
       debounceTime(300),  // ✅ Wait for 500ms pause in typing
