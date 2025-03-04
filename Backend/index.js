@@ -21,10 +21,6 @@ dbConnect()
       console.log(`Server running on port ${PORT}`);
     });
  
-    server.on('error', (err) => {
-      console.error('Error starting the server:', err.message);
-      process.exit(1);
-    });
   })
   .catch((err) => {
     console.error('Failed to connect to MongoDB:', err);

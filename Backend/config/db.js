@@ -106,7 +106,7 @@ process.on('SIGINT', async () => {
   await closeDb();
  
   console.log('Process exiting...');
-  setTimeout(() => process.exit(0), 500); // Small delay to allow logs to appear
+ setTimeout(() => process.exit(0), 500); // Small delay to allow logs to appear
 });
  
 
