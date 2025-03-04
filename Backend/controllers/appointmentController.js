@@ -242,8 +242,7 @@ exports.getAppointmentsPag = async (req, res) => {
 
     console.log('Query Parameters:appointments', req.query);
     const query = { deleted: { $ne: true } };
-    // Apply status filter if provided (excluding 'null' for "All")
-     // Apply status filter if provided (excluding 'null' for "All")
+  
     
     
     if (search) {
@@ -336,7 +335,7 @@ exports.getAppointmentsPag = async (req, res) => {
 
     const appointments = await appointmentCollection
       .find(query)
-      .sort({ _id: -1 }) // Sort by date descending, then ID
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limitNum)
       .toArray();
@@ -590,7 +589,7 @@ console.log("query params : in getproviders" ,req.query);
       query.$or = [
         { first_name: { $regex: search, $options: 'i' } },
         { last_name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        // { email: { $regex: search, $options: 'i' } },
       ];
     }
 
