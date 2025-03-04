@@ -97,7 +97,7 @@ export class HeaderComponent {
             {
               label: 'View Users',
               icon: 'pi pi-eye',
-              routerLink: ['/welcome/dashboard']
+              routerLink: ['/welcome/user-view']
             }
           ]
         },

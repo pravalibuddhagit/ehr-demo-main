@@ -584,7 +584,7 @@ exports.getProviders = async (req, res) => {
     const db = await getDb();
     const userCollection = db.collection('users');
     const { search = '', page = 1, limit = 10 } = req.query; // Default limit to 4
-console.log("query params : in getporviders" ,req.query);
+console.log("query params : in getproviders" ,req.query);
     const query = { status: { $ne: 1 } };
     if (search) {
       query.$or = [

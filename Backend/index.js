@@ -30,6 +30,7 @@ dbConnect()
     console.error('Failed to connect to MongoDB:', err);
     process.exit(1);
   }); 
+
 app.get('/', (req, res) => {
   res.send('API running');
 });

@@ -41,7 +41,7 @@ import { PatientService } from  './../../services/patient/patient.service'; // I
 export class PatientRegistrationComponent {
   maxDate = new Date();
   patientForm: FormGroup = new FormGroup({  // ✅ Ensure patientForm is declared
-    first_name: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+    first_name: new FormControl('', [Validators.required, Validators.pattern((/^(?=.*[A-Za-z])[A-Za-z\s]+$/))]),
     last_name: new FormControl('', [Validators.required, Validators.pattern('^[a-zA-Z]*$')]),
     email: new FormControl('', [Validators.required, Validators.email]),
     mobile_phone: new FormControl('', [Validators.required,Validators.pattern(/^\(\d{3}\) \d{3}-\d{4}$/)]),

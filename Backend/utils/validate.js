@@ -177,11 +177,11 @@ const PATTERNS = {
         customMessage: 'Gender must be male, female, or other',
         validate: (value) => ['male', 'female', 'other'].includes(String(value)),
       },
-      status: {
-        required: true,
-        customMessage: 'Status must be either 0 or 1',
-        validate: (value) => [0, 1].includes(value),
-      }
+      // status: {
+      //   required: true,
+      //   customMessage: 'Status must be either 0 or 1',
+      //   validate: (value) => [0, 1].includes(value),
+      // }
     };
   
     let errors = validateObject(data, rules) || {};
