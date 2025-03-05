@@ -245,11 +245,10 @@ exports.getAppointmentsPag = async (req, res) => {
   
     
     
+
     if (search) {
       const searchRegex = { $regex: search, $options: 'i' };
-   
 
-      // Use aggregation to search for full names (first_name + " " + last_name) for providers
       const providerPipeline = [
         {
           $project: {
@@ -266,7 +265,6 @@ exports.getAppointmentsPag = async (req, res) => {
       const matchingProviders = await userCollection.aggregate(providerPipeline).toArray();
       const providerIds = matchingProviders.map((p) => p._id);
 
-      // Use aggregation to search for full names (first_name + " " + last_name) for patients
       const patientPipeline = [
         {
           $project: {
@@ -283,7 +281,6 @@ exports.getAppointmentsPag = async (req, res) => {
       const matchingPatients = await patientCollection.aggregate(patientPipeline).toArray();
       const patientIds = matchingPatients.map((p) => p._id);
 
-      // Also keep individual first_name and last_name searches for backward compatibility
       const individualProviders = await userCollection
         .find(
           {
@@ -310,11 +307,9 @@ exports.getAppointmentsPag = async (req, res) => {
         .toArray();
       const individualPatientIds = individualPatients.map((p) => p._id);
 
-      // Combine full-name and individual-name matches (remove duplicates)
       const uniqueProviderIds = [...new Set([...providerIds, ...individualProviderIds])];
       const uniquePatientIds = [...new Set([...patientIds, ...individualPatientIds])];
 
-      // Update query to include appointments where provider_id or patient_id matches
       if (uniqueProviderIds.length > 0 || uniquePatientIds.length > 0) {
         query.$or = [];
         if (uniqueProviderIds.length > 0) {
@@ -324,8 +319,7 @@ exports.getAppointmentsPag = async (req, res) => {
           query.$or.push({ patient_id: { $in: uniquePatientIds } });
         }
       } else {
-        // If no matches found in providers or patients, return empty result
-        query._id = null; // This ensures no results are returned
+        query._id = null;
       }
     }
 
@@ -334,41 +328,70 @@ exports.getAppointmentsPag = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     const appointments = await appointmentCollection
-      .find(query)
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limitNum)
+      .aggregate([
+        { $match: query },
+        { $sort: { _id: -1 } },
+        { $skip: skip },
+        { $limit: limitNum },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'provider_id',
+            foreignField: '_id',
+            as: 'provider',
+          },
+        },
+        {
+          $lookup: {
+            from: 'patients',
+            localField: 'patient_id',
+            foreignField: '_id',
+            as: 'patient',
+          },
+        },
+        {
+          $unwind: {
+            path: '$provider',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $unwind: {
+            path: '$patient',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            provider_id: 1,
+            patient_id: 1,
+            reason: 1,
+            appointment_date: 1,
+            appointment_time: 1,
+            status: 1,
+            deleted: 1,
+            provider: {
+              first_name: 1,
+              last_name: 1,
+              email: 1,
+            },
+            patient: {
+              first_name: 1,
+              last_name: 1,
+              email: 1,
+            },
+          },
+        },
+      ])
       .toArray();
-
-    // Populate provider and patient details
-    const populatedAppointments = await Promise.all(
-      appointments.map(async (appt) => {
-        const provider = await userCollection.findOne(
-          { _id: appt.provider_id },
-          { projection: { first_name: 1, last_name: 1, email: 1 } }
-        );
-        const patient = await patientCollection.findOne(
-          { _id: appt.patient_id },
-          { projection: { first_name: 1, last_name: 1, email: 1 } }
-        );
-        return {
-          ...appt,
-          provider: provider
-            ? { first_name: provider.first_name, last_name: provider.last_name, email: provider.email }
-            : null,
-          patient: patient
-            ? { first_name: patient.first_name, last_name: patient.last_name, email: patient.email }
-            : null,
-        };
-      })
-    );
 
     const total = await appointmentCollection.countDocuments(query);
 
     res.json({
       success: true,
       data: {
-        appointments: populatedAppointments,
+        appointments,
         pagination: {
           currentPage: pageNum,
           totalPages: Math.ceil(total / limitNum),
