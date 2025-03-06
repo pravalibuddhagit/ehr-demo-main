@@ -13,8 +13,8 @@ export class PatientService {
   constructor(private http: HttpClient) {}
 
   // Method to create a new patient
-  createPatient(patient: any): Observable<any> {
-    return this.http
+   createPatient(patient: any): Observable<any> {
+    return  this.http
       .post<{ success: boolean; data: any; error?: { message: string } }>(this.apiUrl, patient, {
         headers: this.getHeaders(),
       })

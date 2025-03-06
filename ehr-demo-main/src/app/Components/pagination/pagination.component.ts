@@ -114,7 +114,7 @@ export class PaginationComponent  {
       countryFilter: this.countryFilter,
       countryMatchMode: this.countryMatchMode
     });
-    this.userService.getAllUsers2(
+     this.userService.getAllUsers2(
       this.currentPage,
       this.rowsPerPage, // Log rowsPerPage
       this.searchTerm,

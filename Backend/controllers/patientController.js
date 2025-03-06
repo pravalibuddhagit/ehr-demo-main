@@ -77,51 +77,147 @@ exports.createPatient = async (req, res) => {
   }
 };
 
+// exports.getPatientsPag = async (req, res) => {
+//   try {
+//     const db = await getDb();
+//     const patientsCollection = db.collection('patients');
+
+//     const {
+//       page = 1,
+//       limit = 10,
+//       search = '',
+//     } = req.query;
+//     console.log('Query Parameters: patients', req.query);
+//     const query = { status:0 }; // Active patients only
+
+//     if (search) {
+//       query.$or = [
+//         { first_name: { $regex: search, $options: 'i' } },
+//         { last_name: { $regex: search, $options: 'i' } },
+//       ];
+//     }
+
+//     const pageNum = parseInt(page, 10) || 1;
+//     const limitNum = parseInt(limit, 10) || 10;
+//     const skip = (pageNum - 1) * limitNum;
+
+//     const projection = {
+//       first_name: 1,
+//       last_name: 1,
+//       dob:1,
+//       gender:1,
+//       email: 1,
+//       mobile_phone: 1,
+//       address_line_1: 1,
+//       _id: 1,
+//     };
+
+//     const [patients, total] = await Promise.all([
+//       patientsCollection
+//         .find(query, { projection })
+//         .sort({ _id: -1 }) // Newest first
+//         .skip(skip)
+//         .limit(limitNum)
+//         .toArray(),
+//       patientsCollection.countDocuments(query),
+//     ]);
+
+//     res.json({
+//       success: true,
+//       data: {
+//         patients,
+//         pagination: {
+//           currentPage: pageNum,
+//           totalPages: Math.ceil(total / limitNum),
+//           totalRecords: total,
+//           recordsPerPage: limitNum,
+//         },
+//       },
+//       error: null,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       data: null,
+//       error: { message: 'Server Error: ' + error.message },
+//     });
+//   }
+// };
+
+ 
 exports.getPatientsPag = async (req, res) => {
   try {
     const db = await getDb();
     const patientsCollection = db.collection('patients');
-
+ 
     const {
       page = 1,
       limit = 10,
       search = '',
     } = req.query;
+ 
     console.log('Query Parameters: patients', req.query);
-    const query = { status:0 }; // Active patients only
-
-    if (search) {
-      query.$or = [
-        { first_name: { $regex: search, $options: 'i' } },
-        { last_name: { $regex: search, $options: 'i' } },
-      ];
-    }
-
+ 
     const pageNum = parseInt(page, 10) || 1;
     const limitNum = parseInt(limit, 10) || 10;
     const skip = (pageNum - 1) * limitNum;
-
-    const projection = {
-      first_name: 1,
-      last_name: 1,
-      dob:1,
-      gender:1,
-      email: 1,
-      mobile_phone: 1,
-      address_line_1: 1,
-      _id: 1,
-    };
-
-    const [patients, total] = await Promise.all([
-      patientsCollection
-        .find(query, { projection })
-        .sort({ _id: -1 }) // Newest first
-        .skip(skip)
-        .limit(limitNum)
-        .toArray(),
-      patientsCollection.countDocuments(query),
-    ]);
-
+ 
+    const pipeline = [];
+ 
+    if (search && search.trim() !== "") {
+      pipeline.push({
+        $search: {
+          index: "patient", // Ensure this matches your index name
+          compound: {
+            should: [
+              {
+                autocomplete: {
+                  query: search,
+                  path: "first_name",
+                  tokenOrder: "sequential",
+                  fuzzy: { maxEdits: 1 }
+                }
+              },
+              {
+                autocomplete: {
+                  query: search,
+                  path: "last_name",
+                  tokenOrder: "sequential",
+                  fuzzy: { maxEdits: 1 }
+                }
+              }
+            ],
+            minimumShouldMatch: 1
+          }
+        }
+      });
+    }
+ 
+    // Always filter active patients
+    pipeline.push({ $match: { status: 0 } });
+ 
+    // Sorting, pagination, and projection
+    pipeline.push(
+      { $sort: { _id: -1 } },
+      { $skip: skip },
+      { $limit: limitNum },
+      {
+        $project: {
+          first_name: 1,
+          last_name: 1,
+          dob: 1,
+          gender: 1,
+          email: 1,
+          mobile_phone: 1,
+          address_line_1: 1,
+          _id: 1
+        }
+      }
+    );
+ 
+    const patients = await patientsCollection.aggregate(pipeline).toArray();
+    const total = await patientsCollection.countDocuments({ status: 0 });
+ 
     res.json({
       success: true,
       data: {
@@ -143,7 +239,8 @@ exports.getPatientsPag = async (req, res) => {
     });
   }
 };
-
+ 
+ 
 exports.getPatientById = async (req, res) => {
   try {
     const db = await getDb();

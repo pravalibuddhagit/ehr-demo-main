@@ -253,11 +253,112 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+// exports.getUsersPag = async (req, res) => {
+//   try {
+//     const db = await getDb();
+//     const usersCollection = db.collection('users');
+
+//     const {
+//       page = 1,
+//       limit = 10,
+//       search = '',
+//       state = '',
+//       stateMode = 'contains',
+//       country = '',
+//       countryMode = 'contains',
+//     } = req.query;
+
+//     console.log('Query Parameters:users', req.query);
+//     const query = { 
+//     status:0
+//      }; // Active users only
+
+//     if (search) {
+//       query.$or = [
+//         { first_name: { $regex: search, $options: 'i' } },
+//         { last_name: { $regex: search, $options: 'i' } },
+//       ];
+//     }
+
+//     const buildFilter = (value, mode) => {
+//       switch (mode.toLowerCase()) {
+//         case 'startswith':
+//           return { $regex: `^${value}`, $options: 'i' }; // Correct string interpolation
+//         case 'contains':
+//           return { $regex: value, $options: 'i' };
+//         case 'notcontains':
+//           return { $not: { $regex: value, $options: 'i' } };
+//         case 'endswith':
+//           return { $regex: `${value}$`, $options: 'i' }; // Correct string interpolation
+//         case 'equals':
+//           return value;
+//         case 'notequals':
+//           return { $ne: value };
+//         default:
+//           return { $regex: value, $options: 'i' };
+//       }
+//     };
+    
+//     if (state) query.state = buildFilter(state, stateMode);
+//     if (country) query.country = buildFilter(country, countryMode);
+
+//     //console.log(query)
+
+//     const pageNum = parseInt(page, 10) || 1;
+//     const limitNum = parseInt(limit, 10) || 10;
+//     const skip = (pageNum - 1) * limitNum;
+
+//     const projection = {
+//       first_name: 1,
+//       last_name: 1,
+//       dob: 1,
+//       gender: 1,
+//       email: 1,
+//       state: 1,
+//       country: 1,
+//       _id: 1, 
+//     };
+
+//     const [users, total] = await Promise.all([
+//       usersCollection
+//       .find(query,{projection})
+//       .sort({ _id: -1 }) // newest first
+//       .skip(skip)
+//       .limit(limitNum)
+//       .toArray(),
+//       usersCollection.countDocuments(query),
+//     ]);
+
+// // console.log(users)
+//     res.json({
+//       success: true,
+//       data: {
+//         users,
+//         pagination: {
+//           currentPage: pageNum,
+//           totalPages: Math.ceil(total / limitNum),
+//           totalRecords: total,
+//           recordsPerPage: limitNum,
+//         },
+//       },
+//       error: null,
+//     });
+  
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       data: null,
+//       error: { message: 'Server Error: ' + error.message },
+//     });
+//   }
+// };
+
 exports.getUsersPag = async (req, res) => {
   try {
     const db = await getDb();
     const usersCollection = db.collection('users');
-
+ 
     const {
       page = 1,
       limit = 10,
@@ -267,29 +368,24 @@ exports.getUsersPag = async (req, res) => {
       country = '',
       countryMode = 'contains',
     } = req.query;
-
-    console.log('Query Parameters:users', req.query);
-    const query = { 
-    status:0
-     }; // Active users only
-
-    if (search) {
-      query.$or = [
-        { first_name: { $regex: search, $options: 'i' } },
-        { last_name: { $regex: search, $options: 'i' } },
-      ];
-    }
-
+ 
+    console.log('Query Parameters: users', req.query);
+ 
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 10;
+    const skip = (pageNum - 1) * limitNum;
+ 
+    // Function to build filter conditions
     const buildFilter = (value, mode) => {
       switch (mode.toLowerCase()) {
         case 'startswith':
-          return { $regex: `^${value}`, $options: 'i' }; // Correct string interpolation
+          return { $regex: `^${value}`, $options: 'i' };
         case 'contains':
           return { $regex: value, $options: 'i' };
         case 'notcontains':
           return { $not: { $regex: value, $options: 'i' } };
         case 'endswith':
-          return { $regex: `${value}$`, $options: 'i' }; // Correct string interpolation
+          return { $regex: `${value}$`, $options: 'i' };
         case 'equals':
           return value;
         case 'notequals':
@@ -298,38 +394,73 @@ exports.getUsersPag = async (req, res) => {
           return { $regex: value, $options: 'i' };
       }
     };
-    
-    if (state) query.state = buildFilter(state, stateMode);
-    if (country) query.country = buildFilter(country, countryMode);
-
-    //console.log(query)
-
-    const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 10;
-    const skip = (pageNum - 1) * limitNum;
-
-    const projection = {
-      first_name: 1,
-      last_name: 1,
-      dob: 1,
-      gender: 1,
-      email: 1,
-      state: 1,
-      country: 1,
-      _id: 1, 
-    };
-
-    const [users, total] = await Promise.all([
-      usersCollection
-      .find(query,{projection})
-      .sort({ _id: -1 }) // newest first
-      .skip(skip)
-      .limit(limitNum)
-      .toArray(),
-      usersCollection.countDocuments(query),
-    ]);
-
-// console.log(users)
+ 
+    // Build filters
+    const filters = [{ status: 0 }]; // Active users only
+ 
+    if (state) filters.push({ state: buildFilter(state, stateMode) });
+    if (country) filters.push({ country: buildFilter(country, countryMode) });
+ 
+    // Atlas Search Pipeline
+    const pipeline = [];
+ 
+    if (search.trim() !== '') {
+      pipeline.push({
+        $search: {
+          index: "user", //atlas search index
+          compound: {
+            should: [
+              {
+                autocomplete: {
+                  query: search,
+                  path: "first_name",
+                  tokenOrder: "sequential",
+                  fuzzy: { maxEdits: 1 }
+                }
+              },
+              {
+                autocomplete: {
+                  query: search,
+                  path: "last_name",
+                  tokenOrder: "sequential",
+                  fuzzy: { maxEdits: 1 }
+                }
+              }
+            ],
+            minimumShouldMatch: 1
+          }
+        }
+      });
+    }
+ 
+    // Apply additional filters after Atlas Search
+    if (filters.length > 0) {
+      pipeline.push({ $match: { $and: filters } });
+    }
+ 
+    // Sorting, Pagination, and Projection
+    pipeline.push(
+      { $sort: { _id: -1 } },
+      { $skip: skip },
+      { $limit: limitNum },
+      {
+        $project: {
+          first_name: 1,
+          last_name: 1,
+          dob: 1,
+          gender: 1,
+          email: 1,
+          state: 1,
+          country: 1,
+          _id: 1,
+        }
+      }
+    );
+ 
+    // Execute Aggregation Pipeline
+    const users = await usersCollection.aggregate(pipeline).toArray();
+    const total = await usersCollection.countDocuments({ status: 0 });
+ 
     res.json({
       success: true,
       data: {
@@ -343,8 +474,7 @@ exports.getUsersPag = async (req, res) => {
       },
       error: null,
     });
-  
-
+ 
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -353,7 +483,6 @@ exports.getUsersPag = async (req, res) => {
     });
   }
 };
-
 exports.getUserById = async (req, res) => {
   try {
     const db = await getDb();
