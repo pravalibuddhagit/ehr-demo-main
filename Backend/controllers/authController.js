@@ -3,6 +3,99 @@ const jwt = require('jsonwebtoken');
 const { getDb } = require('../config/db');
 const { validateRegistration } = require('../utils/validate');
 require('dotenv').config();
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail', // Change if using another provider
+  auth: {
+    user: process.env.EMAIL_USER, // Add this in .env
+    pass: process.env.EMAIL_PASS  // Add this in .env
+  }
+});
+
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const db = await getDb();
+    const managersCollection = db.collection('registrations');
+
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, error: { message: "Token and new password are required" } });
+    }
+
+    // Find user with the reset token
+    const user = await managersCollection.findOne({ resetToken: token });
+
+    if (!user || user.resetTokenExpires < Date.now()) {
+      return res.status(400).json({ success: false, error: { message: "Invalid or expired token" } });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password in the database
+    await managersCollection.updateOne(
+      { resetToken: token },
+      { 
+        $set: { password: hashedPassword },
+        $unset: { resetToken: "", resetTokenExpires: "" } // Remove the reset token
+      }
+    );
+
+    res.status(200).json({ success: true, data: { message: "Password has been reset successfully" } });
+
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: "Server Error: " + error.message } });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const db = await getDb();
+    const managersCollection = db.collection('registrations');
+
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, error: { message: "Email is required" } });
+    }
+
+    const user = await managersCollection.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, error: { message: "User not found" } });
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpires = Date.now() + 3600000; // 1 hour expiry
+
+    // Store token in database
+    await managersCollection.updateOne(
+      { email },
+      { $set: { resetToken, resetTokenExpires } }
+    );
+
+    // Create reset link (frontend should handle reset page)
+    const resetLink = `http://localhost:4200/reset-password?token=${resetToken}`;
+
+    // Send Email
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset Request",
+      text: `Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.`
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ success: true, data: { message: "Password reset link sent to email." } });
+
+  } catch (error) {
+    res.status(500).json({ success: false, error: { message: "Server Error: " + error.message } });
+  }
+};
 
 exports.registerUser = async (req, res) => {
   try {

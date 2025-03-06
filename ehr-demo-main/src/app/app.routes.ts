@@ -15,8 +15,10 @@ import { AppointmentFormComponent } from './Components/appointment-form/appointm
 import { PatientPaginationComponent } from './Components/patient-pagination/patient-pagination.component';
 //import { AppiontmentViewComponent } from './Components/appiontment-view/appiontment-view.component';
 import { AppointmentViewComponent } from './Components/appointment-view/appointment-view.component';
+import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
 
-export const routes: Routes = [
+export const routes: Routes = [  { path: 'forgot-password', component: ForgotPasswordComponent },
       {
         
            path: '', redirectTo: 'login', pathMatch: 'full' 
@@ -28,11 +30,15 @@ export const routes: Routes = [
         component: LoginComponent, // Wraps Login/Register
         
       },
+     
       {
         path: 'register',
         component: RegistrationComponent, // Wraps Login/Register
         
       },
+
+    
+      { path: 'reset-password', component: ResetPasswordComponent },
 
       {
         path: 'welcome',
@@ -49,7 +55,9 @@ export const routes: Routes = [
           {path: 'appointment-view', component:AppointmentViewComponent}
         ],
       },
-      { path: '**', redirectTo: 'login' }
+      
+      { path: '**', redirectTo: 'login' },
+     
 
     
 ];
