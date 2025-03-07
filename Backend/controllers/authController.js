@@ -63,6 +63,9 @@ exports.forgotPassword = async (req, res) => {
       return res.status(400).json({ success: false, error: { message: "Email is required" } });
     }
 
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+
     const user = await managersCollection.findOne({ email });
     if (!user) {
       return res.status(404).json({ success: false, error: { message: "User not found" } });
@@ -98,20 +101,30 @@ exports.forgotPassword = async (req, res) => {
       to: email,
       subject: "Password Reset Request",
       html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
-          <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
-          <p>Dear ${user.name || "User"},</p>
-          <p>You have requested to reset your password. Click the button below to reset your password:</p>
-          <p style="text-align: center;">
-            <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">
-              Reset Password
-            </a>
-          </p>
-          <p>If you did not request a password reset, please ignore this email.</p>
-          <p>Note: This link is valid for <strong>1 hour</strong>.</p>
-          <hr />
-          <p style="font-size: 12px; text-align: center; color: #777;">&copy; 2025 Your Company. All rights reserved.</p>
-        </div>
+       <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+  <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
+  
+  <p style="color: #333;">Dear <strong style="color: #000;"> ${user.first_name || "User"} ${user.last_name}</strong>,</p>
+  
+  <p style="color: #333;">You have requested to reset your password. Click the button below to reset your password:</p>
+  
+  <p style="text-align: center;">
+    <a href="${resetLink}" 
+       style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff !important; 
+              text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+      Reset Password
+    </a>
+  </p>
+  
+  <p style="color: #333;">If you did not request a password reset, please ignore this email.</p>
+  
+  <p style="color: #333;">Note: This link is valid for <strong style="color: #000;">1 hour</strong>.</p>
+  
+  <hr style="border: 1px solid #ddd;" />
+  
+  <p style="font-size: 12px; text-align: center; color: #777;">&copy; 2025 Edvak EHR Company. All rights reserved.</p>
+</div>
+
       `
     };
 

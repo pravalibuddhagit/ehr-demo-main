@@ -8,14 +8,15 @@ import { CommonModule } from '@angular/common';
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.css'],
-  standalone:true,
-  imports:[CommonModule,FormsModule,ReactiveFormsModule,RouterModule]
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule]
 })
 export class ResetPasswordComponent implements OnInit {
   resetPasswordForm: FormGroup;
   token: string = '';
   message: string = '';
   error: string = '';
+  isLoading: boolean = false; // Loading state
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +29,6 @@ export class ResetPasswordComponent implements OnInit {
         '',
         [
           Validators.required,
-          
           Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{3,8}$/)
         ]
       ]
@@ -42,13 +42,26 @@ export class ResetPasswordComponent implements OnInit {
   submit() {
     if (this.resetPasswordForm.invalid) return;
 
+    this.isLoading = true; // Show loader
+
     this.authService.resetPassword(this.token, this.resetPasswordForm.value).subscribe({
       next: (res) => {
+        this.isLoading = true; // Hide loader
         this.message = 'Password has been reset successfully!';
-        setTimeout(() => this.router.navigate(['/login']), 3000);
+        this.error = '';
+
+        // Redirect after 3 seconds
+        setTimeout(() => this.router.navigate(['/login']), 4000);
       },
       error: (err) => {
+        this.isLoading = false; // Hide loader
         this.error = err.error?.error?.message || 'Something went wrong!';
+        this.message = '';
+
+        // Hide error message after 3 seconds
+        setTimeout(() => {
+          this.error = '';
+        }, 3000);
       }
     });
   }
