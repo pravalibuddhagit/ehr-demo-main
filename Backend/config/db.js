@@ -1,16 +1,11 @@
 const { MongoClient } = require('mongodb');
- 
 const dns = require('dns'); // To check internet connectivity
- 
 require('dotenv').config();
- 
+
 let db = null;
 let client = null;
 const maxRetryAttempts = 5;
 const retryDelay = 2000; // 2 seconds
- 
- 
- 
 
 const checkInternet = () => {
   return new Promise((resolve) => {
@@ -19,7 +14,7 @@ const checkInternet = () => {
     });
   });
 };
- 
+
 // Function to wait until internet is restored
 const waitForInternet = async () => {
   console.log('\x1b[33m⚠ Internet connection found. Waiting to reconnect...\x1b[0m');
@@ -30,7 +25,7 @@ const waitForInternet = async () => {
 
   console.log('\x1b[32m✅ Internet connection restored! Attempting MongoDB connection...\x1b[0m');
 };
- 
+
 const dbConnect = async (attempt = 1) => {
   try {
     // If already connected, just return the database instance
@@ -40,9 +35,6 @@ const dbConnect = async (attempt = 1) => {
       console.log('\x1b[32m✅ MongoDB connected.\x1b[0m');
       return db;
     }
- 
-     // Wait for internet if it's down
-     if (!(await checkInternet())) {
 
     // **First check if internet is available before connecting**
     if (!(await checkInternet())) {
@@ -57,16 +49,13 @@ const dbConnect = async (attempt = 1) => {
       connectTimeoutMS: 10000,
     });
 
- 
-   
- 
     await client.connect();
     db = client.db('ProjectDb');
 
     console.log('\x1b[32m✅ MongoDB Connected Successfully!\x1b[0m');
     return db;
   } catch (err) {
-    console.error(`Connection attempt ${attempt} failed: ${err.message}`);
+    console.error(`\x1b[31m❌ Connection attempt ${attempt}/${maxRetryAttempts} failed: ${err.message}\x1b[0m`);
 
     if (attempt < maxRetryAttempts) {
       console.log(`\x1b[33m🔄 Retrying connection in ${retryDelay / 1000} seconds...\x1b[0m`);
@@ -78,8 +67,8 @@ const dbConnect = async (attempt = 1) => {
     }
   }
 };
- 
-// Getter for the db instance with reconnection
+
+// Getter for database instance with auto-reconnect
 const getDb = async () => {
   if (!db || !client) {
     console.log('\x1b[33m⚠ Database connection lost. Attempting to reconnect...\x1b[0m');
@@ -94,7 +83,8 @@ const getDb = async () => {
   }
   return db;
 };
- 
+
+// Close the database connection
 const closeDb = async () => {
   if (client) {
     console.log('\x1b[36m🔌 Closing MongoDB connection...\x1b[0m');
@@ -118,6 +108,5 @@ process.on('SIGINT', async () => {
   console.log('\x1b[36m👋 Process exiting...\x1b[0m');
   setTimeout(() => process.exit(0), 500);
 });
- 
 
 module.exports = { dbConnect, getDb, closeDb };
