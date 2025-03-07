@@ -3,23 +3,26 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterLink, RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
+  standalone:true,
   styleUrls: ['./forgot-password.component.css'],
-  imports: [CommonModule,FormsModule, BrowserModule,ReactiveFormsModule]
+  imports: [CommonModule,FormsModule,ReactiveFormsModule]
 })
 export class ForgotPasswordComponent {
   forgotPasswordForm: FormGroup;
   message: string = '';
   error: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });
+    console.log('ForgotPasswordComponent Loaded');
+
   }
 
   submit() {
@@ -35,5 +38,9 @@ export class ForgotPasswordComponent {
         this.message = '';
       }
     });
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']); // This ensures navigation works
   }
 }

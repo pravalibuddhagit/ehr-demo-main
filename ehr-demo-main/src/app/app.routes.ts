@@ -18,7 +18,11 @@ import { AppointmentViewComponent } from './Components/appointment-view/appointm
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
 
-export const routes: Routes = [  { path: 'forgot-password', component: ForgotPasswordComponent },
+export const routes: Routes = [  
+  
+  
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+
       {
         
            path: '', redirectTo: 'login', pathMatch: 'full' 
