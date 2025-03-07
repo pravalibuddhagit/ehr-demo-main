@@ -359,6 +359,7 @@ exports.getUsersPag = async (req, res) => {
     const db = await getDb();
     const usersCollection = db.collection('users');
  
+ 
     const {
       page = 1,
       limit = 10,
@@ -380,11 +381,13 @@ exports.getUsersPag = async (req, res) => {
       switch (mode.toLowerCase()) {
         case 'startswith':
           return { $regex: `^${value}`, $options: 'i' };
+          return { $regex: `^${value}`, $options: 'i' };
         case 'contains':
           return { $regex: value, $options: 'i' };
         case 'notcontains':
           return { $not: { $regex: value, $options: 'i' } };
         case 'endswith':
+          return { $regex: `${value}$`, $options: 'i' };
           return { $regex: `${value}$`, $options: 'i' };
         case 'equals':
           return value;
@@ -474,6 +477,7 @@ exports.getUsersPag = async (req, res) => {
       },
       error: null,
     });
+ 
  
   } catch (error) {
     res.status(500).json({
