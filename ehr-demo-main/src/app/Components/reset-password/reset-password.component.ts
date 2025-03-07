@@ -39,30 +39,61 @@ export class ResetPasswordComponent implements OnInit {
     this.token = this.route.snapshot.queryParams['token'] || '';
   }
 
+  // submit() {
+  //   if (this.resetPasswordForm.invalid) return;
+
+  //   this.isLoading = true; // Show loader
+
+  //   this.authService.resetPassword(this.token, this.resetPasswordForm.value).subscribe({
+  //     next: (res) => {
+  //       this.isLoading = true; // Hide loader
+  //       this.message = 'Password has been reset successfully!';
+  //       this.error = '';
+
+  //       // Redirect after 3 seconds
+  //       setTimeout(() => this.router.navigate(['/login']), 4000);
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false; // Hide loader
+  //       this.error = err.error?.error?.message || 'Something went wrong!';
+  //       this.message = '';
+
+  //       // Hide error message after 3 seconds
+  //       setTimeout(() => {
+  //         this.error = '';
+  //       }, 3000);
+  //     }
+  //   });
+  // }
+
   submit() {
     if (this.resetPasswordForm.invalid) return;
-
+  
     this.isLoading = true; // Show loader
-
+  
     this.authService.resetPassword(this.token, this.resetPasswordForm.value).subscribe({
       next: (res) => {
         this.isLoading = true; // Hide loader
         this.message = 'Password has been reset successfully!';
         this.error = '';
-
+  
         // Redirect after 3 seconds
         setTimeout(() => this.router.navigate(['/login']), 4000);
       },
       error: (err) => {
-        this.isLoading = false; // Hide loader
-        this.error = err.error?.error?.message || 'Something went wrong!';
-        this.message = '';
-
-        // Hide error message after 3 seconds
+        // Show loading spinner for a brief moment before displaying the error message
         setTimeout(() => {
-          this.error = '';
-        }, 3000);
+          this.isLoading = false; // Hide loader
+          this.error = err.error?.error?.message || 'Something went wrong!';
+          this.message = '';
+  
+          // Hide error message after 3 seconds
+          setTimeout(() => {
+            this.error = '';
+          }, 3000);
+        }, 1500); // Delay before showing error
       }
     });
   }
+  
 }
