@@ -57,7 +57,8 @@ exports.forgotPassword = async (req, res) => {
     const db = await getDb();
     const managersCollection = db.collection('registrations');
 
-    const { email } = req.body;
+    const { email, frontendUrl } = req.body; // Get frontend URL from request
+
     if (!email) {
       return res.status(400).json({ success: false, error: { message: "Email is required" } });
     }
@@ -78,14 +79,40 @@ exports.forgotPassword = async (req, res) => {
     );
 
     // Create reset link (frontend should handle reset page)
-    const resetLink = `http://localhost:4200/reset-password?token=${resetToken}`;
+    // const resetLink = `http://localhost:4200/reset-password?token=${resetToken}`;
+
+    const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
 
     // Send Email
+    // const mailOptions = {
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: "Password Reset Request",
+    //   text: `Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.`
+    // };
+
+
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Password Reset Request",
-      text: `Click the link below to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.`
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
+          <h2 style="color: #333; text-align: center;">Password Reset Request</h2>
+          <p>Dear ${user.name || "User"},</p>
+          <p>You have requested to reset your password. Click the button below to reset your password:</p>
+          <p style="text-align: center;">
+            <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">
+              Reset Password
+            </a>
+          </p>
+          <p>If you did not request a password reset, please ignore this email.</p>
+          <p>Note: This link is valid for <strong>1 hour</strong>.</p>
+          <hr />
+          <p style="font-size: 12px; text-align: center; color: #777;">&copy; 2025 Your Company. All rights reserved.</p>
+        </div>
+      `
     };
 
     await transporter.sendMail(mailOptions);

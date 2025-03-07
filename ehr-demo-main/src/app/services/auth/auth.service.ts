@@ -83,7 +83,8 @@ export class AuthService {
   }
 
   forgotPassword(data: { email: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, data);
+    const frontendUrl = window.location.origin; // Gets "http://localhost:4200" or deployed URL
+    return this.http.post(`${this.apiUrl}/forgot-password`, {...data,frontendUrl});
   }
 
   resetPassword(token: string, data: { newPassword: string }): Observable<any> {
