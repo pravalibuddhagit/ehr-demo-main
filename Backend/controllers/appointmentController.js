@@ -484,7 +484,7 @@ exports.updateAppointment = async (req, res) => {
 
     const { provider_id, patient_id, reason, appointment_date, appointment_time, status } = req.body;
     const fieldsToUpdate = {};
-    console.log("till heree?")
+  
     if (provider_id && provider_id !== existingAppointment.provider_id.toString()) {
      
       const provider = await userCollection.findOne({ _id: new ObjectId(provider_id) });
