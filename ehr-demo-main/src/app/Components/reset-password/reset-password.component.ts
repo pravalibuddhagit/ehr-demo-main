@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
+import zxcvbn from 'zxcvbn'; // Import password strength checker
+
 
 @Component({
   selector: 'app-reset-password',
@@ -17,6 +19,11 @@ export class ResetPasswordComponent implements OnInit {
   message: string = '';
   error: string = '';
   isLoading: boolean = false; // Loading state
+  passwordStrengthText: string = '';
+  passwordStrengthClass: string = 'bg-gray-300';
+  passwordStrengthTextClass: string = 'text-gray-500';
+  firstName: string = '';
+  email: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -29,15 +36,19 @@ export class ResetPasswordComponent implements OnInit {
         '',
         [
           Validators.required,
-          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{3,8}$/)
+          Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@$_!%*?&]{3,8}$/)
+
         ]
       ]
     });
   }
 
   ngOnInit() {
-    this.token = this.route.snapshot.queryParams['token'] || '';
-  }
+    this.route.queryParams.subscribe(params => {
+      this.token = params['token'];
+      this.firstName = params['firstName'] || 'User';
+      this.email = params['email'] || '';
+    });  }
 
   submit() {
     if (this.resetPasswordForm.invalid) return;
@@ -65,4 +76,33 @@ export class ResetPasswordComponent implements OnInit {
       }
     });
   }
+
+
+  checkPasswordStrength() {
+    const password = this.resetPasswordForm.get('newPassword')?.value;
+  
+    if (!password) {
+      this.passwordStrengthText = '';
+      this.passwordStrengthClass = 'bg-gray-300';
+      this.passwordStrengthTextClass = 'text-gray-500';
+      return;
+    }
+  
+    const result = zxcvbn(password);
+    const strengthScore = result.score; // Score from 0 (weakest) to 4 (strongest)
+  
+    const strengthLevels = [
+      { text: 'Very Weak', class: 'bg-red-500', textClass: 'text-red-500' },
+      { text: 'Weak', class: 'bg-orange-400', textClass: 'text-orange-400' },
+      { text: 'Medium', class: 'bg-yellow-400', textClass: 'text-yellow-400' },
+      { text: 'Strong', class: 'bg-green-400', textClass: 'text-green-400' },
+      { text: 'Very Strong', class: 'bg-green-600', textClass: 'text-green-600' }
+    ];
+  
+    this.passwordStrengthText = strengthLevels[strengthScore].text;
+    this.passwordStrengthClass = strengthLevels[strengthScore].class;
+    this.passwordStrengthTextClass = strengthLevels[strengthScore].textClass;
+  }
+  
+
 }

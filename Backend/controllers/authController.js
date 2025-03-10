@@ -84,7 +84,10 @@ exports.forgotPassword = async (req, res) => {
     // Create reset link (frontend should handle reset page)
     // const resetLink = `http://localhost:4200/reset-password?token=${resetToken}`;
 
-    const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
+    const resetLink = `${frontendUrl}/reset-password?token=${resetToken}&firstName=${encodeURIComponent(user.first_name)}&email=${encodeURIComponent(user.email)}`;
+
+
+    // const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
 
     // Send Email
     // const mailOptions = {
