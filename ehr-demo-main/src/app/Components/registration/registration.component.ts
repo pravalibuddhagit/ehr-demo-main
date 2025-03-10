@@ -36,7 +36,9 @@ export class RegistrationComponent {
         '',
         [
           Validators.required,
-         Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{3,8}$/),
+        // Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{4,8}$/),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$_!%*?&])[A-Za-z\d@_$!%*?&]{4,8}$/),
+
         ],
       ],
       confirm_password: ['', [Validators.required]],

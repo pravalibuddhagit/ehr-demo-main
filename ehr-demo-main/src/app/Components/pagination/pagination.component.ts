@@ -161,6 +161,7 @@ export class PaginationComponent  {
   onPageChange(event: any) {
     console.log('onPageChange called:', event);
     console.log('Filters from event:', event.filters);
+    
 
     // Calculate current page from first and rows
     this.currentPage = event.first / event.rows + 1;

@@ -38,7 +38,10 @@ import { PatientService } from  './../../services/patient/patient.service'; // I
   ],
   providers: [MessageService,ConfirmationService],
 })
-export class PatientRegistrationComponent {
+export class PatientRegistrationComponent
+
+{
+  
   maxDate = new Date();
   patientForm: FormGroup = new FormGroup({  // ✅ Ensure patientForm is declared
     first_name: new FormControl('', [Validators.required, Validators.pattern((/^(?=.*[A-Za-z])[A-Za-z\s]+$/))]),
@@ -48,8 +51,11 @@ export class PatientRegistrationComponent {
     dob: new FormControl('', Validators.required),
     gender: new FormControl('', Validators.required),
     address_line_1: new FormControl('')
+
+
   });
  
+
   constructor(private router: Router,
      private messageService: MessageService,
      private confirmationService: ConfirmationService,
