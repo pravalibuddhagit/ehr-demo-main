@@ -65,21 +65,25 @@ dark:border
     <p-button label="Sign In" type="submit" [disabled]="loginForm.invalid" class="grid"></p-button>
   </div>
 
-  <!-- Sign Up Link -->
-  <p class="text-sm font-light text-gray-500 ">
-    Don’t have an account yet? 
+ <!-- Sign Up & OTP Login Links -->
+<p class="text-sm font-light text-gray-500 flex justify-between">
+  <span>Don’t have an account yet? 
     <a routerLink="/register" class="font-medium text-primary-600 hover:underline">Sign up</a>
-    
-  </p>
+  </span>
+  <a routerLink="/otp-login" class="text-sm text-primary-600 hover:underline cursor-pointer">
+    Login with OTP
+  </a>
+</p>
+
  
 </form>
 
-  <!-- OTP Login Link -->
-  <div class="mt-2 text-center">
-    <a routerLink="/otp-login" class="text-sm text-blue-600 hover:underline cursor-pointer">
+  <!-- OTP Login Link
+  <div class="mt-2 flex justify-end">
+    <a routerLink="/otp-login" class="text-sm text-blue-600 hover:underline cursor-pointer flex justify-end">
       Login with OTP
     </a>
-  </div>
+  </div> -->
 
       </div>
     </div>
