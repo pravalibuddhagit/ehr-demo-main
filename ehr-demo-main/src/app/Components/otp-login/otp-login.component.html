@@ -1,0 +1,58 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold text-center text-gray-800">OTP Login</h2>
+
+    <!-- Email Input -->
+    <div *ngIf="!isOtpSent">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Email:</label>
+      <input 
+        type="email" 
+        [(ngModel)]="email" 
+        #emailInput="ngModel"
+        class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2"
+        placeholder="Enter your email"
+        required
+        email
+      />
+
+      <p *ngIf="emailInput.invalid && emailInput.touched" class="text-sm text-red-600">Please enter a valid email address.</p>
+
+      <button 
+      (click)="sendOTP()" 
+      class="w-full mt-4 px-4 py-2 text-white rounded-md flex items-center justify-center"
+      [ngClass]="{
+        'bg-blue-600 hover:bg-blue-700': emailInput.valid && !loading, 
+        'bg-blue-400 cursor-not-allowed': emailInput.invalid || loading
+      }"
+      [disabled]="emailInput.invalid || loading"
+    >
+      <span *ngIf="loading" class="animate-spin border-4 border-white border-t-transparent rounded-full w-5 h-5 mr-2"></span>
+      Send OTP
+    </button>
+    
+      <button (click)="goToLogin()" class="w-full mt-4 text-sm text-blue-600 hover:underline">Back to Login</button>
+
+    </div>
+
+    
+
+    <!-- OTP Input -->
+    <div *ngIf="isOtpSent">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Enter OTP:</label>
+      <p-inputotp [(ngModel)]="otp" [integerOnly]="true" [length]="6" />
+
+      <button 
+        (click)="verifyOTP()" 
+        class="w-full mt-4 px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 flex items-center justify-center"
+        [disabled]="otp.length !== 6 || loading"
+      >
+        <span *ngIf="loading" class="animate-spin border-4 border-white border-t-transparent rounded-full w-5 h-5 mr-2"></span>
+        Verify OTP
+      </button>
+      <button (click)="editEmail()" class="w-full mt-4 text-blue-600 text-sm hover:underline">Edit Email</button>
+    </div>
+
+    <p *ngIf="message" class="mt-2 text-sm text-green-600">{{ message }}</p>
+    <p *ngIf="error" class="mt-2 text-sm text-red-600">{{ error }}</p>
+  </div>
+</div>

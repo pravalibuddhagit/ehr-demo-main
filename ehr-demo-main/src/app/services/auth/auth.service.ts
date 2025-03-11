@@ -90,5 +90,25 @@ export class AuthService {
   resetPassword(token: string, data: { newPassword: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/reset-password`, { token, ...data });
   }
+
+  sendOTP(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/send-otp`, { email });
+  }
+
+  // Verify OTP
+  verifyOTP(email: string, otp: string): Observable<any> {
+     return this.http.post<{ success: boolean; data: any; error: { message: string } }>(`${this.apiUrl}/verify-otp`, { email, otp })
+      .pipe(
+        map(response => {
+          if (response.success) {
+            return response.data; // Return user data or token
+          } else {
+            return throwError(() => new Error(response.error.message));
+          }
+        }),
+        catchError(this.handleError)
+      );
+   
+  }
   
 }

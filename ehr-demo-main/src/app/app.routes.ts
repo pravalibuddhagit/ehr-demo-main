@@ -17,11 +17,13 @@ import { PatientPaginationComponent } from './Components/patient-pagination/pati
 import { AppointmentViewComponent } from './Components/appointment-view/appointment-view.component';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
+import { OtpLoginComponent } from './Components/otp-login/otp-login.component';
 
 export const routes: Routes = [  
   
   
   { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'otp-login', component: OtpLoginComponent },
 
       {
         
