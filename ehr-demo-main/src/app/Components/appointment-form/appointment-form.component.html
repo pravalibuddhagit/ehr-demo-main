@@ -141,7 +141,7 @@
           <button 
             type="submit" 
             class="w-full p-2 bg-blue-500 text-white rounded disabled:bg-blue-300" 
-            [disabled]="!appointmentForm.valid"
+            [disabled]="appointmentForm.invalid"
           >
           {{ isEditMode ? 'Update' : 'Submit' }}
           </button>
