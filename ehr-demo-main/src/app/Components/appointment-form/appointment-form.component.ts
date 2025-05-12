@@ -356,6 +356,7 @@ loadProviders(search: string = this.providerSearch ,start: number, limit: number
     const formValue = this.appointmentForm.value;
     console.log("FROM VALUEE")
    console.log(formValue)
+   console.log("date value",formValue.appointment_date)
     // Convert date to UTC format before sending to backend
   const selectedDate = formValue.appointment_date instanceof Date
   ? new Date(
