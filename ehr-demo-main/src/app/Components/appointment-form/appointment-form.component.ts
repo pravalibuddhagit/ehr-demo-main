@@ -13,7 +13,8 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { AppointmentService} from  './../../services/appointment/appointment.service'; 
-
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, PLATFORM_ID } from '@angular/core';
 @Component({
   selector: 'app-appointment-form',
   standalone: true,  // This makes it a standalone component
@@ -50,6 +51,7 @@ export class AppointmentFormComponent{
   providers: any[] = [];
   patients: any[] = [];
   //providerPage = 1;
+  isBrowser = false;
   patientPage : number = 1;
   providerTotalRecords = 0;
   patientTotalRecords = 0;
@@ -67,7 +69,7 @@ export class AppointmentFormComponent{
   debounceTimeout: any;
   allProvidersLoaded: boolean = false;
   allPatientsLoaded : boolean = false;  
-
+  
   timeSlots = [
     { slot: '9AM - 10AM' },
     { slot: '10AM - 11AM' },
@@ -88,6 +90,7 @@ export class AppointmentFormComponent{
   minDate: Date = new Date();
   constructor(
     private fb: FormBuilder,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private router: Router,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -95,6 +98,7 @@ export class AppointmentFormComponent{
     private appointmentService: AppointmentService // Inject PatientService
   ) {
     this.minDate = new Date();
+    this.isBrowser = isPlatformBrowser(platformId);
     this.appointmentForm = this.fb.group({
       provider_id: [null, Validators.required], // Changed to provider_id
       patient_id: [null, Validators.required], // Changed to patient_id
