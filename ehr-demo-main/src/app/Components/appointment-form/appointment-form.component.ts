@@ -85,7 +85,7 @@ export class AppointmentFormComponent{
     { label: 'Rejected', value: 'rejected' }
   ];
  
-
+  minDate: Date = new Date();
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -105,7 +105,7 @@ export class AppointmentFormComponent{
     });
   }
 
-  minDate: Date = new Date();
+
 
 
 
